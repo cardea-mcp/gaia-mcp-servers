@@ -1,0 +1,3 @@
+[workspace]
+members  = ["gaia-mcp-client", "gaia-calculator-mcp-server", "gaia-weather-mcp-server"]
+resolver = "3"
