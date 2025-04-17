@@ -1,5 +1,5 @@
 [workspace]
-members  = ["gaia-mcp-client", "gaia-calculator-mcp-server", "gaia-weather-mcp-server"]
+members  = ["gaia-mcp-client", "gaia-calculator-mcp-server", "gaia-weather-mcp-server", "gaia-qdrant-mcp-server"]
 resolver = "3"
 
 [workspace.dependencies]
