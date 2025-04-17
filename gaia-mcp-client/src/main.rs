@@ -1,13 +1,28 @@
-// use rmcp::model::CallToolRequestParam;
+use clap::Parser;
+use rmcp::model::CallToolRequestParam;
 use rmcp::serve_client;
 use std::net::SocketAddr;
 
-const MCP_SERVER_ADDR: &str = "127.0.0.1:8001";
+// const MCP_SERVER_ADDR: &str = "127.0.0.1:8003";
+
+#[derive(Debug, Parser)]
+#[command(version = env!("CARGO_PKG_VERSION"), about = "Gaia MCP Client")]
+struct Cli {
+    /// Host address of the target MCP Server
+    #[arg(long, default_value = "127.0.0.1")]
+    host: String,
+    /// Port of the target MCP Server
+    #[arg(long, default_value = "8001")]
+    port: u16,
+}
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    // parse the command line arguments
+    let cli = Cli::parse();
+
     // mcp server address
-    let mcp_server_addr: SocketAddr = MCP_SERVER_ADDR.parse()?;
+    let mcp_server_addr: SocketAddr = format!("{}:{}", cli.host, cli.port).parse()?;
 
     // connect to mcp server
     let stream = tokio::net::TcpSocket::new_v4()?
@@ -56,20 +71,36 @@ async fn main() -> anyhow::Result<()> {
         }
     }
 
-    // // call a tool
-    // let tool_sum = CallToolRequestParam {
-    //     name: "sum".into(),
-    //     arguments: Some(serde_json::Map::from_iter([
-    //         ("a".to_string(), serde_json::Value::Number(1.into())),
-    //         ("b".to_string(), serde_json::Value::Number(2.into())),
-    //     ])),
-    // };
-    // let res = mcp_client.peer().call_tool(tool_sum).await?;
-    // println!("{}", serde_json::to_string_pretty(&res)?);
+    // calculator
+    {
+        // // call a tool
+        // let tool_sum = CallToolRequestParam {
+        //     name: "sum".into(),
+        //     arguments: Some(serde_json::Map::from_iter([
+        //         ("a".to_string(), serde_json::Value::Number(1.into())),
+        //         ("b".to_string(), serde_json::Value::Number(2.into())),
+        //     ])),
+        // };
+        // let res = mcp_client.peer().call_tool(tool_sum).await?;
+        // println!("{}", serde_json::to_string_pretty(&res)?);
+    }
+
+    // qdrant
+    {
+        let list_collections = CallToolRequestParam {
+            name: "list_collections".into(),
+            arguments: Some(serde_json::Map::from_iter([(
+                "url".to_string(),
+                serde_json::Value::String("http://localhost:6333".into()),
+            )])),
+        };
+        let res = mcp_client.peer().call_tool(list_collections).await?;
+        println!("collections:\n{}", serde_json::to_string_pretty(&res)?);
+    }
 
     // print server info
     let info = mcp_client.peer_info();
-    println!("{}", serde_json::to_string_pretty(&info)?);
+    println!("server info:\n{}", serde_json::to_string_pretty(&info)?);
 
     Ok(())
 }
