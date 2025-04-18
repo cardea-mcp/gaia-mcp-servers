@@ -491,6 +491,7 @@ dependencies = [
  "anyhow",
  "clap",
  "futures",
+ "gaia-qdrant-common",
  "hyper",
  "hyper-util",
  "pin-project-lite",
@@ -507,11 +508,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "gaia-qdrant-common"
+version = "0.1.0"
+dependencies = [
+ "rmcp",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "gaia-qdrant-mcp-server"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "futures",
+ "gaia-qdrant-common",
  "hyper",
  "hyper-util",
  "pin-project-lite",
