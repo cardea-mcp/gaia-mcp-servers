@@ -24,6 +24,13 @@ pub struct CreateCollectionResponse {
     #[schemars(description = "the time it took to create the collection")]
     pub time: f64,
 }
+impl From<rmcp::model::CallToolResult> for CreateCollectionResponse {
+    fn from(result: rmcp::model::CallToolResult) -> Self {
+        let content = result.content[0].as_text().unwrap().text.as_ref();
+        let response = serde_json::from_str::<CreateCollectionResponse>(content).unwrap();
+        response
+    }
+}
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct ListCollectionsRequest {
