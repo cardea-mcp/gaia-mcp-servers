@@ -1,7 +1,5 @@
-mod qdrant;
-
 use clap::Parser;
-use qdrant::Point;
+use gaia_qdrant_common::{self as qdrant, Point};
 use rmcp::model::CallToolRequestParam;
 use rmcp::serve_client;
 use serde_json::json;

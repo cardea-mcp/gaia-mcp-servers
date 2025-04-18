@@ -20,3 +20,4 @@ tokio-tungstenite  = { workspace = true }
 reqwest            = { workspace = true, features = ["json"] }
 pin-project-lite   = { workspace = true }
 clap               = { version = "^4.5", features = ["cargo", "derive"] }
+gaia-qdrant-common = { workspace = true }
