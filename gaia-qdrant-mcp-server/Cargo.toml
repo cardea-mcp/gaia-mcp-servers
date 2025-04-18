@@ -17,5 +17,5 @@ schemars           = { workspace = true }
 hyper              = { workspace = true, features = ["client", "server", "http1"] }
 hyper-util         = { workspace = true, features = ["tokio"] }
 tokio-tungstenite  = { workspace = true }
-reqwest            = { workspace = true, features = ["json"] }
+reqwest            = { workspace = true, features = ["rustls-tls", "json"] }
 pin-project-lite   = { workspace = true }
