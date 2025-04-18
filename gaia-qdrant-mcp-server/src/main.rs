@@ -1,6 +1,6 @@
 mod qdrant;
 
-use qdrant::*;
+use qdrant::QdrantServer;
 use rmcp::serve_server;
 
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
