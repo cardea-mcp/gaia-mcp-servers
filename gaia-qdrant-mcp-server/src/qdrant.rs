@@ -449,24 +449,6 @@ impl QdrantServer {
         }
     }
 
-    // fn create_client(url: &str, api_key: Option<String>) -> Result<Qdrant, McpError> {
-    //     let api_key = api_key.unwrap_or_default();
-
-    //     // create qdrant client
-    //     let client = Qdrant::from_url(&url)
-    //         .api_key(api_key)
-    //         .build()
-    //         .map_err(|e| {
-    //             McpError::new(
-    //                 ErrorCode::INTERNAL_ERROR,
-    //                 format!("Failed to create Qdrant client: {}", e),
-    //                 None,
-    //             )
-    //         })?;
-
-    //     Ok(client)
-    // }
-
     #[tool(description = "Upsert points into a collection in the Qdrant database")]
     async fn upsert_points(
         &self,
