@@ -4,7 +4,7 @@ members = [
     "gaia-calculator-mcp-server",
     "gaia-weather-mcp-server",
     "gaia-qdrant-mcp-server",
-    "gaia-qdrant-common",
+    "gaia-qdrant-common", "gaia-kwsearch-mcp-server",
 ]
 resolver = "3"
 
