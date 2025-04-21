@@ -1,5 +1,5 @@
 use clap::Parser;
-use gaia_kwsearch_common::{CreateIndexResponse, KwDocumentInput};
+use gaia_kwsearch_common::{CreateIndexResponse, KwDocumentInput, SearchDocumentsResponse};
 use gaia_qdrant_common::{self as qdrant, Point};
 use rmcp::model::CallToolRequestParam;
 use rmcp::serve_client;
@@ -336,6 +336,8 @@ async fn main() -> anyhow::Result<()> {
             "search documents response:\n{}",
             serde_json::to_string_pretty(&tool_result)?
         );
+        let search_response = SearchDocumentsResponse::from(tool_result);
+        println!("search documents response:\n{:?}", &search_response);
     }
 
     // print server info
