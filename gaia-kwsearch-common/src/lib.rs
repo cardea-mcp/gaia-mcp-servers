@@ -101,6 +101,13 @@ impl From<QueryResponse> for SearchDocumentsResponse {
         }
     }
 }
+impl From<CallToolResult> for SearchDocumentsResponse {
+    fn from(value: CallToolResult) -> Self {
+        let content = value.content[0].as_text().unwrap().text.as_ref();
+        let response = serde_json::from_str::<SearchDocumentsResponse>(content).unwrap();
+        response
+    }
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, schemars::JsonSchema)]
 pub struct KwSearchHit {
