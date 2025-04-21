@@ -36,6 +36,7 @@ impl From<KwDocumentInput> for DocumentInput {
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
 pub struct CreateIndexResponse {
     #[schemars(description = "the name of the index")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub index_name: Option<String>,
     #[schemars(description = "the results of the indexing operation")]
     pub results: Vec<KwDocumentResult>,
@@ -59,10 +60,12 @@ impl From<CallToolResult> for CreateIndexResponse {
 #[derive(Debug, Clone, Serialize, Deserialize, schemars::JsonSchema)]
 pub struct KwDocumentResult {
     #[schemars(description = "the filename of the document")]
-    pub filename: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub filename: Option<String>,
     #[schemars(description = "the status of the indexing operation")]
     pub status: String,
     #[schemars(description = "the error of the indexing operation")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
 }
 impl From<DocumentResult> for KwDocumentResult {
