@@ -9,8 +9,10 @@ members = [
     "gaia-qdrant/gaia-qdrant-common",
     "gaia-qdrant/gaia-qdrant-mcp-server-stdio",
     "gaia-qdrant/gaia-qdrant-mcp-client",
-    "gaia-kwsearch-mcp-server",
-    "gaia-kwsearch-common", "gaia-kwsearch-mcp-server-stdio", "gaia-kwsearch-mcp-client",
+    "gaia-kwsearch/gaia-kwsearch-mcp-server",
+    "gaia-kwsearch/gaia-kwsearch-common",
+    "gaia-kwsearch/gaia-kwsearch-mcp-server-stdio",
+    "gaia-kwsearch/gaia-kwsearch-mcp-client",
 ]
 resolver = "3"
 
@@ -31,5 +33,5 @@ tokio-tungstenite    = "0.26.2"
 reqwest              = "0.12"
 pin-project-lite     = "0.2"
 gaia-qdrant-common   = { path = "gaia-qdrant/gaia-qdrant-common" }
-gaia-kwsearch-common = { path = "gaia-kwsearch-common" }
+gaia-kwsearch-common = { path = "gaia-kwsearch/gaia-kwsearch-common" }
 clap                 = { version = "4.4.6" }
