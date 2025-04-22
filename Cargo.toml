@@ -6,7 +6,7 @@ members = [
     "gaia-qdrant-mcp-server",
     "gaia-qdrant-common",
     "gaia-kwsearch-mcp-server",
-    "gaia-kwsearch-common",
+    "gaia-kwsearch-common", "gaia-calculator-mcp-client", "gaia-calculator-mcp-server-stdio",
 ]
 resolver = "3"
 
@@ -28,3 +28,4 @@ reqwest              = "0.12"
 pin-project-lite     = "0.2"
 gaia-qdrant-common   = { path = "gaia-qdrant-common" }
 gaia-kwsearch-common = { path = "gaia-kwsearch-common" }
+clap                 = { version = "4.4.6" }
