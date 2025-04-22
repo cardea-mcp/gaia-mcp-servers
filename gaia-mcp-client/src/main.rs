@@ -77,20 +77,6 @@ async fn main() -> anyhow::Result<()> {
         // }
     }
 
-    // calculator
-    {
-        // // call a tool
-        // let tool_sum = CallToolRequestParam {
-        //     name: "sum".into(),
-        //     arguments: Some(serde_json::Map::from_iter([
-        //         ("a".to_string(), serde_json::Value::Number(1.into())),
-        //         ("b".to_string(), serde_json::Value::Number(2.into())),
-        //     ])),
-        // };
-        // let res = mcp_client.peer().call_tool(tool_sum).await?;
-        // println!("{}", serde_json::to_string_pretty(&res)?);
-    }
-
     // qdrant
     {
         // // * list collections
