@@ -695,6 +695,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "gaia-weather-mcp-client"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "gaia-weather-mcp-server"
 version = "0.1.0"
 dependencies = [
@@ -711,6 +724,20 @@ dependencies = [
  "serde_json",
  "tokio",
  "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "gaia-weather-mcp-server-stdio"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "reqwest",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tokio",
  "tracing",
  "tracing-subscriber",
 ]

@@ -12,7 +12,7 @@ members = [
     "gaia-kwsearch/gaia-kwsearch-mcp-server",
     "gaia-kwsearch/gaia-kwsearch-common",
     "gaia-kwsearch/gaia-kwsearch-mcp-server-stdio",
-    "gaia-kwsearch/gaia-kwsearch-mcp-client",
+    "gaia-kwsearch/gaia-kwsearch-mcp-client", "gaia-weather-mcp-server-stdio", "gaia-weather-mcp-client",
 ]
 resolver = "3"
 
