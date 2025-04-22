@@ -1,9 +1,9 @@
 use clap::Parser;
-use gaia_kwsearch_common::{CreateIndexResponse, KwDocumentInput, SearchDocumentsResponse};
-use gaia_qdrant_common::{self as qdrant, Point};
-use rmcp::model::CallToolRequestParam;
+// use gaia_kwsearch_common::{CreateIndexResponse, KwDocumentInput, SearchDocumentsResponse};
+// use gaia_qdrant_common::{self as qdrant, Point};
+// use rmcp::model::CallToolRequestParam;
 use rmcp::serve_client;
-use serde_json::json;
+// use serde_json::json;
 use std::net::SocketAddr;
 
 // const MCP_SERVER_ADDR: &str = "127.0.0.1:8003";
@@ -252,78 +252,78 @@ async fn main() -> anyhow::Result<()> {
 
     // keyword search
     {
-        // * create index
+        // // * create index
 
-        let documents = vec![
-            KwDocumentInput {
-                content: String::from(
-                    "Gaianet is revolutionizing the AI landscape with a distributed AI infrastructure that seeks to decentralize the dominance of major players such as OpenAI, Google, and Anthropic. By leveraging a network of edge-computing nodes owned by individuals around the world, Gaianet enables hosting of both open-source and finely-tuned models. This infrastructure is designed to cater to diverse AI demands, offering a scalable alternative to traditional centralized servers.",
-                ),
-                title: Some("section 1".to_string()),
-            },
-            KwDocumentInput {
-                content: String::from(
-                    "The inception of Gaianet is driven by the necessity to address key issues in the current AI industry: censorship and bias in AI outputs, lack of privacy for user data, and the high costs associated with accessing and developing on centralized AI models. These challenges have restricted the dissemination of unbiased information, compromised data security, and erected barriers to innovation and broader application of AI technologies.",
-                ),
-                title: Some("section 2".to_string()),
-            },
-        ];
-        let request_param = CallToolRequestParam {
-            name: "create_index".into(),
-            arguments: Some(serde_json::Map::from_iter([
-                (
-                    "base_url".to_string(),
-                    serde_json::Value::String("http://127.0.0.1:9069".into()),
-                ),
-                ("name".to_string(), serde_json::Value::from("mcp-test")),
-                (
-                    "documents".to_string(),
-                    serde_json::Value::Array(
-                        documents
-                            .into_iter()
-                            .map(|d| serde_json::to_value(d).unwrap())
-                            .collect(),
-                    ),
-                ),
-            ])),
-        };
+        // let documents = vec![
+        //     KwDocumentInput {
+        //         content: String::from(
+        //             "Gaianet is revolutionizing the AI landscape with a distributed AI infrastructure that seeks to decentralize the dominance of major players such as OpenAI, Google, and Anthropic. By leveraging a network of edge-computing nodes owned by individuals around the world, Gaianet enables hosting of both open-source and finely-tuned models. This infrastructure is designed to cater to diverse AI demands, offering a scalable alternative to traditional centralized servers.",
+        //         ),
+        //         title: Some("section 1".to_string()),
+        //     },
+        //     KwDocumentInput {
+        //         content: String::from(
+        //             "The inception of Gaianet is driven by the necessity to address key issues in the current AI industry: censorship and bias in AI outputs, lack of privacy for user data, and the high costs associated with accessing and developing on centralized AI models. These challenges have restricted the dissemination of unbiased information, compromised data security, and erected barriers to innovation and broader application of AI technologies.",
+        //         ),
+        //         title: Some("section 2".to_string()),
+        //     },
+        // ];
+        // let request_param = CallToolRequestParam {
+        //     name: "create_index".into(),
+        //     arguments: Some(serde_json::Map::from_iter([
+        //         (
+        //             "base_url".to_string(),
+        //             serde_json::Value::String("http://127.0.0.1:9069".into()),
+        //         ),
+        //         ("name".to_string(), serde_json::Value::from("mcp-test")),
+        //         (
+        //             "documents".to_string(),
+        //             serde_json::Value::Array(
+        //                 documents
+        //                     .into_iter()
+        //                     .map(|d| serde_json::to_value(d).unwrap())
+        //                     .collect(),
+        //             ),
+        //         ),
+        //     ])),
+        // };
 
-        let tool_result = mcp_client.peer().call_tool(request_param).await?;
-        println!(
-            "create index response:\n{}",
-            serde_json::to_string_pretty(&tool_result)?
-        );
+        // let tool_result = mcp_client.peer().call_tool(request_param).await?;
+        // println!(
+        //     "create index response:\n{}",
+        //     serde_json::to_string_pretty(&tool_result)?
+        // );
 
-        let index_response = CreateIndexResponse::from(tool_result);
-        println!("create index response:\n{:?}", &index_response);
+        // let index_response = CreateIndexResponse::from(tool_result);
+        // println!("create index response:\n{:?}", &index_response);
 
-        // * search documents
-        let request_param = CallToolRequestParam {
-            name: "search_documents".into(),
-            arguments: Some(serde_json::Map::from_iter([
-                (
-                    "base_url".to_string(),
-                    serde_json::Value::String("http://127.0.0.1:9069".into()),
-                ),
-                (
-                    "index_name".to_string(),
-                    serde_json::Value::from("mcp-test"),
-                ),
-                (
-                    "query".to_string(),
-                    serde_json::Value::from("What's Gaianet?"),
-                ),
-                ("limit".to_string(), serde_json::Value::from(2)),
-            ])),
-        };
+        // // * search documents
+        // let request_param = CallToolRequestParam {
+        //     name: "search_documents".into(),
+        //     arguments: Some(serde_json::Map::from_iter([
+        //         (
+        //             "base_url".to_string(),
+        //             serde_json::Value::String("http://127.0.0.1:9069".into()),
+        //         ),
+        //         (
+        //             "index_name".to_string(),
+        //             serde_json::Value::from("mcp-test"),
+        //         ),
+        //         (
+        //             "query".to_string(),
+        //             serde_json::Value::from("What's Gaianet?"),
+        //         ),
+        //         ("limit".to_string(), serde_json::Value::from(2)),
+        //     ])),
+        // };
 
-        let tool_result = mcp_client.peer().call_tool(request_param).await?;
-        println!(
-            "search documents response:\n{}",
-            serde_json::to_string_pretty(&tool_result)?
-        );
-        let search_response = SearchDocumentsResponse::from(tool_result);
-        println!("search documents response:\n{:?}", &search_response);
+        // let tool_result = mcp_client.peer().call_tool(request_param).await?;
+        // println!(
+        //     "search documents response:\n{}",
+        //     serde_json::to_string_pretty(&tool_result)?
+        // );
+        // let search_response = SearchDocumentsResponse::from(tool_result);
+        // println!("search documents response:\n{:?}", &search_response);
     }
 
     // print server info
