@@ -1,0 +1,14 @@
+[package]
+name    = "gaia-qdrant-mcp-client"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rmcp               = { workspace = true, features = ["client", "macros", "transport-io", "transport-child-process"] }
+tokio              = { workspace = true, features = ["macros", "rt", "rt-multi-thread", "io-std", "net", "fs", "time"] }
+serde_json         = { workspace = true }
+anyhow             = { workspace = true }
+tracing            = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["env-filter", "std", "fmt"] }
+clap               = { version = "^4.5", features = ["cargo", "derive"] }
+gaia-qdrant-common = { workspace = true }

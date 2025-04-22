@@ -8,7 +8,7 @@ members = [
     "gaia-qdrant-mcp-server",
     "gaia-qdrant-common",
     "gaia-kwsearch-mcp-server",
-    "gaia-kwsearch-common",
+    "gaia-kwsearch-common", "gaia-qdrant-mcp-server-stdio", "gaia-qdrant-mcp-client",
 ]
 resolver = "3"
 
