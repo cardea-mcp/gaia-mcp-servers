@@ -1,7 +1,7 @@
 mod calculator;
 
 use calculator::Calculator;
-use rmcp::serve_server;
+use rmcp::ServiceExt;
 
 const SOCKET_ADDR: &str = "127.0.0.1:8001";
 
@@ -14,7 +14,7 @@ async fn main() -> anyhow::Result<()> {
         // spawn a new task to handle the connection
         tokio::spawn(async move {
             // create a mcp server
-            let mcp_server = serve_server(Calculator, stream).await?;
+            let mcp_server = Calculator.serve(stream).await?;
 
             // wait for the connection to be closed
             mcp_server.waiting().await?;
