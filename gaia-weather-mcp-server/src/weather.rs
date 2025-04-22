@@ -34,7 +34,7 @@ impl WeatherServer {
         let openweathermap_unit = unit.to_openweathermap_unit();
 
         // * get geographic coordinates of the city
-        println!("getting geocode for {}", location);
+        tracing::info!("getting geocode for {}", location);
 
         let geocode_url = format!(
             "http://api.openweathermap.org/geo/1.0/direct?q={}&appid={}&limit=1&units={}",
@@ -62,7 +62,7 @@ impl WeatherServer {
         let lon = geocode_data[0]["lon"].as_f64().unwrap();
 
         // * get weather data
-        println!("getting weather for {} at {} {}", location, lat, lon);
+        tracing::info!("getting weather for {} at {} {}", location, lat, lon);
         let weather_url = format!(
             "http://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}&units={}",
             lat, lon, api_key, openweathermap_unit
@@ -86,9 +86,9 @@ impl WeatherServer {
         })?;
 
         let temperature = weather_data["main"]["temp"].as_f64().unwrap();
-        println!("temperature: {}", temperature);
+        tracing::info!("temperature: {}", temperature);
         let description = weather_data["weather"][0]["description"].as_str().unwrap();
-        println!("description: {}", description);
+        tracing::info!("description: {}", description);
 
         let content = Content::json(GetWeatherResponse { temperature, unit })?;
 
