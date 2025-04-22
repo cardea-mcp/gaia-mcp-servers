@@ -544,7 +544,44 @@ dependencies = [
 ]
 
 [[package]]
+name = "gaia-kwsearch-mcp-client"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "gaia-kwsearch-common",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "gaia-kwsearch-mcp-server"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "endpoints",
+ "futures",
+ "gaia-kwsearch-common",
+ "hyper",
+ "hyper-util",
+ "pin-project-lite",
+ "rand 0.8.5",
+ "reqwest",
+ "rmcp",
+ "schemars",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "gaia-kwsearch-mcp-server-stdio"
 version = "0.1.0"
 dependencies = [
  "anyhow",

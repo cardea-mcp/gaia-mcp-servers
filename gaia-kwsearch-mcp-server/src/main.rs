@@ -1,6 +1,6 @@
 mod search;
 
-use rmcp::serve_server;
+use rmcp::ServiceExt;
 use search::KeywordSearchServer;
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -26,7 +26,7 @@ async fn main() -> anyhow::Result<()> {
         // spawn a new task to handle the connection
         tokio::spawn(async move {
             // create a mcp server
-            let mcp_server = serve_server(KeywordSearchServer, stream).await?;
+            let mcp_server = KeywordSearchServer.serve(stream).await?;
 
             // wait for the connection to be closed
             mcp_server.waiting().await?;

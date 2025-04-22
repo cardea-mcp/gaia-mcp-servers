@@ -10,7 +10,7 @@ members = [
     "gaia-qdrant/gaia-qdrant-mcp-server-stdio",
     "gaia-qdrant/gaia-qdrant-mcp-client",
     "gaia-kwsearch-mcp-server",
-    "gaia-kwsearch-common",
+    "gaia-kwsearch-common", "gaia-kwsearch-mcp-server-stdio", "gaia-kwsearch-mcp-client",
 ]
 resolver = "3"
 
