@@ -5,10 +5,12 @@ members = [
     "gaia-calculator/gaia-calculator-mcp-client",
     "gaia-calculator/gaia-calculator-mcp-server-stdio",
     "gaia-weather-mcp-server",
-    "gaia-qdrant-mcp-server",
-    "gaia-qdrant-common",
+    "gaia-qdrant/gaia-qdrant-mcp-server",
+    "gaia-qdrant/gaia-qdrant-common",
+    "gaia-qdrant/gaia-qdrant-mcp-server-stdio",
+    "gaia-qdrant/gaia-qdrant-mcp-client",
     "gaia-kwsearch-mcp-server",
-    "gaia-kwsearch-common", "gaia-qdrant-mcp-server-stdio", "gaia-qdrant-mcp-client",
+    "gaia-kwsearch-common",
 ]
 resolver = "3"
 
@@ -28,6 +30,6 @@ hyper-util           = "0.1"
 tokio-tungstenite    = "0.26.2"
 reqwest              = "0.12"
 pin-project-lite     = "0.2"
-gaia-qdrant-common   = { path = "gaia-qdrant-common" }
+gaia-qdrant-common   = { path = "gaia-qdrant/gaia-qdrant-common" }
 gaia-kwsearch-common = { path = "gaia-kwsearch-common" }
 clap                 = { version = "4.4.6" }
