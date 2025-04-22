@@ -2,7 +2,6 @@ mod qdrant;
 
 use qdrant::QdrantServer;
 use rmcp::ServiceExt;
-
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
 
 const SOCKET_ADDR: &str = "127.0.0.1:8003";
