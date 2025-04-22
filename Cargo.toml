@@ -4,7 +4,9 @@ members = [
     "gaia-calculator/gaia-calculator-mcp-server",
     "gaia-calculator/gaia-calculator-mcp-client",
     "gaia-calculator/gaia-calculator-mcp-server-stdio",
-    "gaia-weather-mcp-server",
+    "gaia-weather/gaia-weather-mcp-server",
+    "gaia-weather/gaia-weather-mcp-server-stdio",
+    "gaia-weather/gaia-weather-mcp-client",
     "gaia-qdrant/gaia-qdrant-mcp-server",
     "gaia-qdrant/gaia-qdrant-common",
     "gaia-qdrant/gaia-qdrant-mcp-server-stdio",
@@ -12,7 +14,7 @@ members = [
     "gaia-kwsearch/gaia-kwsearch-mcp-server",
     "gaia-kwsearch/gaia-kwsearch-common",
     "gaia-kwsearch/gaia-kwsearch-mcp-server-stdio",
-    "gaia-kwsearch/gaia-kwsearch-mcp-client", "gaia-weather-mcp-server-stdio", "gaia-weather-mcp-client",
+    "gaia-kwsearch/gaia-kwsearch-mcp-client",
 ]
 resolver = "3"
 
