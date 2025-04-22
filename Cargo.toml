@@ -1,12 +1,14 @@
 [workspace]
 members = [
     "gaia-mcp-client",
-    "gaia-calculator-mcp-server",
+    "gaia-calculator/gaia-calculator-mcp-server",
+    "gaia-calculator/gaia-calculator-mcp-client",
+    "gaia-calculator/gaia-calculator-mcp-server-stdio",
     "gaia-weather-mcp-server",
     "gaia-qdrant-mcp-server",
     "gaia-qdrant-common",
     "gaia-kwsearch-mcp-server",
-    "gaia-kwsearch-common", "gaia-calculator-mcp-client", "gaia-calculator-mcp-server-stdio",
+    "gaia-kwsearch-common",
 ]
 resolver = "3"
 
