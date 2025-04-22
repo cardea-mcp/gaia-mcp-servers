@@ -15,7 +15,7 @@ enum TransportType {
 }
 
 #[derive(Parser, Debug)]
-#[command(author, version, about = "Qdrant MCP client")]
+#[command(author, version, about = "Gaia Keyword Search MCP client")]
 struct Args {
     /// Transport type to use (tcp or stdio)
     #[arg(short, long, value_enum, default_value = "tcp")]
