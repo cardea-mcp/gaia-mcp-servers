@@ -1,6 +1,5 @@
 [workspace]
 members = [
-    "gaia-mcp-client",
     "gaia-calculator/gaia-calculator-mcp-server",
     "gaia-calculator/gaia-calculator-mcp-client",
     "gaia-calculator/gaia-calculator-mcp-server-stdio",
