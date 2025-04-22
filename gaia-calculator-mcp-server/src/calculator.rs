@@ -18,11 +18,10 @@ pub struct Calculator;
 impl Calculator {
     #[tool(description = "Calculate the sum of two numbers")]
     fn sum(&self, #[tool(aggr)] SumRequest { a, b }: SumRequest) -> String {
-        println!("summing {} and {}", a, b);
         (a + b).to_string()
     }
 
-    #[tool(description = "Calculate the sum of two numbers")]
+    #[tool(description = "Calculate the difference of two numbers")]
     fn sub(
         &self,
         #[tool(param)]
