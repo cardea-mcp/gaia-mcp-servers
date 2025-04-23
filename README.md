@@ -11,3 +11,7 @@ Visit [gaia-weather/README.md](gaia-weather/README.md) for more information.
 ## Gaia Qdrant MCP Server
 
 Visit [gaia-qdrant/README.md](gaia-qdrant/README.md) for more information.
+
+## Gaia Keyword Search MCP Server
+
+Visit [gaia-kwsearch/README.md](gaia-kwsearch/README.md) for more information.
