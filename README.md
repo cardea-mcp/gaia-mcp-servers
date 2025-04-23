@@ -1,17 +1,5 @@
-# MCP Examples
+# MCP Servers
 
-## Build
+## Gaia Calculator MCP Server
 
-```bash
-cargo build --release
-```
-
-## Start MCP Servers
-
-```bash
-# Start gaia-calculator mcp server
-./target/release/gaia-calculator-mcp-server
-
-# Start gaia-weather mcp server
-./target/release/gaia-weather-mcp-server
-```
+Visit [gaia-calculator/README.md](gaia-calculator/README.md) for more information.
