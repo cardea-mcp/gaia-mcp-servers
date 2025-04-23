@@ -104,21 +104,6 @@ jobs:
           mkdir archive
           cd archive
 
-          # cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-client" ./
-          # cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server" ./
-          # cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server-stdio" ./
-          # cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-client" ./
-          # cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
-          # cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-stdio" ./
-          # cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-client" ./
-          # cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server" ./
-          # cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-stdio" ./
-          # cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-client" ./
-          # cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server" ./
-          # cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server-stdio" ./
-
-          # ls -al
-
           if [ "${{ matrix.build }}" = "linux-x86_64" ] || [ "${{ matrix.build }}" = "linux-aarch64" ]; then
 
             cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-client" ./
@@ -206,10 +191,10 @@ jobs:
         id: tag_and_release_names
         run: |
           echo "tag_name=${{ github.event.inputs.release_version }}" >> $GITHUB_OUTPUT
-          echo "release_name=Gaia-Nexus ${{ github.event.inputs.release_version }}" >> $GITHUB_OUTPUT
+          echo "release_name=Gaia-MCP-Servers ${{ github.event.inputs.release_version }}" >> $GITHUB_OUTPUT
 
       - name: Create Release and Upload Release Asset
-        if: ${{ github.event.inputs.create_release == 'true' && github.ref == 'refs/heads/main-gaia'}}
+        if: ${{ github.event.inputs.create_release == 'true' && github.ref == 'refs/heads/main'}}
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ steps.tag_and_release_names.outputs.release_name }}
