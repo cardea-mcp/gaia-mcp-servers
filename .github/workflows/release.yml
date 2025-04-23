@@ -104,50 +104,58 @@ jobs:
           mkdir archive
           cd archive
 
-          cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-client" ./
-          cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server-stdio" ./
-          cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-client" ./
-          cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-stdio" ./
-          cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-client" ./
-          cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-stdio" ./
-          cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-client" ./
-          cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server-stdio" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-client" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server-stdio" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-client" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-stdio" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-client" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-stdio" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-client" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server" ./
+          # cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server-stdio" ./
+
+          # ls -al
+
+          if [ "${{ matrix.build }}" = "linux-x86_64" ] || [ "${{ matrix.build }}" = "linux-aarch64" ]; then
+
+            cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-client" ./
+            cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server" ./
+            cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-client" ./
+            cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
+            cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-client" ./
+            cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server" ./
+            cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-client" ./
+            cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server" ./
+            cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server-stdio" ./
+
+            tar -czf "${{ matrix.archive-name }}" *
+          fi
+
+          if [ "${{ matrix.build }}" = "macos-x86_64" ] || [ "${{ matrix.build }}" = "macos-arm64" ]; then
+
+            cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-client" ./
+            cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server" ./
+            cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-client" ./
+            cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
+            cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-client" ./
+            cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server" ./
+            cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-client" ./
+            cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server" ./
+            cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server-stdio" ./
+
+            tar -czf "${{ matrix.archive-name }}" *
+          fi
 
           ls -al
-
-        #   if [ "${{ matrix.build }}" = "linux-x86_64" ] || [ "${{ matrix.build }}" = "linux-aarch64" ]; then
-
-        #     cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-client" ./
-        #     cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server" ./
-        #     cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server-stdio" ./
-        #     cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-client" ./
-        #     cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
-        #     cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-stdio" ./
-        #     cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-client" ./
-        #     cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server" ./
-        #     cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-stdio" ./
-        #     cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-client" ./
-        #     cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server" ./
-        #     cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server-stdio" ./
-
-        #     # sha256sum gaia-nexus > SHA256SUM
-        #     # echo "Debug info(SHA256SUM):"
-        #     # cat SHA256SUM
-        #     # tar -czf "${{ matrix.archive-name }}" SHA256SUM gaia-nexus
-        #   fi
-
-        #   if [ "${{ matrix.build }}" = "macos-x86_64" ] || [ "${{ matrix.build }}" = "macos-arm64" ]; then
-        #     cp "../target/${{ matrix.target }}/release/gaia-nexus" ./
-        #     shasum -a 256 gaia-nexus > SHA256SUM
-        #     echo "Debug info(SHA256SUM):"
-        #     cat SHA256SUM
-        #     tar -czf "${{ matrix.archive-name }}" SHA256SUM gaia-nexus
-        #   fi
-        #   ls -al
 
       - name: Upload archive
         uses: actions/upload-artifact@v4
