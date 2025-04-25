@@ -1,7 +1,11 @@
 [package]
-name    = "gaia-qdrant-common"
-version = "0.1.0"
-edition = "2024"
+name        = "gaia-qdrant-common"
+version     = "0.1.0"
+edition     = "2024"
+repository  = "https://github.com/apepkuss/mcp-examples"
+license     = "Apache-2.0"
+categories  = ["data-structures"]
+description = "Data types and utilities for the Gaia Qdrant MCP"
 
 [dependencies]
 rmcp       = { workspace = true }
