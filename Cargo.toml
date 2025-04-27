@@ -13,7 +13,11 @@ members = [
     "gaia-kwsearch/gaia-kwsearch-mcp-server",
     "gaia-kwsearch/gaia-kwsearch-common",
     "gaia-kwsearch/gaia-kwsearch-mcp-server-stdio",
-    "gaia-kwsearch/gaia-kwsearch-mcp-client", "gaia-calculator/gaia-calculator-mcp-server-sse", "gaia-weather/gaia-weather-mcp-server-sse", "gaia-qdrant/gaia-qdrant-mcp-server-sse", "gaia-kwsearch/gaia-kwsearch-mcp-server-sse",
+    "gaia-kwsearch/gaia-kwsearch-mcp-client",
+    "gaia-calculator/gaia-calculator-mcp-server-sse",
+    "gaia-weather/gaia-weather-mcp-server-sse",
+    "gaia-qdrant/gaia-qdrant-mcp-server-sse",
+    "gaia-kwsearch/gaia-kwsearch-mcp-server-sse",
 ]
 resolver = "3"
 
@@ -36,3 +40,9 @@ pin-project-lite     = "0.2"
 gaia-qdrant-common   = { path = "gaia-qdrant/gaia-qdrant-common" }
 gaia-kwsearch-common = { path = "gaia-kwsearch/gaia-kwsearch-common" }
 clap                 = { version = "4.4.6" }
+
+[workspace.package]
+edition    = "2024"
+version    = "0.1.1"
+repository = "https://github.com/apepkuss/mcp-examples"
+license    = "Apache-2.0"

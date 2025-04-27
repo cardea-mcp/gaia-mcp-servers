@@ -1,9 +1,9 @@
 [package]
 name        = "gaia-qdrant-common"
 version     = "0.1.0"
-edition     = "2024"
-repository  = "https://github.com/apepkuss/mcp-examples"
-license     = "Apache-2.0"
+edition     = { workspace = true }
+repository  = { workspace = true }
+license     = { workspace = true }
 categories  = ["data-structures"]
 description = "Data types and utilities for the Gaia Qdrant MCP"
 

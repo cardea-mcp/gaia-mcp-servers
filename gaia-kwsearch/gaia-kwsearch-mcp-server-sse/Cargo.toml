@@ -1,7 +1,9 @@
 [package]
-name    = "gaia-kwsearch-mcp-server-sse"
-version = "0.1.0"
-edition = "2024"
+name       = "gaia-kwsearch-mcp-server-sse"
+version    = { workspace = true }
+edition    = { workspace = true }
+repository = { workspace = true }
+license    = { workspace = true }
 
 [dependencies]
 rmcp                 = { workspace = true, features = ["server", "macros", "transport-sse-server"] }

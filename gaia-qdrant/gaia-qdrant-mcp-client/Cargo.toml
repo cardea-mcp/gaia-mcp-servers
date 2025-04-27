@@ -1,7 +1,9 @@
 [package]
-name    = "gaia-qdrant-mcp-client"
-version = "0.1.0"
-edition = "2024"
+name       = "gaia-qdrant-mcp-client"
+version    = { workspace = true }
+edition    = { workspace = true }
+repository = { workspace = true }
+license    = { workspace = true }
 
 [dependencies]
 rmcp               = { workspace = true, features = ["client", "macros", "transport-io", "transport-child-process", "transport-sse"] }
