@@ -76,28 +76,35 @@ jobs:
           strip "target/${{ matrix.target }}/release/gaia-calculator-mcp-client"
           strip "target/${{ matrix.target }}/release/gaia-calculator-mcp-server"
           strip "target/${{ matrix.target }}/release/gaia-calculator-mcp-server-stdio"
+          strip "target/${{ matrix.target }}/release/gaia-calculator-mcp-server-sse"
           strip "target/${{ matrix.target }}/release/gaia-kwsearch-mcp-client"
           strip "target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server"
           strip "target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-stdio"
+          strip "target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-sse"
           strip "target/${{ matrix.target }}/release/gaia-qdrant-mcp-client"
           strip "target/${{ matrix.target }}/release/gaia-qdrant-mcp-server"
           strip "target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-stdio"
+          strip "target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-sse"
           strip "target/${{ matrix.target }}/release/gaia-weather-mcp-client"
           strip "target/${{ matrix.target }}/release/gaia-weather-mcp-server"
           strip "target/${{ matrix.target }}/release/gaia-weather-mcp-server-stdio"
+          strip "target/${{ matrix.target }}/release/gaia-weather-mcp-server-sse"
           ls -al "target/${{ matrix.target }}/release/gaia-calculator-mcp-client"
           ls -al "target/${{ matrix.target }}/release/gaia-calculator-mcp-server"
           ls -al "target/${{ matrix.target }}/release/gaia-calculator-mcp-server-stdio"
+          ls -al "target/${{ matrix.target }}/release/gaia-calculator-mcp-server-sse"
           ls -al "target/${{ matrix.target }}/release/gaia-kwsearch-mcp-client"
           ls -al "target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server"
           ls -al "target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-stdio"
+          ls -al "target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-sse"
           ls -al "target/${{ matrix.target }}/release/gaia-qdrant-mcp-client"
           ls -al "target/${{ matrix.target }}/release/gaia-qdrant-mcp-server"
           ls -al "target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-stdio"
+          ls -al "target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-sse"
           ls -al "target/${{ matrix.target }}/release/gaia-weather-mcp-client"
           ls -al "target/${{ matrix.target }}/release/gaia-weather-mcp-server"
           ls -al "target/${{ matrix.target }}/release/gaia-weather-mcp-server-stdio"
-
+          ls -al "target/${{ matrix.target }}/release/gaia-weather-mcp-server-sse"
       - name: Build archive
         shell: bash
         run: |
@@ -109,15 +116,19 @@ jobs:
             cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-client" ./
             cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server-sse" ./
             cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-client" ./
             cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-sse" ./
             cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-client" ./
             cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-sse" ./
             cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-client" ./
             cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server-sse" ./
 
             tar -czf "${{ matrix.archive-name }}" *
           fi
@@ -127,15 +138,19 @@ jobs:
             cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-client" ./
             cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server-sse" ./
             cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-client" ./
             cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server-sse" ./
             cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-client" ./
             cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server-sse" ./
             cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-client" ./
             cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server-stdio" ./
+            cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server-sse" ./
 
             tar -czf "${{ matrix.archive-name }}" *
           fi
