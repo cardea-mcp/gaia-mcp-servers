@@ -41,7 +41,7 @@ async fn main() -> anyhow::Result<()> {
     match cli.transport {
         TransportType::Sse => {
             let url = format!("http://{SOCKET_ADDR}/sse");
-            tracing::info!("Connecting to MCP server via sse: {}", url);
+            tracing::info!("Connecting to Gaia Calculator MCP server via sse: {}", url);
 
             let transport = SseTransport::start(url).await?;
             let client_info = ClientInfo {
@@ -49,7 +49,7 @@ async fn main() -> anyhow::Result<()> {
                 capabilities: ClientCapabilities::default(),
                 client_info: Implementation {
                     name: "test sse client".to_string(),
-                    version: "0.0.1".to_string(),
+                    version: "0.1.0".to_string(),
                 },
             };
             let mcp_client = client_info.serve(transport).await.inspect_err(|e| {
