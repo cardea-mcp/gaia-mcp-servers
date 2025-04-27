@@ -64,9 +64,9 @@ If start successfully, you will see the following output:
 <details><summary>Expand to view the output</summary>
 
 ```console
-2025-04-23T06:39:34.166566Z  INFO gaia_kwsearch_mcp_client: 40: Connecting to MCP server via tcp
-2025-04-23T06:39:34.168316Z  INFO serve_inner: rmcp::service: 531: Service initialized as client peer_info=InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A MCP server that can access the KeywordSearch database") }
-2025-04-23T06:39:34.168363Z  INFO gaia_kwsearch_mcp_client: 52: Connected to server: InitializeResult {
+2025-04-27T03:20:40.233179Z  INFO gaia_kwsearch_mcp_client: 150: Connecting to MCP server via tcp
+2025-04-27T03:20:40.235822Z  INFO serve_inner: rmcp::service: 531: Service initialized as client peer_info=InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A MCP server that can access the KeywordSearch database") }
+2025-04-27T03:20:40.236137Z  INFO gaia_kwsearch_mcp_client: 162: Connected to server: InitializeResult {
     protocol_version: ProtocolVersion(
         "2025-03-26",
     ),
@@ -90,8 +90,44 @@ If start successfully, you will see the following output:
         "A MCP server that can access the KeywordSearch database",
     ),
 }
-2025-04-23T06:39:34.169304Z  INFO gaia_kwsearch_mcp_client: 56: {
+2025-04-27T03:20:40.236931Z  INFO gaia_kwsearch_mcp_client: 166: {
   "tools": [
+    {
+      "name": "search_documents",
+      "description": "Search for documents in the KeywordSearch database",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "base_url": {
+            "description": "the base URL of the local or remote KeywordSearch database",
+            "type": "string"
+          },
+          "index_name": {
+            "description": "the index to search",
+            "type": "string"
+          },
+          "limit": {
+            "description": "the number of results to return",
+            "format": "uint",
+            "minimum": 0.0,
+            "type": "integer"
+          },
+          "query": {
+            "description": "the query to search for",
+            "type": "string"
+          }
+        },
+        "required": [
+          "base_url",
+          "index_name",
+          "limit",
+          "query"
+        ],
+        "title": "SearchDocumentsRequest",
+        "type": "object"
+      },
+      "annotations": null
+    },
     {
       "name": "create_index",
       "description": "Create an index in the KeywordSearch database",
@@ -146,45 +182,35 @@ If start successfully, you will see the following output:
         "type": "object"
       },
       "annotations": null
-    },
-    {
-      "name": "search_documents",
-      "description": "Search for documents in the KeywordSearch database",
-      "inputSchema": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "properties": {
-          "base_url": {
-            "description": "the base URL of the local or remote KeywordSearch database",
-            "type": "string"
-          },
-          "index_name": {
-            "description": "the index to search",
-            "type": "string"
-          },
-          "limit": {
-            "description": "the number of results to return",
-            "format": "uint",
-            "minimum": 0.0,
-            "type": "integer"
-          },
-          "query": {
-            "description": "the query to search for",
-            "type": "string"
-          }
-        },
-        "required": [
-          "base_url",
-          "index_name",
-          "limit",
-          "query"
-        ],
-        "title": "SearchDocumentsRequest",
-        "type": "object"
-      },
-      "annotations": null
     }
   ]
 }
+2025-04-27T03:20:40.425650Z  INFO gaia_kwsearch_mcp_client: 208: create index response:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"index_name\":\"mcp-test\",\"results\":[{\"filename\":\"section 1\",\"status\":\"indexed\"},{\"filename\":\"section 2\",\"status\":\"indexed\"}]}"
+    }
+  ],
+  "isError": false
+}
+2025-04-27T03:20:40.425681Z  INFO gaia_kwsearch_mcp_client: 214: create index response:
+CreateIndexResponse { index_name: Some("mcp-test"), results: [KwDocumentResult { filename: Some("section 1"), status: "indexed", error: None }, KwDocumentResult { filename: Some("section 2"), status: "indexed", error: None }] }
+2025-04-27T03:20:40.441061Z  INFO gaia_kwsearch_mcp_client: 237: search documents response:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"hits\":[{\"title\":\"section 1\",\"content\":\"Gaianet is revolutionizing the AI landscape with a distributed AI infrastructure that seeks to decentralize the dominance of major players such as OpenAI, Google, and Anthropic. By leveraging a network of edge-computing nodes owned by individuals around the world, Gaianet enables hosting of both open-source and finely-tuned models. This infrastructure is designed to cater to diverse AI demands, offering a scalable alternative to traditional centralized servers.\",\"score\":0.25017098},{\"title\":\"section 2\",\"content\":\"The inception of Gaianet is driven by the necessity to address key issues in the current AI industry: censorship and bias in AI outputs, lack of privacy for user data, and the high costs associated with accessing and developing on centralized AI models. These challenges have restricted the dissemination of unbiased information, compromised data security, and erected barriers to innovation and broader application of AI technologies.\",\"score\":0.18627283}]}"
+    }
+  ],
+  "isError": false
+}
+2025-04-27T03:20:40.441127Z  INFO gaia_kwsearch_mcp_client: 242: search documents response:
+SearchDocumentsResponse { hits: [KwSearchHit { title: "section 1", content: "Gaianet is revolutionizing the AI landscape with a distributed AI infrastructure that seeks to decentralize the dominance of major players such as OpenAI, Google, and Anthropic. By leveraging a network of edge-computing nodes owned by individuals around the world, Gaianet enables hosting of both open-source and finely-tuned models. This infrastructure is designed to cater to diverse AI demands, offering a scalable alternative to traditional centralized servers.", score: 0.25017098 }, KwSearchHit { title: "section 2", content: "The inception of Gaianet is driven by the necessity to address key issues in the current AI industry: censorship and bias in AI outputs, lack of privacy for user data, and the high costs associated with accessing and developing on centralized AI models. These challenges have restricted the dissemination of unbiased information, compromised data security, and erected barriers to innovation and broader application of AI technologies.", score: 0.18627283 }] }
+2025-04-27T03:20:40.441253Z  INFO rmcp::service: 587: task cancelled
+2025-04-27T03:20:40.441291Z  INFO rmcp::service: 755: serve finished quit_reason=Cancelled
 ```
 
 </details>
@@ -414,6 +440,219 @@ CreateIndexResponse { index_name: Some("mcp-test"), results: [KwDocumentResult {
 SearchDocumentsResponse { hits: [KwSearchHit { title: "section 1", content: "Gaianet is revolutionizing the AI landscape with a distributed AI infrastructure that seeks to decentralize the dominance of major players such as OpenAI, Google, and Anthropic. By leveraging a network of edge-computing nodes owned by individuals around the world, Gaianet enables hosting of both open-source and finely-tuned models. This infrastructure is designed to cater to diverse AI demands, offering a scalable alternative to traditional centralized servers.", score: 0.25017098 }, KwSearchHit { title: "section 2", content: "The inception of Gaianet is driven by the necessity to address key issues in the current AI industry: censorship and bias in AI outputs, lack of privacy for user data, and the high costs associated with accessing and developing on centralized AI models. These challenges have restricted the dissemination of unbiased information, compromised data security, and erected barriers to innovation and broader application of AI technologies.", score: 0.18627283 }] }
 2025-04-23T06:41:28.001658Z  INFO rmcp::service: 587: task cancelled
 2025-04-23T06:41:28.001665Z  INFO rmcp::service: 755: serve finished quit_reason=Cancelled
+```
+
+</details>
+
+### Build and run gaia-kwsearch-mcp-server (sse)
+
+Let's build mcp server and client by running the following commands:
+
+```bash
+# build mcp server (sse)
+cargo build --package gaia-kwsearch-mcp-server-sse --release
+
+# build mcp client
+cargo build --package gaia-kwsearch-mcp-client --release
+```
+
+**Note** that, before running the mcp server, you need to start the kw-search server. If you don't have a kw-search server running, you can start one by running the following commands to download the binary and start the server:
+
+<details><summary>Expand to view the commands</summary>
+
+```bash
+export VERSION=0.1.1
+
+# macOS on Apple Silicon
+curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-aarch64-apple-darwin.tar.gz
+tar -xvzf server-assistant-aarch64-apple-darwin.tar.gz
+
+# macOS on Intel
+curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-apple-darwin.tar.gz
+tar -xvzf server-assistant-x86_64-apple-darwin.tar.gz
+
+# Linux
+curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-unknown-linux-gnu.tar.gz
+tar -xvzf server-assistant-x86_64-unknown-linux-gnu.tar.gz
+
+# start kw-search-server on default port 12306
+./kw-search-server
+```
+
+</details>
+
+Now, let's start the mcp server (sse) by running the following command:
+
+```bash
+# run mcp server (sse)
+./target/release/gaia-kwsearch-mcp-server-sse
+```
+
+If start successfully, you will see the following output:
+
+```bash
+Starting Gaia KeywordSearch MCP server on 127.0.0.1:8005
+```
+
+Now, let's run the mcp client by running the following command:
+
+```bash
+# run mcp client
+./target/release/gaia-kwsearch-mcp-client --transport sse
+```
+
+If start successfully, you will see the following output:
+
+<details><summary>Expand to view the output</summary>
+
+```bash
+2025-04-27T03:17:09.973689Z  INFO gaia_kwsearch_mcp_client: 46: Connecting to Gaia KeywordSearch MCP server via sse: http://127.0.0.1:8005/sse
+2025-04-27T03:17:09.997516Z  INFO serve_inner: rmcp::service: 531: Service initialized as client peer_info=InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A MCP server that can access the KeywordSearch database") }
+2025-04-27T03:17:09.997544Z  INFO gaia_kwsearch_mcp_client: 66: Connected to server: InitializeResult {
+    protocol_version: ProtocolVersion(
+        "2025-03-26",
+    ),
+    capabilities: ServerCapabilities {
+        experimental: None,
+        logging: None,
+        completions: None,
+        prompts: None,
+        resources: None,
+        tools: Some(
+            ToolsCapability {
+                list_changed: None,
+            },
+        ),
+    },
+    server_info: Implementation {
+        name: "rmcp",
+        version: "0.1.5",
+    },
+    instructions: Some(
+        "A MCP server that can access the KeywordSearch database",
+    ),
+}
+2025-04-27T03:17:09.999182Z  INFO gaia_kwsearch_mcp_client: 70: Available tools: {
+  "tools": [
+    {
+      "name": "search_documents",
+      "description": "Search for documents in the KeywordSearch database",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "base_url": {
+            "description": "the base URL of the local or remote KeywordSearch database",
+            "type": "string"
+          },
+          "index_name": {
+            "description": "the index to search",
+            "type": "string"
+          },
+          "limit": {
+            "description": "the number of results to return",
+            "format": "uint",
+            "minimum": 0.0,
+            "type": "integer"
+          },
+          "query": {
+            "description": "the query to search for",
+            "type": "string"
+          }
+        },
+        "required": [
+          "base_url",
+          "index_name",
+          "limit",
+          "query"
+        ],
+        "title": "SearchDocumentsRequest",
+        "type": "object"
+      },
+      "annotations": null
+    },
+    {
+      "name": "create_index",
+      "description": "Create an index in the KeywordSearch database",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "definitions": {
+          "KwDocumentInput": {
+            "properties": {
+              "content": {
+                "description": "the content of the document",
+                "type": "string"
+              },
+              "title": {
+                "description": "the title of the document",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "content"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "base_url": {
+            "description": "the base URL of the local or remote KeywordSearch database",
+            "type": "string"
+          },
+          "documents": {
+            "description": "the documents to index",
+            "items": {
+              "$ref": "#/definitions/KwDocumentInput"
+            },
+            "type": "array"
+          },
+          "name": {
+            "description": "the name of the index to create",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "base_url",
+          "documents"
+        ],
+        "title": "CreateIndexRequest",
+        "type": "object"
+      },
+      "annotations": null
+    }
+  ]
+}
+2025-04-27T03:17:10.237085Z  INFO gaia_kwsearch_mcp_client: 111: create index response:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"index_name\":\"mcp-test\",\"results\":[{\"filename\":\"section 1\",\"status\":\"indexed\"},{\"filename\":\"section 2\",\"status\":\"indexed\"}]}"
+    }
+  ],
+  "isError": false
+}
+2025-04-27T03:17:10.237177Z  INFO gaia_kwsearch_mcp_client: 117: create index response:
+CreateIndexResponse { index_name: Some("mcp-test"), results: [KwDocumentResult { filename: Some("section 1"), status: "indexed", error: None }, KwDocumentResult { filename: Some("section 2"), status: "indexed", error: None }] }
+2025-04-27T03:17:10.262252Z  INFO gaia_kwsearch_mcp_client: 140: search documents response:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"hits\":[{\"title\":\"section 1\",\"content\":\"Gaianet is revolutionizing the AI landscape with a distributed AI infrastructure that seeks to decentralize the dominance of major players such as OpenAI, Google, and Anthropic. By leveraging a network of edge-computing nodes owned by individuals around the world, Gaianet enables hosting of both open-source and finely-tuned models. This infrastructure is designed to cater to diverse AI demands, offering a scalable alternative to traditional centralized servers.\",\"score\":0.25017098},{\"title\":\"section 2\",\"content\":\"The inception of Gaianet is driven by the necessity to address key issues in the current AI industry: censorship and bias in AI outputs, lack of privacy for user data, and the high costs associated with accessing and developing on centralized AI models. These challenges have restricted the dissemination of unbiased information, compromised data security, and erected barriers to innovation and broader application of AI technologies.\",\"score\":0.18627283}]}"
+    }
+  ],
+  "isError": false
+}
+2025-04-27T03:17:10.262336Z  INFO gaia_kwsearch_mcp_client: 145: search documents response:
+SearchDocumentsResponse { hits: [KwSearchHit { title: "section 1", content: "Gaianet is revolutionizing the AI landscape with a distributed AI infrastructure that seeks to decentralize the dominance of major players such as OpenAI, Google, and Anthropic. By leveraging a network of edge-computing nodes owned by individuals around the world, Gaianet enables hosting of both open-source and finely-tuned models. This infrastructure is designed to cater to diverse AI demands, offering a scalable alternative to traditional centralized servers.", score: 0.25017098 }, KwSearchHit { title: "section 2", content: "The inception of Gaianet is driven by the necessity to address key issues in the current AI industry: censorship and bias in AI outputs, lack of privacy for user data, and the high costs associated with accessing and developing on centralized AI models. These challenges have restricted the dissemination of unbiased information, compromised data security, and erected barriers to innovation and broader application of AI technologies.", score: 0.18627283 }] }
+2025-04-27T03:17:10.262481Z  INFO rmcp::service: 587: task cancelled
+2025-04-27T03:17:10.262552Z  INFO rmcp::service: 755: serve finished quit_reason=Cancelled
 ```
 
 </details>

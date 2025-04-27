@@ -378,8 +378,9 @@ dependencies = [
 
 [[package]]
 name = "endpoints"
-version = "0.25.1"
-source = "git+https://github.com/LlamaEdge/LlamaEdge.git?branch=feat-mcp-client#29cb9df907c69bd55e6bfa1e72e350de9c3fb9d8"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4a027074eb6ffc2c3b347a7234088f725d199d5edb1fa884f8c5f67ab20054b"
 dependencies = [
  "indexmap",
  "serde",
@@ -628,6 +629,29 @@ dependencies = [
 
 [[package]]
 name = "gaia-kwsearch-mcp-server"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "endpoints",
+ "futures",
+ "gaia-kwsearch-common",
+ "hyper",
+ "hyper-util",
+ "pin-project-lite",
+ "rand 0.8.5",
+ "reqwest",
+ "rmcp",
+ "schemars",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "gaia-kwsearch-mcp-server-sse"
 version = "0.1.0"
 dependencies = [
  "anyhow",
