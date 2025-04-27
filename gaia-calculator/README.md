@@ -242,7 +242,7 @@ If start successfully, you will see the following output:
 
 </details>
 
-### Build and run gaia-calculator-mcp-server (TCP)
+### Build and run gaia-calculator-mcp-server (sse)
 
 Let's build mcp server and client by running the following commands:
 
