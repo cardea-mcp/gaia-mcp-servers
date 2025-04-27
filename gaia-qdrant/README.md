@@ -642,3 +642,373 @@ If start successfully, you will see the following output:
 ```
 
 </details>
+
+### Build and run gaia-qdrant-mcp-server (sse)
+
+Let's build mcp server and client by running the following commands:
+
+```bash
+# build mcp server (sse)
+cargo build --package gaia-qdrant-mcp-server-sse --release
+
+# build mcp client
+cargo build --package gaia-qdrant-mcp-client --release
+```
+
+**Note** that, before running the mcp server, you need to start the Qdrant server. If you don't have a Qdrant server running, you can start one by running the following command:
+
+```bash
+docker pull qdrant/qdrant:latest
+
+docker run -p 6333:6333 -p 6334:6334 \
+    -v $(pwd)/qdrant_storage:/qdrant/storage:z \
+    qdrant/qdrant
+```
+
+Now, let's start the mcp server (sse) by running the following command:
+
+```bash
+# run mcp server (sse)
+./target/release/gaia-qdrant-mcp-server-sse
+```
+
+If start successfully, you will see the following output:
+
+```bash
+Gaia Qdrant MCP Server is listening on 127.0.0.1:8003
+```
+
+Now, let's run the mcp client by running the following command:
+
+```bash
+# run mcp client
+./target/release/gaia-qdrant-mcp-client --transport sse
+```
+
+If start successfully, you will see the following output:
+
+<details><summary>Expand to view the output</summary>
+
+```bash
+2025-04-27T02:50:48.413818Z  INFO gaia_qdrant_mcp_client: 48: Connecting to Gaia Qdrant MCP server via sse: http://127.0.0.1:8003/sse
+2025-04-27T02:50:48.445851Z  INFO serve_inner: rmcp::service: 531: Service initialized as client peer_info=InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A MCP server that can access the Qdrant database") }
+2025-04-27T02:50:48.445909Z  INFO gaia_qdrant_mcp_client: 65: Connected to server: InitializeResult {
+    protocol_version: ProtocolVersion(
+        "2025-03-26",
+    ),
+    capabilities: ServerCapabilities {
+        experimental: None,
+        logging: None,
+        completions: None,
+        prompts: None,
+        resources: None,
+        tools: Some(
+            ToolsCapability {
+                list_changed: None,
+            },
+        ),
+    },
+    server_info: Implementation {
+        name: "rmcp",
+        version: "0.1.5",
+    },
+    instructions: Some(
+        "A MCP server that can access the Qdrant database",
+    ),
+}
+2025-04-27T02:50:48.448703Z  INFO gaia_qdrant_mcp_client: 69: Available tools:
+{
+  "tools": [
+    {
+      "name": "collection_exists",
+      "description": "Check if a collection exists in the Qdrant database",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "api_key": {
+            "description": "the API key to use for the Qdrant database",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "base_url": {
+            "description": "the base URL of the local or remote Qdrant database, e.g. http://127.0.0.1:6333",
+            "type": "string"
+          },
+          "name": {
+            "description": "the name of the collection to check",
+            "type": "string"
+          }
+        },
+        "required": [
+          "base_url",
+          "name"
+        ],
+        "title": "CollectionExistsRequest",
+        "type": "object"
+      },
+      "annotations": null
+    },
+    {
+      "name": "list_collections",
+      "description": "List all collections in the Qdrant database",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "api_key": {
+            "description": "the API key to use for the Qdrant database",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "base_url": {
+            "description": "the base URL of the local or remote Qdrant database, e.g. http://127.0.0.1:6333",
+            "type": "string"
+          }
+        },
+        "required": [
+          "base_url"
+        ],
+        "title": "ListCollectionsRequest",
+        "type": "object"
+      },
+      "annotations": null
+    },
+    {
+      "name": "search_points",
+      "description": "Search for points in a collection in the Qdrant database",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "api_key": {
+            "description": "the API key to use for the Qdrant database",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "base_url": {
+            "description": "the base URL of the local or remote Qdrant database",
+            "type": "string"
+          },
+          "limit": {
+            "description": "the number of results to return",
+            "format": "uint64",
+            "minimum": 0.0,
+            "type": "integer"
+          },
+          "name": {
+            "description": "the name of the collection to search",
+            "type": "string"
+          },
+          "score_threshold": {
+            "description": "the score threshold for the results",
+            "format": "float",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "vector": {
+            "description": "the vector to search for",
+            "items": {
+              "format": "float",
+              "type": "number"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "base_url",
+          "limit",
+          "name",
+          "vector"
+        ],
+        "title": "SearchPointsRequest",
+        "type": "object"
+      },
+      "annotations": null
+    },
+    {
+      "name": "upsert_points",
+      "description": "Upsert points into a collection in the Qdrant database",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "definitions": {
+          "Point": {
+            "properties": {
+              "id": {
+                "description": "the id of the point",
+                "format": "uint64",
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              "payload": {
+                "additionalProperties": true,
+                "description": "the payload of the point",
+                "type": "object"
+              },
+              "vector": {
+                "description": "the vector of the point",
+                "items": {
+                  "format": "float",
+                  "type": "number"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "id",
+              "payload",
+              "vector"
+            ],
+            "type": "object"
+          }
+        },
+        "properties": {
+          "api_key": {
+            "description": "the API key to use for the Qdrant database",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "base_url": {
+            "description": "the base URL of the local or remote Qdrant database",
+            "type": "string"
+          },
+          "name": {
+            "description": "the name of the collection to upsert points into",
+            "type": "string"
+          },
+          "points": {
+            "description": "the points to upsert",
+            "items": {
+              "$ref": "#/definitions/Point"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "base_url",
+          "name",
+          "points"
+        ],
+        "title": "UpsertPointsRequest",
+        "type": "object"
+      },
+      "annotations": null
+    },
+    {
+      "name": "create_collection",
+      "description": "Create a new collection in the Qdrant database",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "api_key": {
+            "description": "the API key to use for the Qdrant database",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "base_url": {
+            "description": "the base URL of the local or remote Qdrant database, e.g. http://127.0.0.1:6333",
+            "type": "string"
+          },
+          "name": {
+            "description": "the name of the collection to create",
+            "type": "string"
+          },
+          "size": {
+            "description": "the size of the vectors in the collection",
+            "format": "uint64",
+            "minimum": 0.0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "base_url",
+          "name",
+          "size"
+        ],
+        "title": "CreateCollectionRequest",
+        "type": "object"
+      },
+      "annotations": null
+    },
+    {
+      "name": "delete_collection",
+      "description": "Delete a collection in the Qdrant database",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "properties": {
+          "api_key": {
+            "description": "the API key to use for the Qdrant database",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "base_url": {
+            "description": "the base URL of the local or remote Qdrant database",
+            "type": "string"
+          },
+          "name": {
+            "description": "the name of the collection to delete",
+            "type": "string"
+          }
+        },
+        "required": [
+          "base_url",
+          "name"
+        ],
+        "title": "DeleteCollectionRequest",
+        "type": "object"
+      },
+      "annotations": null
+    }
+  ]
+}
+2025-04-27T02:50:48.478322Z  INFO gaia_qdrant_mcp_client: 83: collections:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"collections\":[\"paris-test-03\",\"paris-test-04\",\"paris-test-05\",\"paris\"],\"time\":0.000015583}"
+    }
+  ],
+  "isError": false
+}
+2025-04-27T02:50:48.528367Z  INFO gaia_qdrant_mcp_client: 100: collection exists:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"result\":false}"
+    }
+  ],
+  "isError": false
+}
+2025-04-27T02:50:48.528376Z  INFO gaia_qdrant_mcp_client: 110: Exists? false
+2025-04-27T02:50:48.708608Z  INFO gaia_qdrant_mcp_client: 151: create collection:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"result\":true,\"time\":0.171189208}"
+    }
+  ],
+  "isError": false
+}
+2025-04-27T02:50:48.723148Z  INFO gaia_qdrant_mcp_client: 213: upsert points response:
+UpsertPointsResponse { status: "acknowledged", time: 0.002321667 }
+2025-04-27T02:50:48.741243Z  INFO gaia_qdrant_mcp_client: 242: search points response:
+SearchPointsResponse { result: [ScoredPoint { score: 0.99248314, payload: {"city": String("New York")}, vector: [0.15240015, 0.008466675, 0.7196674, 0.677334] }, ScoredPoint { score: 0.89463294, payload: {"city": String("Berlin")}, vector: [0.04082755, 0.4980961, 0.62057877, 0.60424775] }], time: 0.003648459 }
+2025-04-27T02:50:48.741293Z  INFO rmcp::service: 587: task cancelled
+2025-04-27T02:50:48.741296Z  INFO rmcp::service: 755: serve finished quit_reason=Cancelled
+```
+
+</details>

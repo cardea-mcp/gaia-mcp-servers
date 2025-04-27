@@ -718,6 +718,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "gaia-qdrant-mcp-server-sse"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "futures",
+ "gaia-qdrant-common",
+ "hyper",
+ "hyper-util",
+ "pin-project-lite",
+ "rand 0.8.5",
+ "reqwest",
+ "rmcp",
+ "schemars",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "gaia-qdrant-mcp-server-stdio"
 version = "0.1.0"
 dependencies = [

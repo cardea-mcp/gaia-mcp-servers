@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-rmcp               = { workspace = true, features = ["client", "macros", "transport-io", "transport-child-process"] }
-tokio              = { workspace = true, features = ["macros", "rt", "rt-multi-thread", "io-std", "net", "fs", "time"] }
+rmcp               = { workspace = true, features = ["client", "macros", "transport-io", "transport-child-process", "transport-sse"] }
+tokio              = { workspace = true, features = ["macros", "rt", "rt-multi-thread", "io-std", "net", "fs", "time", "signal"] }
 serde_json         = { workspace = true }
 anyhow             = { workspace = true }
 tracing            = { workspace = true }
