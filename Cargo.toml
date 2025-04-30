@@ -19,7 +19,8 @@ members = [
     "gaia-tidb/gaia-tidb-mcp-server",
     "gaia-weather/gaia-weather-mcp-client",
     "gaia-weather/gaia-weather-mcp-server",
-
+    "gaia-travel/gaia-travel-mcp-server",
+    "gaia-travel/gaia-travel-mcp-client",
 ]
 resolver = "3"
 
