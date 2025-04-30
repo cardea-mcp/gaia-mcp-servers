@@ -592,6 +592,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "gaia-elastic-mcp-client"
+version = "0.1.1"
+dependencies = [
+ "anyhow",
+ "clap",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "gaia-kwsearch-common"
 version = "0.1.0"
 dependencies = [
