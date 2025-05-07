@@ -1,15 +1,19 @@
 use clap::{Parser, ValueEnum};
+use gaia_elastic_mcp_common::ListIndicesResponse;
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
-    transport::TokioChildProcess,
+    transport::{SseTransport, TokioChildProcess},
 };
 use tokio::process::Command;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
+const SOCKET_ADDR: &str = "127.0.0.1:8006";
+
 #[derive(Debug, Clone, ValueEnum)]
 enum TransportType {
     Stdio,
+    Sse,
 }
 
 #[derive(Parser, Debug)]
@@ -89,6 +93,59 @@ async fn main() -> anyhow::Result<()> {
             //     "Weather result: {}",
             //     serde_json::to_string_pretty(&weather_result)?
             // );
+
+            mcp_client.cancel().await?;
+        }
+        TransportType::Sse => {
+            tracing::info!("Connecting to ElasticSearch MCP server via sse");
+
+            let url = format!("http://{SOCKET_ADDR}/sse");
+
+            let transport = SseTransport::start(url).await?;
+            let client_info = ClientInfo {
+                protocol_version: Default::default(),
+                capabilities: ClientCapabilities::default(),
+                client_info: Implementation {
+                    name: "test sse client".to_string(),
+                    version: "0.1.0".to_string(),
+                },
+            };
+            let mcp_client = client_info.serve(transport).await.inspect_err(|e| {
+                tracing::error!("client error: {:?}", e);
+            })?;
+
+            // Initialize
+            let server_info = mcp_client.peer_info();
+            tracing::info!("Connected to server: {server_info:#?}");
+
+            // List available tools
+            let tools = mcp_client.peer().list_tools(Default::default()).await?;
+            tracing::info!(
+                "Available tools:\n{}",
+                serde_json::to_string_pretty(&tools)?
+            );
+
+            let mut api_key = std::env::var("ES_API_KEY").unwrap();
+            api_key = format!("ApiKey {}", api_key);
+            tracing::info!("api_key: {}", api_key);
+
+            // request param
+            let request_param = CallToolRequestParam {
+                name: "list_indices".into(),
+                arguments: Some(serde_json::Map::from_iter([
+                    (
+                        "base_url".to_string(),
+                        serde_json::Value::String("http://127.0.0.1:9200".to_string()),
+                    ),
+                    ("api_key".to_string(), serde_json::Value::String(api_key)),
+                ])),
+            };
+            // call tool
+            let tool_result = mcp_client.peer().call_tool(request_param).await?;
+
+            // parse tool result
+            let indices = ListIndicesResponse::from(tool_result);
+            tracing::info!("indices:\n{}", serde_json::to_string_pretty(&indices)?);
 
             mcp_client.cancel().await?;
         }

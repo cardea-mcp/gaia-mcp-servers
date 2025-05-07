@@ -17,7 +17,7 @@ members = [
     "gaia-calculator/gaia-calculator-mcp-server-sse",
     "gaia-weather/gaia-weather-mcp-server-sse",
     "gaia-qdrant/gaia-qdrant-mcp-server-sse",
-    "gaia-kwsearch/gaia-kwsearch-mcp-server-sse", "gaia-elastic/gaia-elastic-mcp-client",
+    "gaia-kwsearch/gaia-kwsearch-mcp-server-sse", "gaia-elastic/gaia-elastic-mcp-client", "gaia-elastic/gaia-elastic-mcp-server-sse", "gaia-elastic/gaia-elastic-mcp-common",
 ]
 resolver = "3"
 
