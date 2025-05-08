@@ -11,7 +11,6 @@ pub struct ListIndicesRequest {
 pub struct ListIndicesResponse {
     pub indices: Vec<IndexInfo>,
 }
-
 impl From<rmcp::model::CallToolResult> for ListIndicesResponse {
     fn from(result: rmcp::model::CallToolResult) -> Self {
         let content = result.content[0].as_text().unwrap().text.as_ref();
@@ -48,4 +47,40 @@ pub struct IndexInfo {
     /// dataset size
     #[serde(rename = "dataset.size")]
     pub dataset_size: String,
+}
+
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+pub struct GetAliasesRequest {
+    pub base_url: String,
+    pub api_key: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
+pub struct GetAliasesResponse {
+    pub aliases: Vec<AliasInfo>,
+}
+impl From<rmcp::model::CallToolResult> for GetAliasesResponse {
+    fn from(result: rmcp::model::CallToolResult) -> Self {
+        let content = result.content[0].as_text().unwrap().text.as_ref();
+        serde_json::from_str::<GetAliasesResponse>(content).unwrap()
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
+pub struct AliasInfo {
+    /// alias name
+    pub alias: String,
+    /// index name
+    pub index: String,
+    /// filter
+    pub filter: String,
+    /// index routing
+    #[serde(rename = "routing.index")]
+    pub routing_index: String,
+    /// search routing
+    #[serde(rename = "routing.search")]
+    pub routing_search: String,
+    /// write index
+    #[serde(rename = "is_write_index")]
+    pub is_write_index: String,
 }

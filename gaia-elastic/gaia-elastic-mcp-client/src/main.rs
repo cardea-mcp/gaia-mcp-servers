@@ -1,5 +1,5 @@
 use clap::{Parser, ValueEnum};
-use gaia_elastic_mcp_common::ListIndicesResponse;
+use gaia_elastic_mcp_common::*;
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
@@ -129,23 +129,54 @@ async fn main() -> anyhow::Result<()> {
             api_key = format!("ApiKey {}", api_key);
             tracing::info!("api_key: {}", api_key);
 
-            // request param
-            let request_param = CallToolRequestParam {
-                name: "list_indices".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "base_url".to_string(),
-                        serde_json::Value::String("http://127.0.0.1:9200".to_string()),
-                    ),
-                    ("api_key".to_string(), serde_json::Value::String(api_key)),
-                ])),
-            };
-            // call tool
-            let tool_result = mcp_client.peer().call_tool(request_param).await?;
+            // * list indices
+            {
+                // request param
+                let request_param = CallToolRequestParam {
+                    name: "list_indices".into(),
+                    arguments: Some(serde_json::Map::from_iter([
+                        (
+                            "base_url".to_string(),
+                            serde_json::Value::String("http://127.0.0.1:9200".to_string()),
+                        ),
+                        (
+                            "api_key".to_string(),
+                            serde_json::Value::String(api_key.clone()),
+                        ),
+                    ])),
+                };
+                // call tool
+                let tool_result = mcp_client.peer().call_tool(request_param).await?;
 
-            // parse tool result
-            let indices = ListIndicesResponse::from(tool_result);
-            tracing::info!("indices:\n{}", serde_json::to_string_pretty(&indices)?);
+                // parse tool result
+                let indices = ListIndicesResponse::from(tool_result);
+                tracing::info!("indices:\n{}", serde_json::to_string_pretty(&indices)?);
+            }
+
+            // * get aliases
+            {
+                // request param
+                let request_param = CallToolRequestParam {
+                    name: "get_aliases".into(),
+                    arguments: Some(serde_json::Map::from_iter([
+                        (
+                            "base_url".to_string(),
+                            serde_json::Value::String("http://127.0.0.1:9200".to_string()),
+                        ),
+                        (
+                            "api_key".to_string(),
+                            serde_json::Value::String(api_key.clone()),
+                        ),
+                    ])),
+                };
+
+                // call tool
+                let tool_result = mcp_client.peer().call_tool(request_param).await?;
+
+                // parse tool result
+                let aliases = GetAliasesResponse::from(tool_result);
+                tracing::info!("aliases:\n{}", serde_json::to_string_pretty(&aliases)?);
+            }
 
             mcp_client.cancel().await?;
         }
