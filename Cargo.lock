@@ -698,6 +698,7 @@ dependencies = [
  "anyhow",
  "clap",
  "gaia-elastic-mcp-common",
+ "reqwest",
  "rmcp",
  "serde_json",
  "tokio",
