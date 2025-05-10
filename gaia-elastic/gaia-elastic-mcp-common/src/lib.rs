@@ -50,19 +50,19 @@ pub struct IndexInfo {
 }
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
-pub struct GetAliasesRequest {
+pub struct ListAliasesRequest {
     pub base_url: String,
     pub api_key: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
-pub struct GetAliasesResponse {
+pub struct ListAliasesResponse {
     pub aliases: Vec<AliasInfo>,
 }
-impl From<rmcp::model::CallToolResult> for GetAliasesResponse {
+impl From<rmcp::model::CallToolResult> for ListAliasesResponse {
     fn from(result: rmcp::model::CallToolResult) -> Self {
         let content = result.content[0].as_text().unwrap().text.as_ref();
-        serde_json::from_str::<GetAliasesResponse>(content).unwrap()
+        serde_json::from_str::<ListAliasesResponse>(content).unwrap()
     }
 }
 
@@ -83,4 +83,76 @@ pub struct AliasInfo {
     /// write index
     #[serde(rename = "is_write_index")]
     pub is_write_index: String,
+}
+
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+pub struct SearchRequest {
+    pub base_url: String,
+    pub api_key: Option<String>,
+    /// index name
+    pub index: String,
+    /// user query
+    pub query: String,
+    /// name of fields to search
+    pub fields: Vec<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
+pub struct SearchResponse {
+    /// The number of milliseconds it took Elasticsearch to run the request.
+    pub took: u64,
+    /// If `true`, the request timed out before completion; returned results may be partial or empty.
+    pub timed_out: bool,
+    #[serde(rename = "_shards")]
+    pub shards: Shards,
+    pub hits: Hits,
+}
+impl From<rmcp::model::CallToolResult> for SearchResponse {
+    fn from(result: rmcp::model::CallToolResult) -> Self {
+        let content = result.content[0].as_text().unwrap().text.as_ref();
+        serde_json::from_str::<SearchResponse>(content).unwrap()
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
+pub struct Hits {
+    pub hits: Vec<Hit>,
+}
+
+#[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
+pub struct Hit {
+    #[serde(rename = "_index")]
+    pub index: String,
+    #[serde(rename = "_score")]
+    pub score: f64,
+    #[serde(rename = "_source")]
+    pub source: serde_json::Value,
+}
+
+#[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
+pub struct Shards {
+    pub total: u64,
+    pub successful: u64,
+    pub skipped: u64,
+    pub failed: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub failures: Option<Vec<Failure>>,
+}
+
+#[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
+pub struct Failure {
+    pub index: String,
+    pub node: String,
+    pub shard: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<Reason>,
+}
+
+#[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
+pub struct Reason {
+    /// The type of error
+    #[serde(rename = "type")]
+    pub ty: String,
+    /// A human-readable explanation of the error, in English.
+    pub reason: String,
 }
