@@ -5,7 +5,7 @@ use rmcp::{
     tool,
 };
 use serde_json::{Value, json};
-use tracing::{error, info};
+use tracing::error;
 
 #[derive(Debug, Clone)]
 pub struct ElasticSearchServer;
