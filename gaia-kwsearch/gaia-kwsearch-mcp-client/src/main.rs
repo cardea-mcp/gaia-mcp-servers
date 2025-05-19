@@ -3,7 +3,7 @@ use gaia_kwsearch_common::{CreateIndexResponse, KwDocumentInput, SearchDocuments
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
-    transport::{SseTransport, TokioChildProcess},
+    transport::{SseClientTransport, TokioChildProcess},
 };
 use tokio::process::Command;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -48,7 +48,7 @@ async fn main() -> anyhow::Result<()> {
                 url
             );
 
-            let transport = SseTransport::start(url).await?;
+            let transport = SseClientTransport::start(url).await?;
             let client_info = ClientInfo {
                 protocol_version: Default::default(),
                 capabilities: ClientCapabilities::default(),
@@ -246,7 +246,7 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Stdio => {
             tracing::info!("Connecting to MCP server via stdio");
 
-            let transport = TokioChildProcess::new(&mut Command::new(
+            let transport = TokioChildProcess::new(Command::new(
                 "./target/release/gaia-kwsearch-mcp-server-stdio",
             ))?;
 

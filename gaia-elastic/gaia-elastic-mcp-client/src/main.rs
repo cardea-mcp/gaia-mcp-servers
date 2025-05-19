@@ -3,7 +3,7 @@ use gaia_elastic_mcp_common::*;
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
-    transport::{SseTransport, TokioChildProcess},
+    transport::{ConfigureCommandExt, SseClientTransport, TokioChildProcess},
 };
 use serde_json::json;
 use tokio::process::Command;
@@ -44,11 +44,11 @@ async fn main() -> anyhow::Result<()> {
 
             // Start server
             let mcp_client = ()
-                .serve(TokioChildProcess::new(
-                    Command::new("npx")
-                        .arg("-y")
-                        .arg("@elastic/mcp-server-elasticsearch@0.1.1"),
-                )?)
+                .serve(TokioChildProcess::new(Command::new("npx").configure(
+                    |cmd| {
+                        cmd.arg("-y").arg("@elastic/mcp-server-elasticsearch@0.1.1");
+                    },
+                ))?)
                 .await?;
 
             tracing::info!("Connected to server");
@@ -102,7 +102,7 @@ async fn main() -> anyhow::Result<()> {
 
             let url = format!("http://{SOCKET_ADDR}/sse");
 
-            let transport = SseTransport::start(url).await?;
+            let transport = SseClientTransport::start(url).await?;
             let client_info = ClientInfo {
                 protocol_version: Default::default(),
                 capabilities: ClientCapabilities::default(),

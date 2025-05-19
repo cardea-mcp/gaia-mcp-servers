@@ -3,7 +3,7 @@ use gaia_qdrant_common::{self as qdrant, Point};
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
-    transport::{SseTransport, TokioChildProcess},
+    transport::{SseClientTransport, TokioChildProcess},
 };
 use serde_json::json;
 use tokio::process::Command;
@@ -47,7 +47,7 @@ async fn main() -> anyhow::Result<()> {
             let url = format!("http://{SOCKET_ADDR}/sse");
             tracing::info!("Connecting to Gaia Qdrant MCP server via sse: {}", url);
 
-            let transport = SseTransport::start(url).await?;
+            let transport = SseClientTransport::start(url).await?;
             let client_info = ClientInfo {
                 protocol_version: Default::default(),
                 capabilities: ClientCapabilities::default(),
@@ -431,7 +431,7 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Stdio => {
             tracing::info!("Connecting to MCP server via stdio");
 
-            let transport = TokioChildProcess::new(&mut Command::new(
+            let transport = TokioChildProcess::new(Command::new(
                 "./target/release/gaia-qdrant-mcp-server-stdio",
             ))?;
 

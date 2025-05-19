@@ -119,7 +119,7 @@ pub struct KwSearchHit {
     #[schemars(description = "the content of the document")]
     pub content: String,
     #[schemars(description = "the score of the document")]
-    pub score: f32,
+    pub score: f64,
 }
 impl From<SearchHit> for KwSearchHit {
     fn from(value: SearchHit) -> Self {
