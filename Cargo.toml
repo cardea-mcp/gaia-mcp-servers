@@ -47,6 +47,6 @@ endpoints            = { version = "0.27.0" }
 
 [workspace.package]
 edition    = "2024"
-version    = "0.1.1"
+version    = "0.1.2"
 repository = "https://github.com/apepkuss/mcp-examples"
 license    = "Apache-2.0"
