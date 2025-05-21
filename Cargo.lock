@@ -480,8 +480,9 @@ dependencies = [
 
 [[package]]
 name = "endpoints"
-version = "0.26.0"
-source = "git+https://github.com/LlamaEdge/LlamaEdge.git?branch=feat-kw-fields#d58a7be135632d6605a4465b0be2a4caca23827c"
+version = "0.27.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d5da4b845b819cb04dcc6f3fadcf1f9ecb98f1d5355b9b5773f49aee41b7eb4e"
 dependencies = [
  "indexmap 2.9.0",
  "serde",
@@ -732,7 +733,7 @@ version = "0.1.1"
 dependencies = [
  "anyhow",
  "elasticsearch",
- "endpoints 0.26.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "endpoints 0.26.0",
  "futures",
  "gaia-elastic-mcp-common",
  "hyper",
@@ -755,7 +756,7 @@ name = "gaia-kwsearch-common"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "endpoints 0.26.0 (git+https://github.com/LlamaEdge/LlamaEdge.git?branch=feat-kw-fields)",
+ "endpoints 0.27.0",
  "futures",
  "hyper",
  "hyper-util",
@@ -791,7 +792,7 @@ name = "gaia-kwsearch-mcp-server"
 version = "0.1.1"
 dependencies = [
  "anyhow",
- "endpoints 0.26.0 (git+https://github.com/LlamaEdge/LlamaEdge.git?branch=feat-kw-fields)",
+ "endpoints 0.27.0",
  "futures",
  "gaia-kwsearch-common",
  "hyper",
@@ -814,7 +815,7 @@ name = "gaia-kwsearch-mcp-server-sse"
 version = "0.1.1"
 dependencies = [
  "anyhow",
- "endpoints 0.26.0 (git+https://github.com/LlamaEdge/LlamaEdge.git?branch=feat-kw-fields)",
+ "endpoints 0.27.0",
  "futures",
  "gaia-kwsearch-common",
  "hyper",
@@ -837,7 +838,7 @@ name = "gaia-kwsearch-mcp-server-stdio"
 version = "0.1.1"
 dependencies = [
  "anyhow",
- "endpoints 0.26.0 (git+https://github.com/LlamaEdge/LlamaEdge.git?branch=feat-kw-fields)",
+ "endpoints 0.27.0",
  "futures",
  "gaia-kwsearch-common",
  "hyper",
