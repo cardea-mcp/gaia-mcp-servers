@@ -21,6 +21,6 @@ hyper-util              = { workspace = true, features = ["tokio"] }
 tokio-tungstenite       = { workspace = true }
 reqwest                 = { workspace = true, features = ["json"] }
 pin-project-lite        = { workspace = true }
-endpoints               = { version = "=0.26.0", features = ["index"] }
+endpoints               = { workspace = true, features = ["index"] }
 elasticsearch           = { version = "9.0.0-alpha.1", features = ["rustls-tls"] }
 gaia-elastic-mcp-common = { path = "../gaia-elastic-mcp-common" }
