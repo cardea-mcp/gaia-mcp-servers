@@ -480,9 +480,9 @@ dependencies = [
 
 [[package]]
 name = "endpoints"
-version = "0.27.0"
+version = "0.28.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5da4b845b819cb04dcc6f3fadcf1f9ecb98f1d5355b9b5773f49aee41b7eb4e"
+checksum = "d9923f4039fd33480d1d7ba1ba194b785b89faec4c58ea31ec6044cb00fc86fa"
 dependencies = [
  "indexmap 2.9.0",
  "serde",
@@ -756,7 +756,7 @@ name = "gaia-kwsearch-common"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "endpoints 0.27.0",
+ "endpoints 0.28.0",
  "futures",
  "hyper",
  "hyper-util",
@@ -792,7 +792,7 @@ name = "gaia-kwsearch-mcp-server"
 version = "0.1.2"
 dependencies = [
  "anyhow",
- "endpoints 0.27.0",
+ "endpoints 0.28.0",
  "futures",
  "gaia-kwsearch-common",
  "hyper",
@@ -815,7 +815,7 @@ name = "gaia-kwsearch-mcp-server-sse"
 version = "0.1.2"
 dependencies = [
  "anyhow",
- "endpoints 0.27.0",
+ "endpoints 0.28.0",
  "futures",
  "gaia-kwsearch-common",
  "hyper",
@@ -838,7 +838,7 @@ name = "gaia-kwsearch-mcp-server-stdio"
 version = "0.1.2"
 dependencies = [
  "anyhow",
- "endpoints 0.27.0",
+ "endpoints 0.28.0",
  "futures",
  "gaia-kwsearch-common",
  "hyper",

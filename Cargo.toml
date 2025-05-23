@@ -43,7 +43,7 @@ pin-project-lite     = "0.2"
 gaia-qdrant-common   = { path = "gaia-qdrant/gaia-qdrant-common" }
 gaia-kwsearch-common = { path = "gaia-kwsearch/gaia-kwsearch-common" }
 clap                 = "4.4.6"
-endpoints            = { version = "0.27.0" }
+endpoints            = { version = "0.28.0" }
 
 [workspace.package]
 edition    = "2024"

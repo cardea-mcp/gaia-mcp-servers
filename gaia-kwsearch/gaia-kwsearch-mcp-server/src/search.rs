@@ -40,7 +40,7 @@ impl KeywordSearchServer {
         info!("URL to create index: {}", url);
 
         let index_request = IndexRequest {
-            name,
+            index: name,
             documents: documents.into_iter().map(|d| d.into()).collect::<Vec<_>>(),
         };
 
