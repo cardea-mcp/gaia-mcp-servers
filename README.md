@@ -19,3 +19,7 @@ Visit [gaia-kwsearch/README.md](gaia-kwsearch/README.md) for more information.
 ## Gaia Elastic MCP Server
 
 Visit [gaia-elastic/README.md](gaia-elastic/README.md) for more information.
+
+## Gaia TiDB MCP Server
+
+Visit [gaia-tidb/README.md](gaia-tidb/README.md) for more information.
