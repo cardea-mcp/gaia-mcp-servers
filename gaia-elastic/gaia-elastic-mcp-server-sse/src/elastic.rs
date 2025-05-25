@@ -174,19 +174,31 @@ impl ElasticSearchServer {
             index,
             query,
             fields,
+            size,
         }: SearchRequest,
     ) -> Result<CallToolResult, McpError> {
         let base_url = base_url.trim_end_matches('/');
         let url = format!("{base_url}/{index}/_search");
 
-        let body = json!({
-            "query": {
-                "multi_match": {
-                    "query": query,
-                    "fields": fields
+        let body = match size {
+            Some(size) => json!({
+                "query": {
+                    "multi_match": {
+                        "query": query,
+                        "fields": fields
+                    },
+                    "size": size
                 }
-            }
-        });
+            }),
+            None => json!({
+                "query": {
+                    "multi_match": {
+                        "query": query,
+                        "fields": fields
+                    },
+                }
+            }),
+        };
 
         let client = reqwest::Client::new();
         let result = match api_key {

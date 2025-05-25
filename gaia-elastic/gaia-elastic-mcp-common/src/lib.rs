@@ -95,6 +95,9 @@ pub struct SearchRequest {
     pub query: String,
     /// name of fields to search
     pub fields: Vec<String>,
+    /// number of results to return
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub size: Option<u64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
