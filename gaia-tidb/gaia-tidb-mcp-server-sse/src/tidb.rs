@@ -1,0 +1,162 @@
+use crate::SSL_CA_PATH;
+use gaia_tidb_mcp_common::*;
+use mysql::prelude::*;
+use mysql::*;
+use rmcp::{
+    Error as McpError, ServerHandler,
+    model::{CallToolResult, Content, ErrorCode, ServerCapabilities, ServerInfo},
+    tool,
+};
+use tracing::{error, info};
+
+#[derive(Debug, Clone)]
+pub struct TidbServer;
+#[tool(tool_box)]
+impl ServerHandler for TidbServer {
+    fn get_info(&self) -> ServerInfo {
+        ServerInfo {
+            instructions: Some("A TiDB MCP server".into()),
+            capabilities: ServerCapabilities::builder().enable_tools().build(),
+            ..Default::default()
+        }
+    }
+}
+#[tool(tool_box)]
+impl TidbServer {
+    #[tool(description = "Search for documents in a TiDB database")]
+    async fn search(
+        &self,
+        #[tool(aggr)] TidbSearchRequest {
+            host,
+            port,
+            username,
+            password,
+            database,
+            table_name,
+            limit,
+            query,
+        }: TidbSearchRequest,
+    ) -> std::result::Result<CallToolResult, McpError> {
+        let ssl_ca_path = SSL_CA_PATH.get().unwrap();
+
+        // 创建连接选项
+        info!("Creating connection options for TiDB Cloud...");
+        let opts = OptsBuilder::new()
+            .ip_or_hostname(Some(host))
+            .tcp_port(port)
+            .user(Some(username))
+            .pass(Some(password))
+            .db_name(Some(database.clone()))
+            .ssl_opts(Some(
+                SslOpts::default().with_root_cert_path(Some(ssl_ca_path)),
+            ));
+
+        // 创建连接池
+        info!("Creating connection pool...");
+        let pool = Pool::new(opts).map_err(|e| {
+            let error_message = format!("Failed to create connection pool: {}", e);
+
+            error!(error_message);
+
+            McpError::new(ErrorCode::INTERNAL_ERROR, error_message, None)
+        })?;
+
+        // 获取连接
+        info!("Getting connection...");
+        let mut conn = pool.get_conn().map_err(|e| {
+            let error_message = format!("Failed to get connection: {}", e);
+
+            error!(error_message);
+
+            McpError::new(ErrorCode::INTERNAL_ERROR, error_message, None)
+        })?;
+
+        // 测试连接
+        info!("Testing connection...");
+        let version: String = match conn.query_first("SELECT VERSION()").map_err(|e| {
+            let error_message = format!("Failed to query version: {}", e);
+
+            error!(error_message);
+
+            McpError::new(ErrorCode::INTERNAL_ERROR, error_message, None)
+        })? {
+            Some(version) => version,
+            None => {
+                let error_message = "Failed to query version";
+
+                error!(error_message);
+
+                return Err(McpError::new(
+                    ErrorCode::INTERNAL_ERROR,
+                    error_message,
+                    None,
+                ));
+            }
+        };
+        info!("Connected to TiDB Cloud! Version: {}", version);
+
+        // check if table exists
+        info!("Checking if table exists...");
+        let check_table_sql = format!(
+            "SELECT COUNT(*) FROM information_schema.tables
+                WHERE table_schema = '{}' AND table_name = '{}'",
+            database, table_name
+        );
+        info!("Executing check table SQL: {}", check_table_sql);
+        let table_exists: i32 = conn
+            .query_first(&check_table_sql)
+            .map_err(|e| {
+                let error_message = format!("Failed to check table: {}", e);
+
+                error!(error_message);
+
+                McpError::new(ErrorCode::INTERNAL_ERROR, error_message, None)
+            })?
+            .unwrap_or(0);
+
+        if table_exists == 0 {
+            let error_message = format!("Not found table `{table_name}` in database `{database}`");
+
+            error!(error_message);
+
+            return Err(McpError::new(
+                ErrorCode::INTERNAL_ERROR,
+                error_message,
+                None,
+            ));
+        }
+
+        // execute full-text search
+        let limit = limit.unwrap_or(10);
+        info!("\nExecuting full-text search for '{}'...", query);
+        let search_sql = format!(
+            r"SELECT * FROM {}
+                WHERE fts_match_word('{}', content)
+                ORDER BY fts_match_word('{}', content)
+                DESC LIMIT {}",
+            table_name, query, query, limit
+        );
+
+        let hits: Vec<TidbSearchHit> = conn.query(&search_sql).map_err(|e| {
+            let error_message = format!("Failed to execute search: {}", e);
+
+            error!(error_message);
+
+            McpError::new(ErrorCode::INTERNAL_ERROR, error_message, None)
+        })?;
+
+        info!("\nSearch results:");
+        info!("Found {} matching records:", hits.len());
+        for hit in hits.iter() {
+            info!("\nID: {}", &hit.id);
+            info!("Title: {}", &hit.title);
+            info!("Content: {}", &hit.content);
+        }
+
+        let content = Content::json(TidbSearchResponse { hits })?;
+
+        info!("Search results fetched from TiDB");
+
+        Ok(CallToolResult::success(vec![content]))
+    }
+}

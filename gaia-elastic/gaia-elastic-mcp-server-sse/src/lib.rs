@@ -3,7 +3,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct ListIndicesRequest {
+    #[schemars(description = "the base url of the elasticsearch server")]
     pub base_url: String,
+    #[schemars(description = "the api key of the elasticsearch server")]
     pub api_key: Option<String>,
 }
 

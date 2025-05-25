@@ -18,7 +18,7 @@ enum TransportType {
 }
 
 #[derive(Parser, Debug)]
-#[command(author, version, about = "Gaia Weather MCP client")]
+#[command(author, version, about = "Gaia Elasticsearch MCP client")]
 struct Args {
     /// Transport type to use (sse)
     #[arg(short, long, value_enum, default_value = "sse")]
