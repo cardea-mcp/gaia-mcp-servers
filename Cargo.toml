@@ -22,7 +22,8 @@ members = [
     "gaia-elastic/gaia-elastic-mcp-server-sse",
     "gaia-elastic/gaia-elastic-mcp-common",
     "gaia-tidb/gaia-tidb-mcp-server-sse",
-    "gaia-tidb/gaia-tidb-mcp-common", "gaia-tidb/gaia-tidb-mcp-client",
+    "gaia-tidb/gaia-tidb-mcp-common",
+    "gaia-tidb/gaia-tidb-mcp-client",
 ]
 resolver = "3"
 
@@ -45,7 +46,7 @@ pin-project-lite     = "0.2"
 gaia-qdrant-common   = { path = "gaia-qdrant/gaia-qdrant-common" }
 gaia-kwsearch-common = { path = "gaia-kwsearch/gaia-kwsearch-common" }
 clap                 = "4.4.6"
-endpoints            = { version = "0.28.0" }
+endpoints            = { version = "0.28.0", git = "https://github.com/LlamaEdge/LlamaEdge.git", branch = "refactor-improve-rag" }
 mysql                = { version = "26.0.0" }
 
 [workspace.package]
