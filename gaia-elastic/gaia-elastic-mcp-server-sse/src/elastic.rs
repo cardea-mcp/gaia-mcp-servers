@@ -187,8 +187,8 @@ impl ElasticSearchServer {
                         "query": query,
                         "fields": fields
                     },
-                    "size": size
-                }
+                },
+                "size": size
             }),
             None => json!({
                 "query": {
