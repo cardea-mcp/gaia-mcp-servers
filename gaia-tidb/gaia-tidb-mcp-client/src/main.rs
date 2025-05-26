@@ -1,4 +1,5 @@
 use clap::{Parser, ValueEnum};
+use gaia_tidb_mcp_common::TidbSearchResponse;
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
@@ -127,6 +128,13 @@ async fn main() -> anyhow::Result<()> {
             tracing::info!(
                 "search response:\n{}",
                 serde_json::to_string_pretty(&tool_result)?
+            );
+
+            // parse tool result
+            let search_result = TidbSearchResponse::from(tool_result);
+            tracing::info!(
+                "search_result:\n{}",
+                serde_json::to_string_pretty(&search_result)?
             );
 
             mcp_client.cancel().await?;

@@ -28,6 +28,12 @@ pub struct TidbSearchResponse {
     #[schemars(description = "the hits of the tidb server")]
     pub hits: Vec<TidbSearchHit>,
 }
+impl From<rmcp::model::CallToolResult> for TidbSearchResponse {
+    fn from(result: rmcp::model::CallToolResult) -> Self {
+        let content = result.content[0].as_text().unwrap().text.as_ref();
+        serde_json::from_str::<TidbSearchResponse>(content).unwrap()
+    }
+}
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema, FromRow)]
 pub struct TidbSearchHit {
