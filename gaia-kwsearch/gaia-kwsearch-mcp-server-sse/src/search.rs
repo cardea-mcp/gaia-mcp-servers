@@ -1,4 +1,4 @@
-use endpoints::keyword_search::{IndexRequest, IndexResponse, QueryRequest, QueryResponse};
+use endpoints::rag::keyword_search::{IndexRequest, IndexResponse, QueryRequest, QueryResponse};
 use gaia_kwsearch_common::{
     CreateIndexRequest, CreateIndexResponse, SearchDocumentsRequest, SearchDocumentsResponse,
 };

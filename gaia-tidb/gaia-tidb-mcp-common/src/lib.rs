@@ -1,4 +1,4 @@
-use endpoints::keyword_search::SearchHit;
+use endpoints::rag::keyword_search::SearchHit;
 use mysql::prelude::FromRow;
 use rmcp::schemars;
 use serde::{Deserialize, Serialize};
