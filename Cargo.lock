@@ -605,7 +605,7 @@ dependencies = [
 [[package]]
 name = "endpoints"
 version = "0.28.0"
-source = "git+https://github.com/LlamaEdge/LlamaEdge.git?branch=refactor-improve-rag#0779df99cc8eb357ca856c0d2609066802b89527"
+source = "git+https://github.com/LlamaEdge/LlamaEdge.git?branch=refactor-improve-rag#5730c7ec8f28df356406d780d9f7bd660a64011c"
 dependencies = [
  "indexmap 2.9.0",
  "serde",
