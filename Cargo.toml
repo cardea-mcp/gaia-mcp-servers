@@ -51,6 +51,6 @@ mysql                = { version = "26.0.0" }
 
 [workspace.package]
 edition    = "2024"
-version    = "0.1.2"
+version    = "0.1.3"
 repository = "https://github.com/apepkuss/mcp-examples"
 license    = "Apache-2.0"

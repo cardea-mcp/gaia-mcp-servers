@@ -774,7 +774,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-calculator-mcp-client"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "clap",
@@ -787,7 +787,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-calculator-mcp-server"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "futures",
@@ -808,7 +808,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-calculator-mcp-server-sse"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "futures",
@@ -823,7 +823,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-calculator-mcp-server-stdio"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "rmcp",
@@ -836,7 +836,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-elastic-mcp-client"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "clap",
@@ -851,7 +851,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-elastic-mcp-common"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "rmcp",
  "serde",
@@ -860,7 +860,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-elastic-mcp-server-sse"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "elasticsearch",
@@ -906,7 +906,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-kwsearch-mcp-client"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "clap",
@@ -920,7 +920,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-kwsearch-mcp-server"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "endpoints",
@@ -943,7 +943,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-kwsearch-mcp-server-sse"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "endpoints",
@@ -966,7 +966,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-kwsearch-mcp-server-stdio"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "endpoints",
@@ -998,7 +998,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-qdrant-mcp-client"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "clap",
@@ -1012,7 +1012,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-qdrant-mcp-server"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "futures",
@@ -1034,7 +1034,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-qdrant-mcp-server-sse"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "futures",
@@ -1056,7 +1056,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-qdrant-mcp-server-stdio"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "futures",
@@ -1078,7 +1078,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-tidb-mcp-client"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "clap",
@@ -1093,7 +1093,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-tidb-mcp-common"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "endpoints",
  "mysql",
@@ -1104,7 +1104,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-tidb-mcp-server-sse"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "clap",
@@ -1131,7 +1131,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-weather-mcp-client"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "clap",
@@ -1144,7 +1144,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-weather-mcp-server"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "futures",
@@ -1165,7 +1165,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-weather-mcp-server-sse"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "futures",
@@ -1186,7 +1186,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-weather-mcp-server-stdio"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "anyhow",
  "reqwest",
