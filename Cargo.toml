@@ -46,7 +46,7 @@ pin-project-lite     = "0.2"
 gaia-qdrant-common   = { path = "gaia-qdrant/gaia-qdrant-common" }
 gaia-kwsearch-common = { path = "gaia-kwsearch/gaia-kwsearch-common" }
 clap                 = "4.4.6"
-endpoints            = { version = "0.28.0", git = "https://github.com/LlamaEdge/LlamaEdge.git", branch = "dev" }
+endpoints            = { version = "0.29.0" }
 mysql                = { version = "26.0.0" }
 
 [workspace.package]
