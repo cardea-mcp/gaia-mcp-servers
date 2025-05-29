@@ -23,7 +23,7 @@ members = [
     "gaia-elastic/gaia-elastic-mcp-common",
     "gaia-tidb/gaia-tidb-mcp-server-sse",
     "gaia-tidb/gaia-tidb-mcp-common",
-    "gaia-tidb/gaia-tidb-mcp-client",
+    "gaia-tidb/gaia-tidb-mcp-client", "gaia-tidb/gaia-tidb-mcp-server-streamhttp",
 
 ]
 resolver = "3"
