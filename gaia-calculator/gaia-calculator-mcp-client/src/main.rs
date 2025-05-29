@@ -11,7 +11,6 @@ const SOCKET_ADDR: &str = "127.0.0.1:8001";
 
 #[derive(Debug, Clone, ValueEnum)]
 enum TransportType {
-    Tcp,
     Stdio,
     Sse,
     StreamHttp,
@@ -64,34 +63,6 @@ async fn main() -> anyhow::Result<()> {
             // List available tools
             let tools = mcp_client.peer().list_tools(Default::default()).await?;
             tracing::info!("Available tools: {}", serde_json::to_string_pretty(&tools)?);
-
-            let request_param = CallToolRequestParam {
-                name: "sum".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    ("a".to_string(), serde_json::Value::Number(1.into())),
-                    ("b".to_string(), serde_json::Value::Number(2.into())),
-                ])),
-            };
-
-            // Call the sum tool
-            let sum_result = mcp_client.peer().call_tool(request_param).await?;
-
-            tracing::info!("Sum result: {}", serde_json::to_string_pretty(&sum_result)?);
-        }
-        TransportType::Tcp => {
-            tracing::info!("Connecting to MCP server via tcp");
-
-            // connect to mcp server
-            let stream = tokio::net::TcpSocket::new_v4()?
-                .connect(SOCKET_ADDR.parse()?)
-                .await?;
-
-            // create a mcp client
-            let mcp_client = ().serve(stream).await?;
-
-            // List available tools
-            let tools = mcp_client.peer().list_tools(Default::default()).await?;
-            tracing::info!("{}", serde_json::to_string_pretty(&tools)?);
 
             let request_param = CallToolRequestParam {
                 name: "sum".into(),
