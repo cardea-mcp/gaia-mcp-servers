@@ -4,7 +4,6 @@ members = [
     "gaia-calculator/gaia-calculator-mcp-server-streamhttp",
     "gaia-calculator/gaia-calculator-mcp-server-sse",
     "gaia-calculator/gaia-calculator-mcp-server-stdio",
-    "gaia-weather/gaia-weather-mcp-server",
     "gaia-weather/gaia-weather-mcp-client",
     "gaia-weather/gaia-weather-mcp-server-streamhttp",
     "gaia-weather/gaia-weather-mcp-server-sse",
