@@ -15,11 +15,11 @@ pub struct TidbSearchRequest {
     pub password: String,
     #[schemars(description = "the database of the tidb server")]
     pub database: String,
-    #[schemars(description = "the table name of the tidb server")]
+    #[schemars(description = "the table name to search in")]
     pub table_name: String,
-    #[schemars(description = "the limit of the tidb server")]
+    #[schemars(description = "the number of rows to return")]
     pub limit: Option<u64>,
-    #[schemars(description = "the query of the tidb server")]
+    #[schemars(description = "the query to search for")]
     pub query: String,
 }
 
