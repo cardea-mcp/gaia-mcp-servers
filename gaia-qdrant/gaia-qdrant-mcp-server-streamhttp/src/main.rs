@@ -1,12 +1,12 @@
-mod calculator;
+mod qdrant;
 
-use calculator::Calculator;
+use qdrant::QdrantServer;
 use rmcp::transport::streamable_http_server::{
     StreamableHttpService, session::local::LocalSessionManager,
 };
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
 
-const SOCKET_ADDR: &str = "127.0.0.1:8001";
+const SOCKET_ADDR: &str = "127.0.0.1:8003";
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -18,10 +18,10 @@ async fn main() -> anyhow::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    tracing::info!("Starting Gaia Calculator MCP server on {}", SOCKET_ADDR);
+    tracing::info!("Starting Gaia Qdrant MCP server on {}", SOCKET_ADDR);
 
     let service = StreamableHttpService::new(
-        || Calculator,
+        || QdrantServer,
         LocalSessionManager::default().into(),
         Default::default(),
     );
@@ -31,5 +31,6 @@ async fn main() -> anyhow::Result<()> {
     let _ = axum::serve(tcp_listener, router)
         .with_graceful_shutdown(async { tokio::signal::ctrl_c().await.unwrap() })
         .await;
+
     Ok(())
 }

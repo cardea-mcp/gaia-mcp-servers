@@ -12,6 +12,7 @@ members = [
     "gaia-qdrant/gaia-qdrant-common",
     "gaia-qdrant/gaia-qdrant-mcp-server-stdio",
     "gaia-qdrant/gaia-qdrant-mcp-client",
+    "gaia-qdrant/gaia-qdrant-mcp-server-streamhttp",
     "gaia-kwsearch/gaia-kwsearch-mcp-server",
     "gaia-kwsearch/gaia-kwsearch-common",
     "gaia-kwsearch/gaia-kwsearch-mcp-server-stdio",
@@ -23,7 +24,8 @@ members = [
     "gaia-elastic/gaia-elastic-mcp-common",
     "gaia-tidb/gaia-tidb-mcp-server-sse",
     "gaia-tidb/gaia-tidb-mcp-common",
-    "gaia-tidb/gaia-tidb-mcp-client", "gaia-tidb/gaia-tidb-mcp-server-streamhttp",
+    "gaia-tidb/gaia-tidb-mcp-client",
+    "gaia-tidb/gaia-tidb-mcp-server-streamhttp",
 
 ]
 resolver = "3"
