@@ -2,22 +2,22 @@
 
 ## Quick Start
 
-### Build and run gaia-calculator-mcp-server (TCP)
+### Build and run gaia-calculator-mcp-server (StreamableHttp)
 
 Let's build mcp server and client by running the following commands:
 
 ```bash
-# build mcp server (tcp)
-cargo build --package gaia-calculator-mcp-server --release
+# build mcp server (streamablehttp)
+cargo build --package gaia-calculator-mcp-server-streamhttp --release
 
 # build mcp client
 cargo build --package gaia-calculator-mcp-client --release
 ```
 
-Now, let's start the mcp server (tcp) by running the following command:
+Now, let's start the mcp server (streamablehttp) by running the following command:
 
 ```bash
-# run mcp server (tcp)
+# run mcp server (streamablehttp)
 ./target/release/gaia-calculator-mcp-server
 ```
 
@@ -31,7 +31,7 @@ Now, let's run the mcp client by running the following command:
 
 ```bash
 # run mcp client
-./target/release/gaia-calculator-mcp-client --transport tcp
+./target/release/gaia-calculator-mcp-client --transport stream-http
 ```
 
 If start successfully, you will see the following output:
@@ -39,65 +39,94 @@ If start successfully, you will see the following output:
 <details><summary>Expand to view the output</summary>
 
 ```console
-2025-04-23T05:43:27.175877Z  INFO gaia_calculator_mcp_client: 38: Connecting to MCP server via tcp
-2025-04-23T05:43:27.177585Z  INFO serve_inner: rmcp::service: 531: Service initialized as client peer_info=InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A simple calculator") }
-2025-04-23T05:43:27.178342Z  INFO gaia_calculator_mcp_client: 50: {
-  "tools": [
-    {
-      "name": "sub",
-      "description": "Calculate the difference of two numbers",
-      "inputSchema": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "properties": {
-          "a": {
-            "description": "the left hand side number",
-            "format": "int32",
-            "type": "integer"
-          },
-          "b": {
-            "description": "the right hand side number",
-            "format": "int32",
-            "type": "integer"
-          }
+2025-05-29T04:28:57.019045Z  INFO gaia_calculator_mcp_client: 143: Connecting to Gaia Calculator MCP server via stream-http: http://127.0.0.1:8001/mcp
+2025-05-29T04:28:57.022345Z  INFO serve_inner: rmcp::service: 541: Service initialized as client peer_info=Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A simple calculator") })
+2025-05-29T04:28:57.022385Z  INFO gaia_calculator_mcp_client: 163: Connected to server: Some(
+    InitializeResult {
+        protocol_version: ProtocolVersion(
+            "2025-03-26",
+        ),
+        capabilities: ServerCapabilities {
+            experimental: None,
+            logging: None,
+            completions: None,
+            prompts: None,
+            resources: None,
+            tools: Some(
+                ToolsCapability {
+                    list_changed: None,
+                },
+            ),
         },
-        "required": [
-          "a",
-          "b"
-        ],
-        "title": "__SUBToolCallParam",
-        "type": "object"
-      },
-      "annotations": null
+        server_info: Implementation {
+            name: "rmcp",
+            version: "0.1.5",
+        },
+        instructions: Some(
+            "A simple calculator",
+        ),
     },
-    {
-      "name": "sum",
-      "description": "Calculate the sum of two numbers",
-      "inputSchema": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "properties": {
-          "a": {
-            "description": "the left hand side number",
-            "format": "int32",
-            "type": "integer"
-          },
-          "b": {
-            "description": "the right hand side number",
-            "format": "int32",
-            "type": "integer"
-          }
+)
+2025-05-29T04:28:57.023462Z  INFO gaia_calculator_mcp_client: 167: Available tools: ListToolsResult {
+    next_cursor: None,
+    tools: [
+        Tool {
+            name: "sub",
+            description: Some(
+                "Calculate the difference of two numbers",
+            ),
+            input_schema: {
+                "properties": Object {
+                    "a": Object {
+                        "description": String("the left hand side number"),
+                        "format": String("int32"),
+                        "type": String("integer"),
+                    },
+                    "b": Object {
+                        "description": String("the right hand side number"),
+                        "format": String("int32"),
+                        "type": String("integer"),
+                    },
+                },
+                "required": Array [
+                    String("a"),
+                    String("b"),
+                ],
+                "title": String("__SUBToolCallParam"),
+                "type": String("object"),
+            },
+            annotations: None,
         },
-        "required": [
-          "a",
-          "b"
-        ],
-        "title": "SumRequest",
-        "type": "object"
-      },
-      "annotations": null
-    }
-  ]
+        Tool {
+            name: "sum",
+            description: Some(
+                "Calculate the sum of two numbers",
+            ),
+            input_schema: {
+                "properties": Object {
+                    "a": Object {
+                        "description": String("the left hand side number"),
+                        "format": String("int32"),
+                        "type": String("integer"),
+                    },
+                    "b": Object {
+                        "description": String("the right hand side number"),
+                        "format": String("int32"),
+                        "type": String("integer"),
+                    },
+                },
+                "required": Array [
+                    String("a"),
+                    String("b"),
+                ],
+                "title": String("SumRequest"),
+                "type": String("object"),
+            },
+            annotations: None,
+        },
+    ],
 }
-2025-04-23T05:43:27.178719Z  INFO gaia_calculator_mcp_client: 63: Sum result: {
+2025-05-29T04:28:57.024426Z  INFO gaia_calculator_mcp_client: 180: Sum result: {
   "content": [
     {
       "type": "text",
@@ -106,6 +135,8 @@ If start successfully, you will see the following output:
   ],
   "isError": false
 }
+2025-05-29T04:28:57.024471Z  INFO rmcp::service: 625: task cancelled
+2025-05-29T04:28:57.024494Z  INFO rmcp::service: 811: serve finished quit_reason=Cancelled
 ```
 
 </details>
