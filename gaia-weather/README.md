@@ -2,13 +2,13 @@
 
 ## Quick Start
 
-### Build and run gaia-weather-mcp-server (TCP)
+### Build and run gaia-weather-mcp-server (StreamableHttp)
 
 Let's build mcp server and client by running the following commands:
 
 ```bash
-# build mcp server (tcp)
-cargo build --package gaia-weather-mcp-server --release
+# build mcp server (streamablehttp)
+cargo build --package gaia-weather-mcp-server-streamhttp --release
 
 # build mcp client
 cargo build --package gaia-weather-mcp-client --release
@@ -20,10 +20,10 @@ cargo build --package gaia-weather-mcp-client --release
 export OPENWEATHERMAP_API_KEY=<your-api-key>
 ```
 
-Now, let's start the mcp server (tcp) by running the following command:
+Now, let's start the mcp server (streamablehttp) by running the following command:
 
 ```bash
-# run mcp server (tcp)
+# run mcp server (streamablehttp)
 ./target/release/gaia-weather-mcp-server
 ```
 
@@ -37,7 +37,7 @@ Now, let's run the mcp client by running the following command:
 
 ```bash
 # run mcp client
-./target/release/gaia-weather-mcp-client --transport tcp
+./target/release/gaia-weather-mcp-client --transport stream-http
 ```
 
 If start successfully, you will see the following output:
@@ -45,15 +45,40 @@ If start successfully, you will see the following output:
 <details><summary>Expand to view the output</summary>
 
 ```console
-2025-04-23T05:59:41.541536Z  INFO gaia_weather_mcp_client: 37: Connecting to MCP server via tcp
-2025-04-23T05:59:41.543090Z  INFO serve_inner: rmcp::service: 531: Service initialized as client peer_info=InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A MCP server that can get the weather for a given city") }
-2025-04-23T05:59:41.543802Z  INFO gaia_weather_mcp_client: 49: {
+2025-05-29T07:26:01.874406Z  INFO gaia_weather_mcp_client: 198: Connecting to Gaia Weather MCP server via stream-http: http://127.0.0.1:8002/mcp
+2025-05-29T07:26:01.891987Z  INFO serve_inner: rmcp::service: 541: Service initialized as client peer_info=Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A MCP server that can get the weather for a given city") })
+2025-05-29T07:26:01.892015Z  INFO gaia_weather_mcp_client: 218: Connected to server: Some(
+    InitializeResult {
+        protocol_version: ProtocolVersion(
+            "2025-03-26",
+        ),
+        capabilities: ServerCapabilities {
+            experimental: None,
+            logging: None,
+            completions: None,
+            prompts: None,
+            resources: None,
+            tools: Some(
+                ToolsCapability {
+                    list_changed: None,
+                },
+            ),
+        },
+        server_info: Implementation {
+            name: "rmcp",
+            version: "0.1.5",
+        },
+        instructions: Some(
+            "A MCP server that can get the weather for a given city",
+        ),
+    },
+)
+2025-05-29T07:26:01.897628Z  INFO gaia_weather_mcp_client: 222: Available tools: {
   "tools": [
     {
       "name": "get_current_weather",
       "description": "Get the weather for a given city",
       "inputSchema": {
-        "$schema": "http://json-schema.org/draft-07/schema#",
         "definitions": {
           "TemperatureUnit": {
             "enum": [
@@ -67,21 +92,15 @@ If start successfully, you will see the following output:
           "api_key": {
             "default": null,
             "description": "the OpenWeatherMap API key to use. If not provided, the server will use the OPENWEATHERMAP_API_KEY environment variable.",
-            "type": [
-              "string",
-              "null"
-            ]
+            "nullable": true,
+            "type": "string"
           },
           "location": {
             "description": "the city to get the weather for, e.g., 'Beijing', 'New York', 'Tokyo'",
             "type": "string"
           },
           "unit": {
-            "allOf": [
-              {
-                "$ref": "#/definitions/TemperatureUnit"
-              }
-            ],
+            "$ref": "#/components/schemas/TemperatureUnit",
             "description": "the unit to use for the temperature, e.g., 'celsius', 'fahrenheit'"
           }
         },
@@ -91,20 +110,21 @@ If start successfully, you will see the following output:
         ],
         "title": "GetWeatherRequest",
         "type": "object"
-      },
-      "annotations": null
+      }
     }
   ]
 }
-2025-04-23T05:59:42.335590Z  INFO gaia_weather_mcp_client: 77: Sum result: {
+2025-05-29T07:26:02.750843Z  INFO gaia_weather_mcp_client: 250: Weather result: {
   "content": [
     {
       "type": "text",
-      "text": "{\"temperature\":26.94,\"unit\":\"celsius\"}"
+      "text": "{\"temperature\":31.94,\"unit\":\"celsius\"}"
     }
   ],
   "isError": false
 }
+2025-05-29T07:26:02.750926Z  INFO rmcp::service: 625: task cancelled
+2025-05-29T07:26:02.751031Z  INFO rmcp::service: 811: serve finished quit_reason=Cancelled
 ```
 
 </details>
