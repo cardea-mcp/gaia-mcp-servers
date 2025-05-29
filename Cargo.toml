@@ -8,7 +8,6 @@ members = [
     "gaia-weather/gaia-weather-mcp-server-streamhttp",
     "gaia-weather/gaia-weather-mcp-server-sse",
     "gaia-weather/gaia-weather-mcp-server-stdio",
-    "gaia-qdrant/gaia-qdrant-mcp-server",
     "gaia-qdrant/gaia-qdrant-common",
     "gaia-qdrant/gaia-qdrant-mcp-server-stdio",
     "gaia-qdrant/gaia-qdrant-mcp-client",
