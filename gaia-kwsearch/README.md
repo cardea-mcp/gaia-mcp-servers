@@ -27,16 +27,20 @@ cargo build --package gaia-kwsearch-mcp-client --release
 > export VERSION=0.2.0
 >
 > # macOS on Apple Silicon
-> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-aarch64-apple-darwin.tar.gz
-> tar -xvzf server-assistant-aarch64-apple-darwin.tar.gz
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-apple-aarch64-darwin.tar.gz
+> tar -xvzf kw-search-server-apple-aarch64-darwin.tar.gz kw-search-server
 >
 > # macOS on Intel
-> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-apple-darwin.tar.gz
-> tar -xvzf server-assistant-x86_64-apple-darwin.tar.gz
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-apple-x86_64-darwin.tar.gz
+> tar -xvzf kw-search-server-apple-x86_64-darwin.tar.gz kw-search-server
 >
-> # Linux
-> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-unknown-linux-gnu.tar.gz
-> tar -xvzf server-assistant-x86_64-unknown-linux-gnu.tar.gz
+> # Linux (x86_64)
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-linux-x86_64-unknown-gnu.tar.gz
+> tar -xvzf kw-search-server-linux-x86_64-unknown-gnu.tar.gz kw-search-server
+>
+> # Linux (aarch64)
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-linux-aarch64-unknown-gnu.tar.gz
+> tar -xvzf kw-search-server-linux-aarch64-unknown-gnu.tar.gz kw-search-server
 >
 > # start kw-search-server on default port 12306
 > ./kw-search-server
@@ -229,16 +233,20 @@ cargo build --package gaia-kwsearch-mcp-client --release
 > export VERSION=0.2.0
 >
 > # macOS on Apple Silicon
-> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-aarch64-apple-darwin.tar.gz
-> tar -xvzf server-assistant-aarch64-apple-darwin.tar.gz
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-apple-aarch64-darwin.tar.gz
+> tar -xvzf kw-search-server-apple-aarch64-darwin.tar.gz kw-search-server
 >
 > # macOS on Intel
-> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-apple-darwin.tar.gz
-> tar -xvzf server-assistant-x86_64-apple-darwin.tar.gz
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-apple-x86_64-darwin.tar.gz
+> tar -xvzf kw-search-server-apple-x86_64-darwin.tar.gz kw-search-server
 >
-> # Linux
-> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-unknown-linux-gnu.tar.gz
-> tar -xvzf server-assistant-x86_64-unknown-linux-gnu.tar.gz
+> # Linux (x86_64)
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-linux-x86_64-unknown-gnu.tar.gz
+> tar -xvzf kw-search-server-linux-x86_64-unknown-gnu.tar.gz kw-search-server
+>
+> # Linux (aarch64)
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-linux-aarch64-unknown-gnu.tar.gz
+> tar -xvzf kw-search-server-linux-aarch64-unknown-gnu.tar.gz kw-search-server
 >
 > # start kw-search-server on default port 12306
 > ./kw-search-server
@@ -440,16 +448,20 @@ cargo build --package gaia-kwsearch-mcp-client --release
 > export VERSION=0.2.0
 >
 > # macOS on Apple Silicon
-> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-aarch64-apple-darwin.tar.gz
-> tar -xvzf server-assistant-aarch64-apple-darwin.tar.gz
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-apple-aarch64-darwin.tar.gz
+> tar -xvzf kw-search-server-apple-aarch64-darwin.tar.gz kw-search-server
 >
 > # macOS on Intel
-> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-apple-darwin.tar.gz
-> tar -xvzf server-assistant-x86_64-apple-darwin.tar.gz
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-apple-x86_64-darwin.tar.gz
+> tar -xvzf kw-search-server-apple-x86_64-darwin.tar.gz kw-search-server
 >
-> # Linux
-> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-unknown-linux-gnu.tar.gz
-> tar -xvzf server-assistant-x86_64-unknown-linux-gnu.tar.gz
+> # Linux (x86_64)
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-linux-x86_64-unknown-gnu.tar.gz
+> tar -xvzf kw-search-server-linux-x86_64-unknown-gnu.tar.gz kw-search-server
+>
+> # Linux (aarch64)
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/{$VERSION}/kw-search-server-linux-aarch64-unknown-gnu.tar.gz
+> tar -xvzf kw-search-server-linux-aarch64-unknown-gnu.tar.gz kw-search-server
 >
 > # start kw-search-server on default port 12306
 > ./kw-search-server
