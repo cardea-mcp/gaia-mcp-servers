@@ -1,12 +1,6 @@
 use rmcp::schemars;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, schemars::JsonSchema)]
-pub struct ListIndicesRequest {
-    pub base_url: String,
-    pub api_key: Option<String>,
-}
-
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
 pub struct ListIndicesResponse {
     pub indices: Vec<IndexInfo>,
@@ -49,12 +43,6 @@ pub struct IndexInfo {
     pub dataset_size: String,
 }
 
-#[derive(Debug, Deserialize, schemars::JsonSchema)]
-pub struct ListAliasesRequest {
-    pub base_url: String,
-    pub api_key: Option<String>,
-}
-
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
 pub struct ListAliasesResponse {
     pub aliases: Vec<AliasInfo>,
@@ -87,8 +75,6 @@ pub struct AliasInfo {
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct SearchRequest {
-    pub base_url: String,
-    pub api_key: Option<String>,
     /// index name
     pub index: String,
     /// user query
@@ -158,4 +144,10 @@ pub struct Reason {
     pub ty: String,
     /// A human-readable explanation of the error, in English.
     pub reason: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct ConnectionConfig {
+    pub base_url: String,
+    pub api_key: Option<String>,
 }

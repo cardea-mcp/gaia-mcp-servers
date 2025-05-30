@@ -1,12 +1,12 @@
 [package]
-name                 = "gaia-elastic-mcp-server-sse"
+name                 = "gaia-elastic-mcp-server-streamhttp"
 edition.workspace    = true
 version.workspace    = true
 repository.workspace = true
 license.workspace    = true
 
 [dependencies]
-rmcp                    = { workspace = true, features = ["server", "macros", "transport-sse-server"] }
+rmcp                    = { workspace = true, features = ["server", "macros", "transport-streamable-http-server", "transport-worker"] }
 tokio                   = { workspace = true, features = ["macros", "rt", "rt-multi-thread", "io-std", "net", "fs", "time", "signal"] }
 serde                   = { workspace = true, features = ["derive"] }
 serde_json              = { workspace = true }
@@ -19,10 +19,9 @@ schemars                = { workspace = true }
 hyper                   = { workspace = true, features = ["client", "server", "http1"] }
 hyper-util              = { workspace = true, features = ["tokio"] }
 tokio-tungstenite       = { workspace = true }
-reqwest                 = { workspace = true, features = ["json"] }
+reqwest                 = { workspace = true, features = ["rustls-tls", "json"] }
 pin-project-lite        = { workspace = true }
-endpoints               = { workspace = true, features = ["index"] }
-elasticsearch           = { version = "9.0.0-alpha.1", features = ["rustls-tls"] }
 gaia-elastic-mcp-common = { path = "../gaia-elastic-mcp-common" }
+axum                    = { version = "0.8", features = ["macros"] }
 clap                    = { workspace = true, features = ["derive"] }
 once_cell               = { workspace = true }
