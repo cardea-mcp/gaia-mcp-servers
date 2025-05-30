@@ -24,7 +24,7 @@ cargo build --package gaia-kwsearch-mcp-client --release
 > <details><summary>Expand to view the commands</summary>
 >
 > ```bash
-> export VERSION=0.1.1
+> export VERSION=0.2.0
 >
 > # macOS on Apple Silicon
 > curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-aarch64-apple-darwin.tar.gz
@@ -216,30 +216,35 @@ cargo build --package gaia-kwsearch-mcp-server-stdio --release
 cargo build --package gaia-kwsearch-mcp-client --release
 ```
 
-**Note** that, before running the mcp server, you need to start the kw-search server. If you don't have a kw-search server running, you can start one by running the following commands to download the binary and start the server:
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
 
-<details><summary>Expand to view the commands</summary>
-
-```bash
-export VERSION=0.1.1
-
-# macOS on Apple Silicon
-curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-aarch64-apple-darwin.tar.gz
-tar -xvzf server-assistant-aarch64-apple-darwin.tar.gz
-
-# macOS on Intel
-curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-apple-darwin.tar.gz
-tar -xvzf server-assistant-x86_64-apple-darwin.tar.gz
-
-# Linux
-curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-unknown-linux-gnu.tar.gz
-tar -xvzf server-assistant-x86_64-unknown-linux-gnu.tar.gz
-
-# start kw-search-server on default port 12306
-./kw-search-server
-```
-
-</details>
+> [!IMPORTANT]
+>
+> Before running the mcp server, you need to start the kw-search server. If you don't have a kw-search server running, you can start one by running the following commands to download the binary and start the server:
+>
+> <details><summary>Expand to view the commands</summary>
+>
+> ```bash
+> export VERSION=0.2.0
+>
+> # macOS on Apple Silicon
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-aarch64-apple-darwin.tar.gz
+> tar -xvzf server-assistant-aarch64-apple-darwin.tar.gz
+>
+> # macOS on Intel
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-apple-darwin.tar.gz
+> tar -xvzf server-assistant-x86_64-apple-darwin.tar.gz
+>
+> # Linux
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-unknown-linux-gnu.tar.gz
+> tar -xvzf server-assistant-x86_64-unknown-linux-gnu.tar.gz
+>
+> # start kw-search-server on default port 12306
+> ./kw-search-server
+> ```
+>
+> </details>
 
 Now, let's run the mcp client by running the following command. The mcp client will start and call the mcp server.
 
@@ -422,30 +427,35 @@ cargo build --package gaia-kwsearch-mcp-server-sse --release
 cargo build --package gaia-kwsearch-mcp-client --release
 ```
 
-**Note** that, before running the mcp server, you need to start the kw-search server. If you don't have a kw-search server running, you can start one by running the following commands to download the binary and start the server:
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
 
-<details><summary>Expand to view the commands</summary>
-
-```bash
-export VERSION=0.1.1
-
-# macOS on Apple Silicon
-curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-aarch64-apple-darwin.tar.gz
-tar -xvzf server-assistant-aarch64-apple-darwin.tar.gz
-
-# macOS on Intel
-curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-apple-darwin.tar.gz
-tar -xvzf server-assistant-x86_64-apple-darwin.tar.gz
-
-# Linux
-curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-unknown-linux-gnu.tar.gz
-tar -xvzf server-assistant-x86_64-unknown-linux-gnu.tar.gz
-
-# start kw-search-server on default port 12306
-./kw-search-server
-```
-
-</details>
+> [!IMPORTANT]
+>
+> Before running the mcp server, you need to start the kw-search server. If you don't have a kw-search server running, you can start one by running the following commands to download the binary and start the server:
+>
+> <details><summary>Expand to view the commands</summary>
+>
+> ```bash
+> export VERSION=0.2.0
+>
+> # macOS on Apple Silicon
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-aarch64-apple-darwin.tar.gz
+> tar -xvzf server-assistant-aarch64-apple-darwin.tar.gz
+>
+> # macOS on Intel
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-apple-darwin.tar.gz
+> tar -xvzf server-assistant-x86_64-apple-darwin.tar.gz
+>
+> # Linux
+> curl -LO https://github.com/LlamaEdge/kw-search-server/releases/download/${VERSION}/server-assistant-x86_64-unknown-linux-gnu.tar.gz
+> tar -xvzf server-assistant-x86_64-unknown-linux-gnu.tar.gz
+>
+> # start kw-search-server on default port 12306
+> ./kw-search-server
+> ```
+>
+> </details>
 
 Now, let's start the mcp server (sse) by running the following command:
 
