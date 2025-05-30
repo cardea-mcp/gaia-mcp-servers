@@ -156,6 +156,9 @@ cargo build --package gaia-calculator-mcp-server-stdio --release
 cargo build --package gaia-calculator-mcp-client --release
 ```
 
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
+
 Now, let's run the mcp client by running the following command. The mcp client will start and call the mcp server.
 
 ```bash
@@ -287,6 +290,9 @@ cargo build --package gaia-calculator-mcp-server-sse --release
 # build mcp client
 cargo build --package gaia-calculator-mcp-client --release
 ```
+
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
 
 Now, let's start the mcp server (sse) by running the following command:
 
