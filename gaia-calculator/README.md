@@ -14,6 +14,9 @@ cargo build --package gaia-calculator-mcp-server-streamhttp --release
 cargo build --package gaia-calculator-mcp-client --release
 ```
 
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
+
 Now, let's start the mcp server (streamablehttp) by running the following command:
 
 ```bash
