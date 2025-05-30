@@ -21,3 +21,5 @@ reqwest              = { workspace = true, features = ["rustls-tls", "json"] }
 pin-project-lite     = { workspace = true }
 endpoints            = { workspace = true, features = ["index"] }
 gaia-kwsearch-common = { workspace = true }
+clap                 = { workspace = true, features = ["derive"] }
+once_cell            = { workspace = true }

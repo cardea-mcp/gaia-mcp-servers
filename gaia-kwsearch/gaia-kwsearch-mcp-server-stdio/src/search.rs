@@ -1,3 +1,4 @@
+use crate::CONNECTION_CONFIG;
 use endpoints::rag::keyword_search::{IndexRequest, IndexResponse, QueryRequest, QueryResponse};
 use gaia_kwsearch_common::{
     CreateIndexRequest, CreateIndexResponse, SearchDocumentsRequest, SearchDocumentsResponse,
@@ -26,18 +27,30 @@ impl KeywordSearchServer {
     #[tool(description = "Create an index in the KeywordSearch database")]
     async fn create_index(
         &self,
-        #[tool(aggr)] CreateIndexRequest {
-            base_url,
-            // api_key,
-            name,
-            documents,
-        }: CreateIndexRequest,
+        #[tool(aggr)] CreateIndexRequest { name, documents }: CreateIndexRequest,
     ) -> Result<CallToolResult, McpError> {
         info!("Creating index in KeywordSearch database");
 
-        let base_url = base_url.trim_end_matches('/');
+        // get connection config
+        let conn_config = match CONNECTION_CONFIG.get() {
+            Some(connection_config) => {
+                let conn_config = connection_config.read().await;
+                conn_config.clone()
+            }
+            None => {
+                let error_message = "Connection config not found";
+                error!("{}", error_message);
+                return Err(McpError::new(
+                    ErrorCode::INTERNAL_ERROR,
+                    error_message,
+                    None,
+                ));
+            }
+        };
+
+        // build url
+        let base_url = conn_config.base_url.trim_end_matches('/');
         let url = format!("{}/v1/index/create", base_url);
-        info!("URL to create index: {}", url);
 
         let index_request = IndexRequest {
             index: name,
@@ -76,8 +89,6 @@ impl KeywordSearchServer {
     async fn search_documents(
         &self,
         #[tool(aggr)] SearchDocumentsRequest {
-            base_url,
-            // api_key,
             index_name,
             query,
             limit,
@@ -85,7 +96,25 @@ impl KeywordSearchServer {
     ) -> Result<CallToolResult, McpError> {
         info!("Searching for documents in KeywordSearch database");
 
-        let base_url = base_url.trim_end_matches('/');
+        // get connection config
+        let conn_config = match CONNECTION_CONFIG.get() {
+            Some(connection_config) => {
+                let conn_config = connection_config.read().await;
+                conn_config.clone()
+            }
+            None => {
+                let error_message = "Connection config not found";
+                error!("{}", error_message);
+                return Err(McpError::new(
+                    ErrorCode::INTERNAL_ERROR,
+                    error_message,
+                    None,
+                ));
+            }
+        };
+
+        // build url
+        let base_url = conn_config.base_url.trim_end_matches('/');
         let url = format!("{}/v1/search", base_url);
 
         let query_request = QueryRequest {

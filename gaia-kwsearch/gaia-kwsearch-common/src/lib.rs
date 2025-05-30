@@ -6,10 +6,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
 pub struct CreateIndexRequest {
-    #[schemars(description = "the base URL of the local or remote KeywordSearch database")]
-    pub base_url: String,
-    // #[schemars(description = "the API key to use for the KeywordSearch database")]
-    // pub api_key: Option<String>,
     #[schemars(description = "the name of the index to create")]
     pub name: Option<String>,
     #[schemars(description = "the documents to index")]
@@ -80,10 +76,6 @@ impl From<DocumentResult> for KwDocumentResult {
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct SearchDocumentsRequest {
-    #[schemars(description = "the base URL of the local or remote KeywordSearch database")]
-    pub base_url: String,
-    // #[schemars(description = "the API key to use for the KeywordSearch database")]
-    // pub api_key: Option<String>,
     #[schemars(description = "the index to search")]
     pub index_name: String,
     #[schemars(description = "the query to search for")]
@@ -129,4 +121,10 @@ impl From<SearchHit> for KwSearchHit {
             score: value.score,
         }
     }
+}
+
+#[derive(Debug, Clone)]
+pub struct ConnectionConfig {
+    pub base_url: String,
+    pub api_key: Option<String>,
 }

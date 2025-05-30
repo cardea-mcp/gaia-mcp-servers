@@ -17,6 +17,7 @@ members = [
     "gaia-kwsearch/gaia-kwsearch-mcp-server-stdio",
     "gaia-kwsearch/gaia-kwsearch-mcp-client",
     "gaia-kwsearch/gaia-kwsearch-mcp-server-sse",
+    "gaia-kwsearch/gaia-kwsearch-mcp-server-streamhttp",
     "gaia-elastic/gaia-elastic-mcp-client",
     "gaia-elastic/gaia-elastic-mcp-server-sse",
     "gaia-elastic/gaia-elastic-mcp-common",

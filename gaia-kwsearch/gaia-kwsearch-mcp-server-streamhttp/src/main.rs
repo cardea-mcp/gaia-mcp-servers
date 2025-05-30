@@ -3,7 +3,9 @@ mod search;
 use clap::Parser;
 use gaia_kwsearch_common::ConnectionConfig;
 use once_cell::sync::OnceCell;
-use rmcp::transport::sse_server::SseServer;
+use rmcp::transport::streamable_http_server::{
+    StreamableHttpService, session::local::LocalSessionManager,
+};
 use search::KeywordSearchServer;
 use tokio::sync::RwLock;
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
@@ -43,12 +45,17 @@ async fn main() -> anyhow::Result<()> {
 
     tracing::info!("Starting Gaia KeywordSearch MCP server on {}", SOCKET_ADDR);
 
-    let ct = SseServer::serve(SOCKET_ADDR.parse()?)
-        .await?
-        .with_service(|| KeywordSearchServer);
+    let service = StreamableHttpService::new(
+        || KeywordSearchServer,
+        LocalSessionManager::default().into(),
+        Default::default(),
+    );
 
-    tokio::signal::ctrl_c().await?;
-    ct.cancel();
+    let router = axum::Router::new().nest_service("/mcp", service);
+    let tcp_listener = tokio::net::TcpListener::bind(SOCKET_ADDR).await?;
+    let _ = axum::serve(tcp_listener, router)
+        .with_graceful_shutdown(async { tokio::signal::ctrl_c().await.unwrap() })
+        .await;
 
     Ok(())
 }

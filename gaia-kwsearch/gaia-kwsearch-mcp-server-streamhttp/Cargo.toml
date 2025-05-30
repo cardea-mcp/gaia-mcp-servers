@@ -1,12 +1,12 @@
 [package]
-name       = "gaia-kwsearch-mcp-server-sse"
-version    = { workspace = true }
-edition    = { workspace = true }
-repository = { workspace = true }
-license    = { workspace = true }
+name                 = "gaia-kwsearch-mcp-server-streamhttp"
+edition.workspace    = true
+version.workspace    = true
+repository.workspace = true
+license.workspace    = true
 
 [dependencies]
-rmcp                 = { workspace = true, features = ["server", "macros", "transport-sse-server"] }
+rmcp                 = { workspace = true, features = ["server", "macros", "transport-streamable-http-server", "transport-worker"] }
 tokio                = { workspace = true, features = ["macros", "rt", "rt-multi-thread", "io-std", "net", "fs", "time", "signal"] }
 serde                = { workspace = true, features = ["derive"] }
 serde_json           = { workspace = true }
@@ -19,9 +19,10 @@ schemars             = { workspace = true }
 hyper                = { workspace = true, features = ["client", "server", "http1"] }
 hyper-util           = { workspace = true, features = ["tokio"] }
 tokio-tungstenite    = { workspace = true }
-reqwest              = { workspace = true, features = ["json"] }
+reqwest              = { workspace = true, features = ["rustls-tls", "json"] }
 pin-project-lite     = { workspace = true }
-endpoints            = { workspace = true, features = ["index"] }
-gaia-kwsearch-common = { workspace = true }
+gaia-kwsearch-common = { path = "../gaia-kwsearch-common" }
+axum                 = { version = "0.8", features = ["macros"] }
 clap                 = { workspace = true, features = ["derive"] }
 once_cell            = { workspace = true }
+endpoints            = { workspace = true, features = ["index"] }
