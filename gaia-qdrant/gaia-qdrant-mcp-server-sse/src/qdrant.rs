@@ -1,3 +1,4 @@
+use crate::CONNECTION_CONFIG;
 use gaia_qdrant_common::*;
 use rmcp::{
     Error as McpError, ServerHandler,
@@ -14,16 +15,33 @@ impl QdrantServer {
     #[tool(description = "Create a new collection in the Qdrant database")]
     async fn create_collection(
         &self,
-        #[tool(aggr)] CreateCollectionRequest {
-            base_url,
-            api_key,
-            name,
-            size,
-        }: CreateCollectionRequest,
+        #[tool(aggr)] CreateCollectionRequest { name, size }: CreateCollectionRequest,
     ) -> Result<CallToolResult, McpError> {
-        let base_url = base_url.trim_end_matches('/');
+        // get connection config
+        let conn_config = match CONNECTION_CONFIG.get() {
+            Some(connection_config) => {
+                let conn_config = connection_config.read().await;
+                conn_config.clone()
+            }
+            None => {
+                let error_message = "Connection config not found";
+                error!("{}", error_message);
+                return Err(McpError::new(
+                    ErrorCode::INTERNAL_ERROR,
+                    error_message,
+                    None,
+                ));
+            }
+        };
+
+        // build url
+        let base_url = conn_config.base_url.trim_end_matches('/');
         let url = format!("{}/collections/{}", base_url, name);
 
+        // get api key
+        let api_key = conn_config.api_key;
+
+        // build params
         let params = json!({
             "vectors": {
                 "size": size,
@@ -32,6 +50,7 @@ impl QdrantServer {
             }
         });
 
+        // create client
         let client = reqwest::Client::new();
         let result = match api_key {
             Some(api_key) => {
@@ -53,6 +72,7 @@ impl QdrantServer {
             }
         };
 
+        // handle response
         let response = match result {
             Ok(response) => response,
             Err(e) => {
@@ -118,12 +138,30 @@ impl QdrantServer {
     }
 
     #[tool(description = "List all collections in the Qdrant database")]
-    async fn list_collections(
-        &self,
-        #[tool(aggr)] ListCollectionsRequest { base_url, api_key }: ListCollectionsRequest,
-    ) -> Result<CallToolResult, McpError> {
-        let base_url = base_url.trim_end_matches('/');
+    async fn list_collections(&self) -> Result<CallToolResult, McpError> {
+        // get connection config
+        let conn_config = match CONNECTION_CONFIG.get() {
+            Some(connection_config) => {
+                let conn_config = connection_config.read().await;
+                conn_config.clone()
+            }
+            None => {
+                let error_message = "Connection config not found";
+                error!("{}", error_message);
+                return Err(McpError::new(
+                    ErrorCode::INTERNAL_ERROR,
+                    error_message,
+                    None,
+                ));
+            }
+        };
+
+        // build url
+        let base_url = conn_config.base_url.trim_end_matches('/');
         let url = format!("{}/collections", base_url);
+
+        // get api key
+        let api_key = conn_config.api_key;
 
         let client = reqwest::Client::new();
         let result = match api_key {
@@ -247,14 +285,31 @@ impl QdrantServer {
     #[tool(description = "Check if a collection exists in the Qdrant database")]
     async fn collection_exists(
         &self,
-        #[tool(aggr)] CollectionExistsRequest {
-            base_url,
-            api_key,
-            name,
-        }: CollectionExistsRequest,
+        #[tool(aggr)] CollectionExistsRequest { name }: CollectionExistsRequest,
     ) -> Result<CallToolResult, McpError> {
-        let base_url = base_url.trim_end_matches('/');
+        // get connection config
+        let conn_config = match CONNECTION_CONFIG.get() {
+            Some(connection_config) => {
+                let conn_config = connection_config.read().await;
+                conn_config.clone()
+            }
+            None => {
+                let error_message = "Connection config not found";
+                error!("{}", error_message);
+                return Err(McpError::new(
+                    ErrorCode::INTERNAL_ERROR,
+                    error_message,
+                    None,
+                ));
+            }
+        };
+
+        // build url
+        let base_url = conn_config.base_url.trim_end_matches('/');
         let url = format!("{}/collections/{}/exists", base_url, name);
+
+        // get api key
+        let api_key = conn_config.api_key;
 
         let client = reqwest::Client::new();
         let result = match api_key {
@@ -356,14 +411,31 @@ impl QdrantServer {
     #[tool(description = "Delete a collection in the Qdrant database")]
     async fn delete_collection(
         &self,
-        #[tool(aggr)] DeleteCollectionRequest {
-            base_url,
-            api_key,
-            name,
-        }: DeleteCollectionRequest,
+        #[tool(aggr)] DeleteCollectionRequest { name }: DeleteCollectionRequest,
     ) -> Result<CallToolResult, McpError> {
-        let base_url = base_url.trim_end_matches('/');
+        // get connection config
+        let conn_config = match CONNECTION_CONFIG.get() {
+            Some(connection_config) => {
+                let conn_config = connection_config.read().await;
+                conn_config.clone()
+            }
+            None => {
+                let error_message = "Connection config not found";
+                error!("{}", error_message);
+                return Err(McpError::new(
+                    ErrorCode::INTERNAL_ERROR,
+                    error_message,
+                    None,
+                ));
+            }
+        };
+
+        // build url
+        let base_url = conn_config.base_url.trim_end_matches('/');
         let url = format!("{}/collections/{}", base_url, name);
+
+        // get api key
+        let api_key = conn_config.api_key;
 
         let client = reqwest::Client::new();
         let result = match api_key {
@@ -452,15 +524,31 @@ impl QdrantServer {
     #[tool(description = "Upsert points into a collection in the Qdrant database")]
     async fn upsert_points(
         &self,
-        #[tool(aggr)] UpsertPointsRequest {
-            base_url,
-            api_key,
-            name,
-            points,
-        }: UpsertPointsRequest,
+        #[tool(aggr)] UpsertPointsRequest { name, points }: UpsertPointsRequest,
     ) -> Result<CallToolResult, McpError> {
-        let base_url = base_url.trim_end_matches('/');
+        // get connection config
+        let conn_config = match CONNECTION_CONFIG.get() {
+            Some(connection_config) => {
+                let conn_config = connection_config.read().await;
+                conn_config.clone()
+            }
+            None => {
+                let error_message = "Connection config not found";
+                error!("{}", error_message);
+                return Err(McpError::new(
+                    ErrorCode::INTERNAL_ERROR,
+                    error_message,
+                    None,
+                ));
+            }
+        };
+
+        // build url
+        let base_url = conn_config.base_url.trim_end_matches('/');
         let url = format!("{}/collections/{}/points", base_url, name);
+
+        // get api key
+        let api_key = conn_config.api_key;
 
         let params = json!({
             "points": points,
@@ -556,17 +644,37 @@ impl QdrantServer {
     async fn search_points(
         &self,
         #[tool(aggr)] SearchPointsRequest {
-            base_url,
-            api_key,
             name,
             vector,
             limit,
             score_threshold,
         }: SearchPointsRequest,
     ) -> Result<CallToolResult, McpError> {
-        let base_url = base_url.trim_end_matches('/');
+        // get connection config
+        let conn_config = match CONNECTION_CONFIG.get() {
+            Some(connection_config) => {
+                let conn_config = connection_config.read().await;
+                conn_config.clone()
+            }
+            None => {
+                let error_message = "Connection config not found";
+                error!("{}", error_message);
+                return Err(McpError::new(
+                    ErrorCode::INTERNAL_ERROR,
+                    error_message,
+                    None,
+                ));
+            }
+        };
+
+        // build url
+        let base_url = conn_config.base_url.trim_end_matches('/');
         let url = format!("{}/collections/{}/points/search", base_url, name);
 
+        // get api key
+        let api_key = conn_config.api_key;
+
+        // build params
         let params = json!({
             "vector": vector,
             "limit": limit,

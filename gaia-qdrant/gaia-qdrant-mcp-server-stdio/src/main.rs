@@ -1,8 +1,25 @@
 mod qdrant;
 
+use clap::Parser;
+use gaia_qdrant_common::ConnectionConfig;
+use once_cell::sync::OnceCell;
 use qdrant::QdrantServer;
 use rmcp::{ServiceExt, transport::stdio};
+use tokio::sync::RwLock;
 use tracing_subscriber::{self, EnvFilter};
+
+static CONNECTION_CONFIG: OnceCell<RwLock<ConnectionConfig>> = OnceCell::new();
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// The base URL of the Qdrant database
+    #[arg(long, default_value = "http://127.0.0.1:6333")]
+    base_url: String,
+    /// The API key to use for the Qdrant database
+    #[arg(long)]
+    api_key: Option<String>,
+}
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -13,6 +30,17 @@ async fn main() -> anyhow::Result<()> {
         .with_ansi(false)
         .with_line_number(true)
         .init();
+
+    let args = Args::parse();
+
+    let connection_config = ConnectionConfig {
+        base_url: args.base_url,
+        api_key: args.api_key,
+    };
+
+    CONNECTION_CONFIG
+        .set(RwLock::new(connection_config))
+        .unwrap();
 
     tracing::info!("Starting Gaia Qdrant MCP server in stdio mode");
 

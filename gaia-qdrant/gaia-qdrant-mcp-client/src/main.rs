@@ -74,10 +74,7 @@ async fn main() -> anyhow::Result<()> {
             // * list collections
             let list_collections = CallToolRequestParam {
                 name: "list_collections".into(),
-                arguments: Some(serde_json::Map::from_iter([(
-                    "base_url".to_string(),
-                    serde_json::Value::String(QDRANT_BASE_URL.into()),
-                )])),
+                arguments: None,
             };
             let res = mcp_client.peer().call_tool(list_collections).await?;
             tracing::info!("collections:\n{}", serde_json::to_string_pretty(&res)?);
@@ -85,16 +82,10 @@ async fn main() -> anyhow::Result<()> {
             // * check if collection exists
             let collection_exists = CallToolRequestParam {
                 name: "collection_exists".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "base_url".to_string(),
-                        serde_json::Value::String(QDRANT_BASE_URL.into()),
-                    ),
-                    (
-                        "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
-                    ),
-                ])),
+                arguments: Some(serde_json::Map::from_iter([(
+                    "name".to_string(),
+                    serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                )])),
             };
             let res = mcp_client.peer().call_tool(collection_exists).await?;
             tracing::info!(
@@ -136,10 +127,6 @@ async fn main() -> anyhow::Result<()> {
             let create_collection = CallToolRequestParam {
                 name: "create_collection".into(),
                 arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "base_url".to_string(),
-                        serde_json::Value::String(QDRANT_BASE_URL.into()),
-                    ),
                     (
                         "name".to_string(),
                         serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
@@ -217,10 +204,6 @@ async fn main() -> anyhow::Result<()> {
                 name: "search_points".into(),
                 arguments: Some(serde_json::Map::from_iter([
                     (
-                        "base_url".to_string(),
-                        serde_json::Value::String(QDRANT_BASE_URL.into()),
-                    ),
-                    (
                         "name".to_string(),
                         serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
                     ),
@@ -238,7 +221,6 @@ async fn main() -> anyhow::Result<()> {
             };
             let tool_result = mcp_client.peer().call_tool(search_points).await?;
             let response = qdrant::SearchPointsResponse::from(tool_result);
-            // let results = response.result;
             tracing::info!("search points response:\n{:?}", &response);
 
             mcp_client.cancel().await?;
@@ -274,10 +256,7 @@ async fn main() -> anyhow::Result<()> {
             // * list collections
             let list_collections = CallToolRequestParam {
                 name: "list_collections".into(),
-                arguments: Some(serde_json::Map::from_iter([(
-                    "base_url".to_string(),
-                    serde_json::Value::String(QDRANT_BASE_URL.into()),
-                )])),
+                arguments: None,
             };
             let res = mcp_client.peer().call_tool(list_collections).await?;
             tracing::info!("collections:\n{}", serde_json::to_string_pretty(&res)?);
@@ -285,16 +264,10 @@ async fn main() -> anyhow::Result<()> {
             // * check if collection exists
             let collection_exists = CallToolRequestParam {
                 name: "collection_exists".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "base_url".to_string(),
-                        serde_json::Value::String(QDRANT_BASE_URL.into()),
-                    ),
-                    (
-                        "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
-                    ),
-                ])),
+                arguments: Some(serde_json::Map::from_iter([(
+                    "name".to_string(),
+                    serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                )])),
             };
             let res = mcp_client.peer().call_tool(collection_exists).await?;
             tracing::info!(
@@ -336,10 +309,6 @@ async fn main() -> anyhow::Result<()> {
             let create_collection = CallToolRequestParam {
                 name: "create_collection".into(),
                 arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "base_url".to_string(),
-                        serde_json::Value::String(QDRANT_BASE_URL.into()),
-                    ),
                     (
                         "name".to_string(),
                         serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
@@ -417,10 +386,6 @@ async fn main() -> anyhow::Result<()> {
                 name: "search_points".into(),
                 arguments: Some(serde_json::Map::from_iter([
                     (
-                        "base_url".to_string(),
-                        serde_json::Value::String(QDRANT_BASE_URL.into()),
-                    ),
-                    (
                         "name".to_string(),
                         serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
                     ),
@@ -438,7 +403,6 @@ async fn main() -> anyhow::Result<()> {
             };
             let tool_result = mcp_client.peer().call_tool(search_points).await?;
             let response = qdrant::SearchPointsResponse::from(tool_result);
-            // let results = response.result;
             tracing::info!("search points response:\n{:?}", &response);
 
             mcp_client.cancel().await?;
@@ -446,10 +410,14 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Stdio => {
             tracing::info!("Connecting to MCP server via stdio");
 
-            let transport = TokioChildProcess::new(Command::new(
-                "./target/release/gaia-qdrant-mcp-server-stdio",
-            ))?;
+            // build command
+            let mut cmd = Command::new("./target/release/gaia-qdrant-mcp-server-stdio");
+            cmd.arg("--base-url").arg(QDRANT_BASE_URL);
 
+            // start mcp server
+            let transport = TokioChildProcess::new(cmd)?;
+
+            // create mcp client
             let mcp_client = ().serve(transport).await?;
             tracing::info!("Connected to server");
 
@@ -628,7 +596,6 @@ async fn main() -> anyhow::Result<()> {
             };
             let tool_result = mcp_client.peer().call_tool(search_points).await?;
             let response = qdrant::SearchPointsResponse::from(tool_result);
-            // let results = response.result;
             tracing::info!("search points response:\n{:?}", &response);
 
             mcp_client.cancel().await?;

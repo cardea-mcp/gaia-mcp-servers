@@ -23,3 +23,5 @@ reqwest            = { workspace = true, features = ["rustls-tls", "json"] }
 pin-project-lite   = { workspace = true }
 gaia-qdrant-common = { workspace = true }
 axum               = { version = "0.8", features = ["macros"] }
+clap               = { workspace = true, features = ["derive"] }
+once_cell          = { workspace = true }

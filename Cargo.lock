@@ -1022,10 +1022,12 @@ name = "gaia-qdrant-mcp-server-sse"
 version = "0.1.3"
 dependencies = [
  "anyhow",
+ "clap",
  "futures",
  "gaia-qdrant-common",
  "hyper",
  "hyper-util",
+ "once_cell",
  "pin-project-lite",
  "rand 0.8.5",
  "reqwest",
@@ -1044,10 +1046,12 @@ name = "gaia-qdrant-mcp-server-stdio"
 version = "0.1.3"
 dependencies = [
  "anyhow",
+ "clap",
  "futures",
  "gaia-qdrant-common",
  "hyper",
  "hyper-util",
+ "once_cell",
  "pin-project-lite",
  "rand 0.8.5",
  "reqwest",
@@ -1067,10 +1071,12 @@ version = "0.1.3"
 dependencies = [
  "anyhow",
  "axum",
+ "clap",
  "futures",
  "gaia-qdrant-common",
  "hyper",
  "hyper-util",
+ "once_cell",
  "pin-project-lite",
  "rand 0.8.5",
  "reqwest",

@@ -24,11 +24,14 @@ docker run -p 6333:6333 -p 6334:6334 \
     qdrant/qdrant
 ```
 
-Now, let's start the mcp server (tcp) by running the following command:
+Now, let's start the mcp server (streamablehttp) by running the following command:
 
 ```bash
-# run mcp server (tcp)
-./target/release/gaia-qdrant-mcp-server-streamhttp
+# run mcp server (streamablehttp)
+./target/release/gaia-qdrant-mcp-server-streamhttp --base-url http://127.0.0.1:6333
+
+# run mcp server with api key (streamablehttp)
+./target/release/gaia-qdrant-mcp-server-streamhttp --base-url http://127.0.0.1:6333 --api-key your-api-key
 ```
 
 If start successfully, you will see the following output:
@@ -402,7 +405,10 @@ Now, let's start the mcp server (sse) by running the following command:
 
 ```bash
 # run mcp server (sse)
-./target/release/gaia-qdrant-mcp-server-sse
+./target/release/gaia-qdrant-mcp-server-sse --base-url http://127.0.0.1:6333
+
+# run mcp server with api key (sse)
+./target/release/gaia-qdrant-mcp-server-sse --base-url http://127.0.0.1:6333 --api-key your-api-key
 ```
 
 If start successfully, you will see the following output:

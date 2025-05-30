@@ -22,3 +22,5 @@ tokio-tungstenite  = { workspace = true }
 reqwest            = { workspace = true, features = ["rustls-tls", "json"] }
 pin-project-lite   = { workspace = true }
 gaia-qdrant-common = { workspace = true }
+clap               = { workspace = true, features = ["derive"] }
+once_cell          = { workspace = true }

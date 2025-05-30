@@ -5,12 +5,6 @@ use std::collections::HashMap;
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct CreateCollectionRequest {
-    #[schemars(
-        description = "the base URL of the local or remote Qdrant database, e.g. http://127.0.0.1:6333"
-    )]
-    pub base_url: String,
-    #[schemars(description = "the API key to use for the Qdrant database")]
-    pub api_key: Option<String>,
     #[schemars(description = "the name of the collection to create")]
     pub name: String,
     #[schemars(description = "the size of the vectors in the collection")]
@@ -32,16 +26,6 @@ impl From<rmcp::model::CallToolResult> for CreateCollectionResponse {
     }
 }
 
-#[derive(Debug, Deserialize, schemars::JsonSchema)]
-pub struct ListCollectionsRequest {
-    #[schemars(
-        description = "the base URL of the local or remote Qdrant database, e.g. http://127.0.0.1:6333"
-    )]
-    pub base_url: String,
-    #[schemars(description = "the API key to use for the Qdrant database")]
-    pub api_key: Option<String>,
-}
-
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
 pub struct ListCollectionsResponse {
     #[schemars(description = "the list of collection names")]
@@ -52,12 +36,6 @@ pub struct ListCollectionsResponse {
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct CollectionExistsRequest {
-    #[schemars(
-        description = "the base URL of the local or remote Qdrant database, e.g. http://127.0.0.1:6333"
-    )]
-    pub base_url: String,
-    #[schemars(description = "the API key to use for the Qdrant database")]
-    pub api_key: Option<String>,
     #[schemars(description = "the name of the collection to check")]
     pub name: String,
 }
@@ -70,10 +48,6 @@ pub struct CollectionExistsResponse {
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct DeleteCollectionRequest {
-    #[schemars(description = "the base URL of the local or remote Qdrant database")]
-    pub base_url: String,
-    #[schemars(description = "the API key to use for the Qdrant database")]
-    pub api_key: Option<String>,
     #[schemars(description = "the name of the collection to delete")]
     pub name: String,
 }
@@ -98,10 +72,6 @@ pub struct Point {
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct UpsertPointsRequest {
-    #[schemars(description = "the base URL of the local or remote Qdrant database")]
-    pub base_url: String,
-    #[schemars(description = "the API key to use for the Qdrant database")]
-    pub api_key: Option<String>,
     #[schemars(description = "the name of the collection to upsert points into")]
     pub name: String,
     #[schemars(description = "the points to upsert")]
@@ -127,10 +97,6 @@ impl From<rmcp::model::CallToolResult> for UpsertPointsResponse {
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct SearchPointsRequest {
-    #[schemars(description = "the base URL of the local or remote Qdrant database")]
-    pub base_url: String,
-    #[schemars(description = "the API key to use for the Qdrant database")]
-    pub api_key: Option<String>,
     #[schemars(description = "the name of the collection to search")]
     pub name: String,
     #[schemars(description = "the vector to search for")]
@@ -164,4 +130,10 @@ pub struct ScoredPoint {
     pub payload: HashMap<String, Value>,
     #[schemars(description = "the vector of the point")]
     pub vector: Vec<f64>,
+}
+
+#[derive(Debug, Clone)]
+pub struct ConnectionConfig {
+    pub base_url: String,
+    pub api_key: Option<String>,
 }
