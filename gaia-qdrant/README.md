@@ -14,15 +14,21 @@ cargo build --package gaia-qdrant-mcp-server-streamhttp --release
 cargo build --package gaia-qdrant-mcp-client --release
 ```
 
-**Note** that, before running the mcp server, you need to start the Qdrant server. If you don't have a Qdrant server running, you can start one by running the following command:
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
 
-```bash
-docker pull qdrant/qdrant:latest
-
-docker run -p 6333:6333 -p 6334:6334 \
-    -v $(pwd)/qdrant_storage:/qdrant/storage:z \
-    qdrant/qdrant
-```
+> [!IMPORTANT]
+>
+> Before running the mcp server, you need to start the Qdrant server. If you don't have a Qdrant server running, you can start one by running the following command:
+>
+> ```bash
+> docker pull qdrant/qdrant:latest
+>
+> docker run -p 6333:6333 -p 6334:6334 \
+>    -v $(pwd)/qdrant_storage:/qdrant/storage:z \
+>    qdrant/qdrant
+> ```
+>
 
 Now, let's start the mcp server (streamablehttp) by running the following command:
 
@@ -391,15 +397,21 @@ cargo build --package gaia-qdrant-mcp-server-sse --release
 cargo build --package gaia-qdrant-mcp-client --release
 ```
 
-**Note** that, before running the mcp server, you need to start the Qdrant server. If you don't have a Qdrant server running, you can start one by running the following command:
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
 
-```bash
-docker pull qdrant/qdrant:latest
-
-docker run -p 6333:6333 -p 6334:6334 \
-    -v $(pwd)/qdrant_storage:/qdrant/storage:z \
-    qdrant/qdrant
-```
+> [!IMPORTANT]
+>
+> Before running the mcp server, you need to start the Qdrant server. If you don't have a Qdrant server running, you can start one by running the following command:
+>
+> ```bash
+> docker pull qdrant/qdrant:latest
+>
+> docker run -p 6333:6333 -p 6334:6334 \
+>    -v $(pwd)/qdrant_storage:/qdrant/storage:z \
+>    qdrant/qdrant
+> ```
+>
 
 Now, let's start the mcp server (sse) by running the following command:
 
@@ -764,15 +776,21 @@ cargo build --package gaia-qdrant-mcp-server-stdio --release
 cargo build --package gaia-qdrant-mcp-client --release
 ```
 
-**Note** that, before running the mcp server, you need to start the Qdrant server. If you don't have a Qdrant server running, you can start one by running the following command:
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
 
-```bash
-docker pull qdrant/qdrant:latest
-
-docker run -p 6333:6333 -p 6334:6334 \
-    -v $(pwd)/qdrant_storage:/qdrant/storage:z \
-    qdrant/qdrant
-```
+> [!IMPORTANT]
+>
+> Before running the mcp server, you need to start the Qdrant server. If you don't have a Qdrant server running, you can start one by running the following command:
+>
+> ```bash
+> docker pull qdrant/qdrant:latest
+>
+> docker run -p 6333:6333 -p 6334:6334 \
+>    -v $(pwd)/qdrant_storage:/qdrant/storage:z \
+>    qdrant/qdrant
+> ```
+>
 
 Now, let's run the mcp client by running the following command. The mcp client will start and call the mcp server.
 
