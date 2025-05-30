@@ -21,7 +21,7 @@ hyper-util              = { workspace = true, features = ["tokio"] }
 tokio-tungstenite       = { workspace = true }
 reqwest                 = { workspace = true, features = ["rustls-tls", "json"] }
 pin-project-lite        = { workspace = true }
-gaia-elastic-mcp-common = { path = "../gaia-elastic-mcp-common" }
+gaia-elastic-mcp-common = { workspace = true }
 axum                    = { version = "0.8", features = ["macros"] }
 clap                    = { workspace = true, features = ["derive"] }
 once_cell               = { workspace = true }

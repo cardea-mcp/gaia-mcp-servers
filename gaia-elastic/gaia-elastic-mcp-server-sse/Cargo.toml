@@ -23,6 +23,6 @@ reqwest                 = { workspace = true, features = ["json"] }
 pin-project-lite        = { workspace = true }
 endpoints               = { workspace = true, features = ["index"] }
 elasticsearch           = { version = "9.0.0-alpha.1", features = ["rustls-tls"] }
-gaia-elastic-mcp-common = { path = "../gaia-elastic-mcp-common" }
+gaia-elastic-mcp-common = { workspace = true }
 clap                    = { workspace = true, features = ["derive"] }
 once_cell               = { workspace = true }
