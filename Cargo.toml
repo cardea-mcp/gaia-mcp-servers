@@ -13,7 +13,7 @@ members = [
     "gaia-qdrant/gaia-qdrant-mcp-client",
     "gaia-qdrant/gaia-qdrant-mcp-server-sse",
     "gaia-qdrant/gaia-qdrant-mcp-server-streamhttp",
-    "gaia-kwsearch/gaia-kwsearch-common",
+    "gaia-kwsearch/gaia-kwsearch-mcp-common",
     "gaia-kwsearch/gaia-kwsearch-mcp-server-stdio",
     "gaia-kwsearch/gaia-kwsearch-mcp-client",
     "gaia-kwsearch/gaia-kwsearch-mcp-server-sse",
@@ -31,27 +31,29 @@ members = [
 resolver = "3"
 
 [workspace.dependencies]
-rmcp                 = { git = "https://github.com/modelcontextprotocol/rust-sdk.git", rev = "9fc6af09" }
-tokio                = "1"
-serde                = "1.0"
-serde_json           = "1.0"
-anyhow               = "1.0"
-tracing              = "0.1"
-tracing-subscriber   = "0.3"
-futures              = "0.3"
-rand                 = "0.8"
-schemars             = "0.8"
-hyper                = "1"
-hyper-util           = "0.1"
-tokio-tungstenite    = "0.26.2"
-reqwest              = "0.12"
-pin-project-lite     = "0.2"
-gaia-qdrant-common   = { path = "gaia-qdrant/gaia-qdrant-common" }
-gaia-kwsearch-common = { path = "gaia-kwsearch/gaia-kwsearch-common" }
-clap                 = "4.4.6"
-endpoints            = "0.29.0"
-mysql                = "26.0.0"
-once_cell            = "1.18"
+rmcp                     = { git = "https://github.com/modelcontextprotocol/rust-sdk.git", rev = "9fc6af09" }
+tokio                    = "1"
+serde                    = "1.0"
+serde_json               = "1.0"
+anyhow                   = "1.0"
+tracing                  = "0.1"
+tracing-subscriber       = "0.3"
+futures                  = "0.3"
+rand                     = "0.8"
+schemars                 = "0.8"
+hyper                    = "1"
+hyper-util               = "0.1"
+tokio-tungstenite        = "0.26.2"
+reqwest                  = "0.12"
+pin-project-lite         = "0.2"
+gaia-qdrant-common       = { path = "gaia-qdrant/gaia-qdrant-common" }
+gaia-kwsearch-mcp-common = { path = "gaia-kwsearch/gaia-kwsearch-mcp-common" }
+gaia-elastic-mcp-common  = { path = "gaia-elastic/gaia-elastic-mcp-common" }
+gaia-tidb-mcp-common     = { path = "gaia-tidb/gaia-tidb-mcp-common" }
+clap                     = "4.4.6"
+endpoints                = "0.29.0"
+mysql                    = "26.0.0"
+once_cell                = "1.18"
 
 [workspace.package]
 edition    = "2024"

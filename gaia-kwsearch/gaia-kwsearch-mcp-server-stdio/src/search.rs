@@ -1,6 +1,6 @@
 use crate::CONNECTION_CONFIG;
 use endpoints::rag::keyword_search::{IndexRequest, IndexResponse, QueryRequest, QueryResponse};
-use gaia_kwsearch_common::{
+use gaia_kwsearch_mcp_common::{
     CreateIndexRequest, CreateIndexResponse, SearchDocumentsRequest, SearchDocumentsResponse,
 };
 use rmcp::{

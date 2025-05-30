@@ -1,7 +1,7 @@
 mod search;
 
 use clap::Parser;
-use gaia_kwsearch_common::ConnectionConfig;
+use gaia_kwsearch_mcp_common::ConnectionConfig;
 use once_cell::sync::OnceCell;
 use rmcp::transport::sse_server::SseServer;
 use search::KeywordSearchServer;

@@ -1,5 +1,5 @@
 [package]
-name        = "gaia-kwsearch-common"
+name        = "gaia-kwsearch-mcp-common"
 version     = "0.1.0"
 edition     = { workspace = true }
 repository  = { workspace = true }

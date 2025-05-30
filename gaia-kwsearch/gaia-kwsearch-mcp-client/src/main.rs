@@ -1,5 +1,5 @@
 use clap::{Parser, ValueEnum};
-use gaia_kwsearch_common::{CreateIndexResponse, KwDocumentInput, SearchDocumentsResponse};
+use gaia_kwsearch_mcp_common::{CreateIndexResponse, KwDocumentInput, SearchDocumentsResponse};
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,

@@ -917,7 +917,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "gaia-kwsearch-common"
+name = "gaia-kwsearch-mcp-client"
+version = "0.1.3"
+dependencies = [
+ "anyhow",
+ "clap",
+ "gaia-kwsearch-mcp-common",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "gaia-kwsearch-mcp-common"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -939,20 +953,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gaia-kwsearch-mcp-client"
-version = "0.1.3"
-dependencies = [
- "anyhow",
- "clap",
- "gaia-kwsearch-common",
- "rmcp",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "gaia-kwsearch-mcp-server-sse"
 version = "0.1.3"
 dependencies = [
@@ -960,7 +960,7 @@ dependencies = [
  "clap",
  "endpoints",
  "futures",
- "gaia-kwsearch-common",
+ "gaia-kwsearch-mcp-common",
  "hyper",
  "hyper-util",
  "once_cell",
@@ -985,7 +985,7 @@ dependencies = [
  "clap",
  "endpoints",
  "futures",
- "gaia-kwsearch-common",
+ "gaia-kwsearch-mcp-common",
  "hyper",
  "hyper-util",
  "once_cell",
@@ -1011,7 +1011,7 @@ dependencies = [
  "clap",
  "endpoints",
  "futures",
- "gaia-kwsearch-common",
+ "gaia-kwsearch-mcp-common",
  "hyper",
  "hyper-util",
  "once_cell",
