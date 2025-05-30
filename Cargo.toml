@@ -13,7 +13,6 @@ members = [
     "gaia-qdrant/gaia-qdrant-mcp-client",
     "gaia-qdrant/gaia-qdrant-mcp-server-sse",
     "gaia-qdrant/gaia-qdrant-mcp-server-streamhttp",
-    "gaia-kwsearch/gaia-kwsearch-mcp-server",
     "gaia-kwsearch/gaia-kwsearch-common",
     "gaia-kwsearch/gaia-kwsearch-mcp-server-stdio",
     "gaia-kwsearch/gaia-kwsearch-mcp-client",
