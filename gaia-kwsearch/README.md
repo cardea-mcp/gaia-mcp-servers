@@ -8,7 +8,7 @@ Let's build mcp server and client by running the following commands:
 
 ```bash
 # build mcp server (tcp)
-cargo build --package gaia-kwsearch-mcp-server --release
+cargo build --package gaia-kwsearch-mcp-server-streamhttp --release
 
 # build mcp client
 cargo build --package gaia-kwsearch-mcp-client --release
@@ -56,7 +56,7 @@ Now, let's run the mcp client by running the following command:
 
 ```bash
 # run mcp client
-./target/release/gaia-kwsearch-mcp-client --transport tcp
+./target/release/gaia-kwsearch-mcp-client --transport stream-http
 ```
 
 If start successfully, you will see the following output:
