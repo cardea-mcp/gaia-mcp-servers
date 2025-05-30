@@ -14,11 +14,16 @@ cargo build --package gaia-weather-mcp-server-streamhttp --release
 cargo build --package gaia-weather-mcp-client --release
 ```
 
-**Note** that the mcp server will use the `OPENWEATHERMAP_API_KEY` environment variable to get the weather data from [OpenWeatherMap.org](https://openweathermap.org/). If you don't have an API key, you **SHOULD** apply one from [OpenWeatherMap.org](https://openweathermap.org/) and set it by running the following command:
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
 
-```bash
-export OPENWEATHERMAP_API_KEY=<your-api-key>
-```
+> [!IMPORTANT]
+>
+> The mcp server will use the `OPENWEATHERMAP_API_KEY` environment variable to get the weather data from [OpenWeatherMap.org](https://openweathermap.org/). If you don't have an API key, you **SHOULD** apply one from [OpenWeatherMap.org](https://openweathermap.org/) and set it by running the following command:
+>
+> ```bash
+> export OPENWEATHERMAP_API_KEY=<your-api-key>
+> ```
 
 Now, let's start the mcp server (streamablehttp) by running the following command:
 
@@ -141,11 +146,16 @@ cargo build --package gaia-weather-mcp-server-stdio --release
 cargo build --package gaia-weather-mcp-client --release
 ```
 
-**Note** that the mcp server will use the `OPENWEATHERMAP_API_KEY` environment variable to get the weather data from [OpenWeatherMap.org](https://openweathermap.org/). If you don't have an API key, you **SHOULD** apply one from [OpenWeatherMap.org](https://openweathermap.org/) and set it by running the following command:
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
 
-```bash
-export OPENWEATHERMAP_API_KEY=<your-api-key>
-```
+> [!IMPORTANT]
+>
+> The mcp server will use the `OPENWEATHERMAP_API_KEY` environment variable to get the weather data from [OpenWeatherMap.org](https://openweathermap.org/). If you don't have an API key, you **SHOULD** apply one from [OpenWeatherMap.org](https://openweathermap.org/) and set it by running the following command:
+>
+> ```bash
+> export OPENWEATHERMAP_API_KEY=<your-api-key>
+> ```
 
 Now, let's run the mcp client by running the following command. The mcp client will start and call the mcp server.
 
@@ -284,11 +294,16 @@ cargo build --package gaia-weather-mcp-server-sse --release
 cargo build --package gaia-weather-mcp-client --release
 ```
 
-**Note** that the mcp server will use the `OPENWEATHERMAP_API_KEY` environment variable to get the weather data from [OpenWeatherMap.org](https://openweathermap.org/). If you don't have an API key, you **SHOULD** apply one from [OpenWeatherMap.org](https://openweathermap.org/) and set it by running the following command:
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
 
-```bash
-export OPENWEATHERMAP_API_KEY=<your-api-key>
-```
+> [!IMPORTANT]
+>
+> The mcp server will use the `OPENWEATHERMAP_API_KEY` environment variable to get the weather data from [OpenWeatherMap.org](https://openweathermap.org/). If you don't have an API key, you **SHOULD** apply one from [OpenWeatherMap.org](https://openweathermap.org/) and set it by running the following command:
+>
+> ```bash
+> export OPENWEATHERMAP_API_KEY=<your-api-key>
+> ```
 
 Now, let's start the mcp server (sse) by running the following command:
 
