@@ -14,7 +14,12 @@ cargo build --package gaia-tidb-mcp-server-streamhttp --release
 cargo build --package gaia-tidb-mcp-client --release
 ```
 
-**Note** that, before running the mcp server, you need to start the TiDB Cloud server.
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
+
+> [!IMPORTANT]
+>
+> Before running the mcp server, you need to start the TiDB Cloud server.
 
 Now, let's start the mcp server by running the following command:
 
@@ -35,7 +40,7 @@ export TIDB_PASSWORD=<your-tidb-password>
 ./target/release/gaia-tidb-mcp-server-sse --ssl-ca $SSL_CA_PATH
 ```
 
-> [!NOTE]
+> [!IMPORTANT]
 > Connections to TiDB Serverless clusters with public endpoint require TLS. Learn more about [secure connection settings](https://docs.pingcap.com/tidbcloud/secure-connections-to-serverless-clusters/).
 
 If start successfully, you will see the following output:
@@ -64,7 +69,7 @@ If start successfully, you will see a response similar to the following output:
 
 <details><summary>Expand to view the output</summary>
 
-```bash
+```console
 2025-05-29T08:10:56.785064Z  INFO gaia_tidb_mcp_client: 120: Connecting to Gaia TiDB MCP server via stream-http: http://127.0.0.1:8007/mcp
 2025-05-29T08:10:56.805574Z  INFO serve_inner: rmcp::service: 541: Service initialized as client peer_info=Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A TiDB MCP server") })
 2025-05-29T08:10:56.805612Z  INFO gaia_tidb_mcp_client: 140: Connected to server: Some(
@@ -183,7 +188,12 @@ cargo build --package gaia-tidb-mcp-server-sse --release
 cargo build --package gaia-tidb-mcp-client --release
 ```
 
-**Note** that, before running the mcp server, you need to start the TiDB Cloud server.
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
+
+> [!IMPORTANT]
+>
+> Before running the mcp server, you need to start the TiDB Cloud server.
 
 Now, let's start the mcp server by running the following command:
 
@@ -204,7 +214,7 @@ export TIDB_PASSWORD=<your-tidb-password>
 ./target/release/gaia-tidb-mcp-server-sse --ssl-ca $SSL_CA_PATH
 ```
 
-> [!NOTE]
+> [!IMPORTANT]
 > Connections to TiDB Serverless clusters with public endpoint require TLS. Learn more about [secure connection settings](https://docs.pingcap.com/tidbcloud/secure-connections-to-serverless-clusters/).
 
 If start successfully, you will see the following output:
@@ -233,7 +243,7 @@ If start successfully, you will see a response similar to the following output:
 
 <details><summary>Expand to view the output</summary>
 
-```bash
+```console
 2025-05-29T07:54:57.284265Z  INFO gaia_tidb_mcp_client: 57: Connecting to Gaia TiDB MCP server via sse: http://127.0.0.1:8007/sse
 2025-05-29T07:54:57.307704Z  INFO serve_inner: rmcp::service: 541: Service initialized as client peer_info=Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A TiDB MCP server") })
 2025-05-29T07:54:57.307798Z  INFO gaia_tidb_mcp_client: 74: Connected to server: Some(
