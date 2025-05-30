@@ -1,5 +1,5 @@
 use crate::CONNECTION_CONFIG;
-use gaia_qdrant_common::*;
+use gaia_qdrant_mcp_common::*;
 use rmcp::{
     Error as McpError, ServerHandler,
     model::{CallToolResult, Content, ErrorCode, ServerCapabilities, ServerInfo},

@@ -1,7 +1,7 @@
 mod qdrant;
 
 use clap::Parser;
-use gaia_qdrant_common::ConnectionConfig;
+use gaia_qdrant_mcp_common::ConnectionConfig;
 use once_cell::sync::OnceCell;
 use qdrant::QdrantServer;
 use rmcp::{ServiceExt, transport::stdio};

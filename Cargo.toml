@@ -8,7 +8,7 @@ members = [
     "gaia-weather/gaia-weather-mcp-server-streamhttp",
     "gaia-weather/gaia-weather-mcp-server-sse",
     "gaia-weather/gaia-weather-mcp-server-stdio",
-    "gaia-qdrant/gaia-qdrant-common",
+    "gaia-qdrant/gaia-qdrant-mcp-common",
     "gaia-qdrant/gaia-qdrant-mcp-server-stdio",
     "gaia-qdrant/gaia-qdrant-mcp-client",
     "gaia-qdrant/gaia-qdrant-mcp-server-sse",
@@ -46,7 +46,7 @@ hyper-util               = "0.1"
 tokio-tungstenite        = "0.26.2"
 reqwest                  = "0.12"
 pin-project-lite         = "0.2"
-gaia-qdrant-common       = { path = "gaia-qdrant/gaia-qdrant-common" }
+gaia-qdrant-mcp-common   = { path = "gaia-qdrant/gaia-qdrant-mcp-common" }
 gaia-kwsearch-mcp-common = { path = "gaia-kwsearch/gaia-kwsearch-mcp-common" }
 gaia-elastic-mcp-common  = { path = "gaia-elastic/gaia-elastic-mcp-common" }
 gaia-tidb-mcp-common     = { path = "gaia-tidb/gaia-tidb-mcp-common" }

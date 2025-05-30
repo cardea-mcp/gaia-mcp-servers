@@ -1,5 +1,5 @@
 use clap::{Parser, ValueEnum};
-use gaia_qdrant_common::{self as qdrant, Point};
+use gaia_qdrant_mcp_common::{self as qdrant, Point};
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,

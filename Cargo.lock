@@ -1029,26 +1029,26 @@ dependencies = [
 ]
 
 [[package]]
-name = "gaia-qdrant-common"
-version = "0.1.0"
-dependencies = [
- "rmcp",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "gaia-qdrant-mcp-client"
 version = "0.1.3"
 dependencies = [
  "anyhow",
  "clap",
- "gaia-qdrant-common",
+ "gaia-qdrant-mcp-common",
  "rmcp",
  "serde_json",
  "tokio",
  "tracing",
  "tracing-subscriber",
+]
+
+[[package]]
+name = "gaia-qdrant-mcp-common"
+version = "0.1.0"
+dependencies = [
+ "rmcp",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -1058,7 +1058,7 @@ dependencies = [
  "anyhow",
  "clap",
  "futures",
- "gaia-qdrant-common",
+ "gaia-qdrant-mcp-common",
  "hyper",
  "hyper-util",
  "once_cell",
@@ -1082,7 +1082,7 @@ dependencies = [
  "anyhow",
  "clap",
  "futures",
- "gaia-qdrant-common",
+ "gaia-qdrant-mcp-common",
  "hyper",
  "hyper-util",
  "once_cell",
@@ -1107,7 +1107,7 @@ dependencies = [
  "axum",
  "clap",
  "futures",
- "gaia-qdrant-common",
+ "gaia-qdrant-mcp-common",
  "hyper",
  "hyper-util",
  "once_cell",
