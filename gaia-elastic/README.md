@@ -14,6 +14,9 @@ cargo build --package gaia-elastic-mcp-server-streamhttp --release
 cargo build --package gaia-elastic-mcp-client --release
 ```
 
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
+
 **Note** that, before running the mcp server, you need to start the Elasticsearch server. If you don't have an Elasticsearch server running, you can refer to [Run Elasticsearch locally](https://www.elastic.co/docs/solutions/search/run-elasticsearch-locally#local-dev-quick-start) or use the following command to start one:
 
 ```bash
@@ -1111,13 +1114,18 @@ cargo build --package gaia-elastic-mcp-server-sse --release
 cargo build --package gaia-elastic-mcp-client --release
 ```
 
-**Note** that, before running the mcp server, you need to start the Elasticsearch server. If you don't have an Elasticsearch server running, you can refer to [Run Elasticsearch locally](https://www.elastic.co/docs/solutions/search/run-elasticsearch-locally#local-dev-quick-start) or use the following command to start one:
+> [!NOTE]
+> The mcp client is ONLY used for verifying and demonstrating mcp servers.
 
-```bash
-curl -fsSL https://elastic.co/start-local | sh
-```
-
-The Elasticsearch server will be started on `http://localhost:9200`. And you can get the API key from the output of the command, remember it! You can pass it to the mcp server while invoking the mcp tools.
+> [!IMPORTANT]
+>
+> Before running the mcp server, you need to start the Elasticsearch server. If you don't have an Elasticsearch server running, you can refer to [Run Elasticsearch locally](https://www.elastic.co/docs/solutions/search/run-elasticsearch-locally#local-dev-quick-start) or use the following command to start one:
+>
+> ```bash
+> curl -fsSL https://elastic.co/start-local | sh
+> ```
+>
+> The Elasticsearch server will be started on `http://localhost:9200`. And you can get the API key from the output of the command, remember it! You can pass it to the mcp server while invoking the mcp tools.
 
 Now, let's start the mcp server (sse) by running the following command:
 
