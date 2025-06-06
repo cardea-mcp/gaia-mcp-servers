@@ -51,7 +51,7 @@ gaia-kwsearch-mcp-common = { path = "gaia-kwsearch/gaia-kwsearch-mcp-common" }
 gaia-elastic-mcp-common  = { path = "gaia-elastic/gaia-elastic-mcp-common" }
 gaia-tidb-mcp-common     = { path = "gaia-tidb/gaia-tidb-mcp-common" }
 clap                     = "4.4.6"
-endpoints                = "0.29.0"
+endpoints                = "0.30.0"
 mysql                    = "26.0.0"
 once_cell                = "1.18"
 
