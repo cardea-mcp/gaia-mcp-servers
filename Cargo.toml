@@ -2,10 +2,8 @@
 members = [
     "gaia-calculator/gaia-calculator-mcp-server",
     "gaia-calculator/gaia-calculator-mcp-client",
+    "gaia-weather/gaia-weather-mcp-server",
     "gaia-weather/gaia-weather-mcp-client",
-    "gaia-weather/gaia-weather-mcp-server-streamhttp",
-    "gaia-weather/gaia-weather-mcp-server-sse",
-    "gaia-weather/gaia-weather-mcp-server-stdio",
     "gaia-qdrant/gaia-qdrant-mcp-common",
     "gaia-qdrant/gaia-qdrant-mcp-server-stdio",
     "gaia-qdrant/gaia-qdrant-mcp-client",
@@ -23,7 +21,7 @@ members = [
     "gaia-tidb/gaia-tidb-mcp-server-sse",
     "gaia-tidb/gaia-tidb-mcp-common",
     "gaia-tidb/gaia-tidb-mcp-client",
-    "gaia-tidb/gaia-tidb-mcp-server-streamhttp", "gaia-weather/gaia-weather-mcp-server",
+    "gaia-tidb/gaia-tidb-mcp-server-streamhttp",
 ]
 resolver = "3"
 
