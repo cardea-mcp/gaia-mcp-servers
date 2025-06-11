@@ -2,7 +2,7 @@
 
 ## Quick Start
 
-### Build and run gaia-calculator-mcp-server
+### Build mcp server and client
 
 Let's build mcp server and client by running the following commands:
 
@@ -16,6 +16,8 @@ cargo build --package gaia-calculator-mcp-client --release
 
 > [!NOTE]
 > The mcp client is ONLY used for verifying and demonstrating mcp servers.
+
+### Start mcp server
 
 Now, let's start the mcp server. You can choose to start the server with different transport types by specifying the `--transport` CLI option. The default transport type is `stream-http`. In addition, you can also specify the socket address to bind to by specifying the `--socket-addr` CLI option. The default socket address is `127.0.0.1:8001`.
 
@@ -35,6 +37,8 @@ If start successfully, you will see the following output:
 ```bash
 Calculator MCP server is listening on 127.0.0.1:8001
 ```
+
+### Run mcp client
 
 Now, let's run the mcp client by running the following command:
 
