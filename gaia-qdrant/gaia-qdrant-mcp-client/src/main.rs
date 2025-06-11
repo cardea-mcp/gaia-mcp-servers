@@ -11,7 +11,6 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 const SOCKET_ADDR: &str = "127.0.0.1:8003";
 const QDRANT_BASE_URL: &str = "http://127.0.0.1:6333";
-const QDRANT_COLLECTION_NAME: &str = "mcp-test";
 
 #[derive(Debug, Clone, ValueEnum)]
 enum TransportType {
@@ -24,8 +23,11 @@ enum TransportType {
 #[command(author, version, about = "Gaia Qdrant MCP client")]
 struct Args {
     /// Transport type to use (tcp or stdio)
-    #[arg(short, long, value_enum, default_value = "tcp")]
+    #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
+    /// The name of the collection to use
+    #[arg(short, long, required = true)]
+    collection: String,
 }
 
 #[tokio::main]
@@ -84,7 +86,7 @@ async fn main() -> anyhow::Result<()> {
                 name: "collection_exists".into(),
                 arguments: Some(serde_json::Map::from_iter([(
                     "name".to_string(),
-                    serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                    serde_json::Value::String(cli.collection.as_str().into()),
                 )])),
             };
             let res = mcp_client.peer().call_tool(collection_exists).await?;
@@ -111,7 +113,7 @@ async fn main() -> anyhow::Result<()> {
                             ),
                             (
                                 "name".to_string(),
-                                serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                                serde_json::Value::String(cli.collection.as_str().into()),
                             ),
                         ])),
                     };
@@ -129,7 +131,7 @@ async fn main() -> anyhow::Result<()> {
                 arguments: Some(serde_json::Map::from_iter([
                     (
                         "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                        serde_json::Value::String(cli.collection.as_str().into()),
                     ),
                     ("size".to_string(), serde_json::Value::from(4)),
                 ])),
@@ -182,7 +184,7 @@ async fn main() -> anyhow::Result<()> {
                     ),
                     (
                         "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                        serde_json::Value::String(cli.collection.as_str().into()),
                     ),
                     (
                         "points".to_string(),
@@ -205,7 +207,7 @@ async fn main() -> anyhow::Result<()> {
                 arguments: Some(serde_json::Map::from_iter([
                     (
                         "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                        serde_json::Value::String(cli.collection.as_str().into()),
                     ),
                     (
                         "vector".to_string(),
@@ -266,7 +268,7 @@ async fn main() -> anyhow::Result<()> {
                 name: "collection_exists".into(),
                 arguments: Some(serde_json::Map::from_iter([(
                     "name".to_string(),
-                    serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                    serde_json::Value::String(cli.collection.as_str().into()),
                 )])),
             };
             let res = mcp_client.peer().call_tool(collection_exists).await?;
@@ -293,7 +295,7 @@ async fn main() -> anyhow::Result<()> {
                             ),
                             (
                                 "name".to_string(),
-                                serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                                serde_json::Value::String(cli.collection.as_str().into()),
                             ),
                         ])),
                     };
@@ -311,7 +313,7 @@ async fn main() -> anyhow::Result<()> {
                 arguments: Some(serde_json::Map::from_iter([
                     (
                         "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                        serde_json::Value::String(cli.collection.as_str().into()),
                     ),
                     ("size".to_string(), serde_json::Value::from(4)),
                 ])),
@@ -364,7 +366,7 @@ async fn main() -> anyhow::Result<()> {
                     ),
                     (
                         "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                        serde_json::Value::String(cli.collection.as_str().into()),
                     ),
                     (
                         "points".to_string(),
@@ -387,7 +389,7 @@ async fn main() -> anyhow::Result<()> {
                 arguments: Some(serde_json::Map::from_iter([
                     (
                         "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                        serde_json::Value::String(cli.collection.as_str().into()),
                     ),
                     (
                         "vector".to_string(),
@@ -450,7 +452,7 @@ async fn main() -> anyhow::Result<()> {
                     ),
                     (
                         "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                        serde_json::Value::String(cli.collection.as_str().into()),
                     ),
                 ])),
             };
@@ -478,7 +480,7 @@ async fn main() -> anyhow::Result<()> {
                             ),
                             (
                                 "name".to_string(),
-                                serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                                serde_json::Value::String(cli.collection.as_str().into()),
                             ),
                         ])),
                     };
@@ -500,7 +502,7 @@ async fn main() -> anyhow::Result<()> {
                     ),
                     (
                         "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                        serde_json::Value::String(cli.collection.as_str().into()),
                     ),
                     ("size".to_string(), serde_json::Value::from(4)),
                 ])),
@@ -553,7 +555,7 @@ async fn main() -> anyhow::Result<()> {
                     ),
                     (
                         "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                        serde_json::Value::String(cli.collection.as_str().into()),
                     ),
                     (
                         "points".to_string(),
@@ -580,7 +582,7 @@ async fn main() -> anyhow::Result<()> {
                     ),
                     (
                         "name".to_string(),
-                        serde_json::Value::String(QDRANT_COLLECTION_NAME.into()),
+                        serde_json::Value::String(cli.collection.as_str().into()),
                     ),
                     (
                         "vector".to_string(),

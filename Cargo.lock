@@ -1017,11 +1017,36 @@ dependencies = [
 
 [[package]]
 name = "gaia-qdrant-mcp-common"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "rmcp",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "gaia-qdrant-mcp-server"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "clap",
+ "futures",
+ "gaia-qdrant-mcp-common",
+ "hyper",
+ "hyper-util",
+ "once_cell",
+ "pin-project-lite",
+ "rand 0.8.5",
+ "reqwest",
+ "rmcp",
+ "schemars 0.9.0",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]

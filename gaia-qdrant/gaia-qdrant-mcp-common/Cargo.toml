@@ -1,6 +1,5 @@
 [package]
 name        = "gaia-qdrant-mcp-common"
-version     = "0.1.0"
 edition     = { workspace = true }
 repository  = { workspace = true }
 license     = { workspace = true }
