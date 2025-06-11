@@ -23,9 +23,12 @@ enum TransportType {
 #[derive(Parser, Debug)]
 #[command(author, version, about = "Gaia Elasticsearch MCP client")]
 struct Args {
-    /// Transport type to use (sse)
-    #[arg(short, long, value_enum, default_value = "sse")]
+    /// Transport type to use
+    #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
+    /// The name of the index to use
+    #[arg(short, long, required = true)]
+    index: String,
 }
 
 #[tokio::main]
@@ -40,6 +43,8 @@ async fn main() -> anyhow::Result<()> {
         .init();
 
     let cli = Args::parse();
+
+    let index_name = &cli.index;
 
     match cli.transport {
         TransportType::Stdio => {
@@ -99,8 +104,6 @@ async fn main() -> anyhow::Result<()> {
 
             let mut api_key = std::env::var("ES_API_KEY").unwrap();
             api_key = format!("ApiKey {}", api_key);
-
-            let index_name = "paris";
 
             // create index
             {
@@ -343,8 +346,6 @@ async fn main() -> anyhow::Result<()> {
 
             let mut api_key = std::env::var("ES_API_KEY").unwrap();
             api_key = format!("ApiKey {}", api_key);
-
-            let index_name = "paris";
 
             // create index
             {
