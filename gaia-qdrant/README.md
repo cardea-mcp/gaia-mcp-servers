@@ -2,6 +2,8 @@
 
 ## Quick Start
 
+### Build mcp server and client
+
 Let's build mcp server and client by running the following commands:
 
 ```bash
@@ -14,6 +16,8 @@ cargo build --package gaia-qdrant-mcp-client --release
 
 > [!NOTE]
 > The mcp client is ONLY used for verifying and demonstrating mcp servers.
+
+### Start mcp server
 
 > [!IMPORTANT]
 >
@@ -60,6 +64,8 @@ If start successfully, you will see the following output:
 ```bash
 Gaia Qdrant MCP Server is listening on 127.0.0.1:8003
 ```
+
+### Run mcp client
 
 The CLI options of the mcp client are as follows:
 
