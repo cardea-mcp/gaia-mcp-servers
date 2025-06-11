@@ -982,61 +982,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gaia-tidb-mcp-server-sse"
-version = "0.2.0"
-dependencies = [
- "anyhow",
- "clap",
- "endpoints",
- "futures",
- "gaia-tidb-mcp-common",
- "hyper",
- "hyper-util",
- "mysql",
- "once_cell",
- "pin-project-lite",
- "rand 0.8.5",
- "reqwest",
- "rmcp",
- "rustls",
- "schemars 0.9.0",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-tidb-mcp-server-streamhttp"
-version = "0.2.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "endpoints",
- "futures",
- "gaia-tidb-mcp-common",
- "hyper",
- "hyper-util",
- "mysql",
- "once_cell",
- "pin-project-lite",
- "rand 0.8.5",
- "reqwest",
- "rmcp",
- "rustls",
- "schemars 0.9.0",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "gaia-weather-mcp-client"
 version = "0.2.0"
 dependencies = [
