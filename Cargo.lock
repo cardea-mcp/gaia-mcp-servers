@@ -1192,6 +1192,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "gaia-weather-mcp-server"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "clap",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "pin-project-lite",
+ "rand 0.8.5",
+ "reqwest",
+ "rmcp",
+ "schemars 0.9.0",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "gaia-weather-mcp-server-sse"
 version = "0.2.0"
 dependencies = [
