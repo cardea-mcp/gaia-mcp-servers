@@ -2,7 +2,7 @@
 
 ## Quick Start
 
-### Build and run gaia-weather-mcp-server
+### Build mcp server and client
 
 Let's build mcp server and client by running the following commands:
 
@@ -16,6 +16,8 @@ cargo build --package gaia-weather-mcp-client --release
 
 > [!NOTE]
 > The mcp client is ONLY used for verifying and demonstrating mcp servers.
+
+### Start mcp server
 
 > [!IMPORTANT]
 >
@@ -43,6 +45,8 @@ If start successfully, you will see the following output:
 ```bash
 Gaia Weather MCP Server is listening on 127.0.0.1:8002
 ```
+
+### Run mcp client
 
 Now, let's run the mcp client by running the following command:
 
