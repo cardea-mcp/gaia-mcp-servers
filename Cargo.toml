@@ -13,8 +13,6 @@ members = [
     "gaia-elastic/gaia-elastic-mcp-common",
     "gaia-elastic/gaia-elastic-mcp-server",
     "gaia-elastic/gaia-elastic-mcp-client",
-    "gaia-elastic/gaia-elastic-mcp-server-sse",
-    "gaia-elastic/gaia-elastic-mcp-server-streamhttp",
     "gaia-tidb/gaia-tidb-mcp-server-sse",
     "gaia-tidb/gaia-tidb-mcp-common",
     "gaia-tidb/gaia-tidb-mcp-client",
