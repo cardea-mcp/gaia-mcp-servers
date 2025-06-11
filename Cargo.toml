@@ -1,9 +1,7 @@
 [workspace]
 members = [
+    "gaia-calculator/gaia-calculator-mcp-server",
     "gaia-calculator/gaia-calculator-mcp-client",
-    "gaia-calculator/gaia-calculator-mcp-server-streamhttp",
-    "gaia-calculator/gaia-calculator-mcp-server-sse",
-    "gaia-calculator/gaia-calculator-mcp-server-stdio",
     "gaia-weather/gaia-weather-mcp-client",
     "gaia-weather/gaia-weather-mcp-server-streamhttp",
     "gaia-weather/gaia-weather-mcp-server-sse",
@@ -26,8 +24,6 @@ members = [
     "gaia-tidb/gaia-tidb-mcp-common",
     "gaia-tidb/gaia-tidb-mcp-client",
     "gaia-tidb/gaia-tidb-mcp-server-streamhttp",
-    "gaia-calculator/gaia-calculator-mcp-server",
-
 ]
 resolver = "3"
 

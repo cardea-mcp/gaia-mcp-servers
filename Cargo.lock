@@ -815,56 +815,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gaia-calculator-mcp-server-sse"
-version = "0.2.0"
-dependencies = [
- "anyhow",
- "futures",
- "rmcp",
- "schemars 0.9.0",
- "serde",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-calculator-mcp-server-stdio"
-version = "0.2.0"
-dependencies = [
- "anyhow",
- "rmcp",
- "serde",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-calculator-mcp-server-streamhttp"
-version = "0.2.0"
-dependencies = [
- "anyhow",
- "axum",
- "futures",
- "hyper",
- "hyper-util",
- "pin-project-lite",
- "rand 0.8.5",
- "reqwest",
- "rmcp",
- "schemars 0.9.0",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "gaia-elastic-mcp-client"
 version = "0.2.0"
 dependencies = [
