@@ -2,13 +2,13 @@
 
 ## Quick Start
 
-### Build and run gaia-tidb-mcp-server (StreamableHttp)
+### Build mcp server and client
 
 Let's build mcp server and client by running the following commands:
 
 ```bash
-# build mcp server (streamablehttp)
-cargo build --package gaia-tidb-mcp-server-streamhttp --release
+# build mcp server
+cargo build --package gaia-tidb-mcp-server --release
 
 # build mcp client
 cargo build --package gaia-tidb-mcp-client --release
@@ -17,16 +17,30 @@ cargo build --package gaia-tidb-mcp-client --release
 > [!NOTE]
 > The mcp client is ONLY used for verifying and demonstrating mcp servers.
 
+### Start mcp server
+
 > [!IMPORTANT]
 >
 > Before running the mcp server, you need to start the TiDB Cloud server.
+
+The CLI options of the mcp server are as follows:
+
+```bash
+Usage: gaia-tidb-mcp-server [OPTIONS] --ssl-ca <SSL_CA>
+
+Options:
+      --ssl-ca <SSL_CA>            Path to the SSL CA certificate. On macOS, this is typically `/etc/ssl/cert.pem`. On Debian/Ubuntu/Arch Linux, it's typically `/etc/ssl/certs/ca-certificates.crt`
+  -s, --socket-addr <SOCKET_ADDR>  Socket address to bind to [default: 127.0.0.1:8007]
+  -t, --transport <TRANSPORT>      Transport type to use (sse or stream-http) [default: stream-http] [possible values: sse, stream-http]
+  -h, --help                       Print help
+  -V, --version                    Print version
+```
 
 Now, let's start the mcp server by running the following command:
 
 ```bash
 # set the SSL CA path on macOS
 export SSL_CA_PATH=/etc/ssl/cert.pem
-
 # set the SSL CA path on Debian/Ubuntu/Arch Linux
 export SSL_CA_PATH=/etc/ssl/certs/ca-certificates.crt
 
@@ -36,8 +50,11 @@ export TIDB_PORT=<your-tidb-port>
 export TIDB_USERNAME=<your-tidb-username>
 export TIDB_PASSWORD=<your-tidb-password>
 
-# run the mcp server
-./target/release/gaia-tidb-mcp-server-sse --ssl-ca $SSL_CA_PATH
+# run the mcp server (stream-http)
+./target/release/gaia-tidb-mcp-server --transport stream-http --ssl-ca $SSL_CA_PATH
+
+# run the mcp server (sse)
+./target/release/gaia-tidb-mcp-server --transport sse --ssl-ca $SSL_CA_PATH
 ```
 
 > [!IMPORTANT]
@@ -49,6 +66,30 @@ If start successfully, you will see the following output:
 Starting Gaia TiDB MCP server on 127.0.0.1:8007
 ```
 
+### Run mcp client
+
+The CLI options of the mcp client are as follows:
+
+```bash
+Usage: gaia-tidb-mcp-client [OPTIONS] --tidb-database <TIDB_DATABASE> --tidb-table-name <TIDB_TABLE_NAME> --query <QUERY>
+
+Options:
+      --transport <TRANSPORT>
+          Transport type to use (sse) [default: sse] [possible values: sse, stream-http]
+      --tidb-database <TIDB_DATABASE>
+          database
+      --tidb-table-name <TIDB_TABLE_NAME>
+          table name
+      --tidb-limit <TIDB_LIMIT>
+          limit [default: 10]
+      --query <QUERY>
+          query
+  -h, --help
+          Print help
+  -V, --version
+          Print version
+```
+
 Now, let's run the mcp client by running the following command:
 
 ```bash
@@ -57,22 +98,29 @@ export TABLE_NAME=<your-tidb-table-name>
 export LIMIT=<your-tidb-limit>
 export QUERY=<your-query>
 
-# run the mcp client
+# run the mcp client (stream-http)
 ./target/release/gaia-tidb-mcp-client --tidb-database $DATABASE \
     --tidb-table-name $TABLE_NAME \
     --tidb-limit $LIMIT \
     --query $QUERY \
     --transport stream-http
+
+# run the mcp client (sse)
+./target/release/gaia-tidb-mcp-client --tidb-database $DATABASE \
+    --tidb-table-name $TABLE_NAME \
+    --tidb-limit $LIMIT \
+    --query $QUERY \
+    --transport sse
 ```
 
-If start successfully, you will see a response similar to the following output:
+If start successfully, you will see a response similar to the following output. The output is different depending on the transport type you used. The output of `stream-http` is shown below.
 
 <details><summary>Expand to view the output</summary>
 
 ```console
-2025-05-29T08:10:56.785064Z  INFO gaia_tidb_mcp_client: 120: Connecting to Gaia TiDB MCP server via stream-http: http://127.0.0.1:8007/mcp
-2025-05-29T08:10:56.805574Z  INFO serve_inner: rmcp::service: 541: Service initialized as client peer_info=Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A TiDB MCP server") })
-2025-05-29T08:10:56.805612Z  INFO gaia_tidb_mcp_client: 140: Connected to server: Some(
+2025-06-11T08:52:48.630379Z  INFO gaia_tidb_mcp_client: 120: Connecting to Gaia TiDB MCP server via stream-http: http://127.0.0.1:8007/mcp
+2025-06-11T08:52:48.650413Z  INFO serve_inner: rmcp::service: 541: Service initialized as client peer_info=Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A TiDB MCP server") })
+2025-06-11T08:52:48.650447Z  INFO gaia_tidb_mcp_client: 140: Connected to server: Some(
     InitializeResult {
         protocol_version: ProtocolVersion(
             "2025-03-26",
@@ -98,7 +146,7 @@ If start successfully, you will see a response similar to the following output:
         ),
     },
 )
-2025-05-29T08:10:56.813375Z  INFO gaia_tidb_mcp_client: 144: Available tools: ListToolsResult {
+2025-06-11T08:52:48.652772Z  INFO gaia_tidb_mcp_client: 144: Available tools: ListToolsResult {
     next_cursor: None,
     tools: [
         Tool {
@@ -140,209 +188,43 @@ If start successfully, you will see a response similar to the following output:
         },
     ],
 }
-2025-05-29T08:11:25.579990Z  INFO gaia_tidb_mcp_client: 167: search response:
+2025-06-11T08:53:01.132500Z  INFO gaia_tidb_mcp_client: 167: search response:
 {
   "content": [
     {
       "type": "text",
-      "text": "{\"hits\":[{\"id\":11,\"title\":\"无线消噪耳机\",\"content\":\"无线消噪耳机-黑色 手势触控蓝牙降噪 主动降噪头戴式耳机（智能降噪 长久续航）\"},{\"id\":14,\"title\":\"无线蓝牙耳机\",\"content\":\"无线蓝牙耳机超长续航42小时快速充电 流光金属耳机\"},{\"id\":12,\"title\":\"专业版USB7.1声道游戏耳机\",\"content\":\"专业版USB7.1声道游戏耳机电竞耳麦头戴式电脑网课办公麦克风带线控\"}]}"
+      "text": "{\"hits\":[{\"id\":6,\"title\":\"Lightweight Bluetooth Earbuds with 48 Hours Playtime\",\"content\":\"Lightweight Bluetooth Earbuds with 48 Hours Playtime\"},{\"id\":1,\"title\":\"イヤホン bluetooth ワイヤレスイヤホン\",\"content\":\"イヤホン bluetooth ワイヤレスイヤホン\"},{\"id\":7,\"title\":\"True Wireless Noise Cancelling Earbuds - Compatible with Apple & Android, Built-in Microphone\",\"content\":\"True Wireless Noise Cancelling Earbuds - Compatible with Apple & Android, Built-in Microphone\"},{\"id\":3,\"title\":\"ワイヤレス ヘッドホン Bluetooth 5.3 65時間再生 ヘッドホン 40mm HD\",\"content\":\"ワイヤレス ヘッドホン Bluetooth 5.3 65時間再生 ヘッドホン 40mm HD\"}]}"
     }
   ],
   "isError": false
 }
-2025-05-29T08:11:25.580044Z  INFO gaia_tidb_mcp_client: 174: search_result:
+2025-06-11T08:53:01.132742Z  INFO gaia_tidb_mcp_client: 174: search_result:
 {
   "hits": [
     {
-      "id": 11,
-      "title": "无线消噪耳机",
-      "content": "无线消噪耳机-黑色 手势触控蓝牙降噪 主动降噪头戴式耳机（智能降噪 长久续航）"
+      "id": 6,
+      "title": "Lightweight Bluetooth Earbuds with 48 Hours Playtime",
+      "content": "Lightweight Bluetooth Earbuds with 48 Hours Playtime"
     },
     {
-      "id": 14,
-      "title": "无线蓝牙耳机",
-      "content": "无线蓝牙耳机超长续航42小时快速充电 流光金属耳机"
+      "id": 1,
+      "title": "イヤホン bluetooth ワイヤレスイヤホン",
+      "content": "イヤホン bluetooth ワイヤレスイヤホン"
     },
     {
-      "id": 12,
-      "title": "专业版USB7.1声道游戏耳机",
-      "content": "专业版USB7.1声道游戏耳机电竞耳麦头戴式电脑网课办公麦克风带线控"
+      "id": 7,
+      "title": "True Wireless Noise Cancelling Earbuds - Compatible with Apple & Android, Built-in Microphone",
+      "content": "True Wireless Noise Cancelling Earbuds - Compatible with Apple & Android, Built-in Microphone"
+    },
+    {
+      "id": 3,
+      "title": "ワイヤレス ヘッドホン Bluetooth 5.3 65時間再生 ヘッドホン 40mm HD",
+      "content": "ワイヤレス ヘッドホン Bluetooth 5.3 65時間再生 ヘッドホン 40mm HD"
     }
   ]
 }
-2025-05-29T08:11:25.580123Z  INFO rmcp::service: 625: task cancelled
-2025-05-29T08:11:25.580229Z  INFO rmcp::service: 811: serve finished quit_reason=Cancelled
-```
-
-</details>
-
-### Build and run gaia-tidb-mcp-server (sse)
-
-Let's build mcp server and client by running the following commands:
-
-```bash
-# build mcp server (tcp)
-cargo build --package gaia-tidb-mcp-server-sse --release
-
-# build mcp client
-cargo build --package gaia-tidb-mcp-client --release
-```
-
-> [!NOTE]
-> The mcp client is ONLY used for verifying and demonstrating mcp servers.
-
-> [!IMPORTANT]
->
-> Before running the mcp server, you need to start the TiDB Cloud server.
-
-Now, let's start the mcp server by running the following command:
-
-```bash
-# set the SSL CA path on macOS
-export SSL_CA_PATH=/etc/ssl/cert.pem
-
-# set the SSL CA path on Debian/Ubuntu/Arch Linux
-export SSL_CA_PATH=/etc/ssl/certs/ca-certificates.crt
-
-# set connection parameters
-export TIDB_HOST=<your-tidb-host>
-export TIDB_PORT=<your-tidb-port>
-export TIDB_USERNAME=<your-tidb-username>
-export TIDB_PASSWORD=<your-tidb-password>
-
-# run the mcp server
-./target/release/gaia-tidb-mcp-server-sse --ssl-ca $SSL_CA_PATH
-```
-
-> [!IMPORTANT]
-> Connections to TiDB Serverless clusters with public endpoint require TLS. Learn more about [secure connection settings](https://docs.pingcap.com/tidbcloud/secure-connections-to-serverless-clusters/).
-
-If start successfully, you will see the following output:
-
-```bash
-Starting Gaia TiDB MCP server on 127.0.0.1:8007
-```
-
-Now, let's run the mcp client by running the following command:
-
-```bash
-export DATABASE=<your-tidb-database>
-export TABLE_NAME=<your-tidb-table-name>
-export LIMIT=<your-tidb-limit>
-export QUERY=<your-query>
-
-# run the mcp client
-./target/release/gaia-tidb-mcp-client --tidb-database $DATABASE \
-    --tidb-table-name $TABLE_NAME \
-    --tidb-limit $LIMIT \
-    --query $QUERY \
-    --transport sse
-```
-
-If start successfully, you will see a response similar to the following output:
-
-<details><summary>Expand to view the output</summary>
-
-```console
-2025-05-29T07:54:57.284265Z  INFO gaia_tidb_mcp_client: 57: Connecting to Gaia TiDB MCP server via sse: http://127.0.0.1:8007/sse
-2025-05-29T07:54:57.307704Z  INFO serve_inner: rmcp::service: 541: Service initialized as client peer_info=Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A TiDB MCP server") })
-2025-05-29T07:54:57.307798Z  INFO gaia_tidb_mcp_client: 74: Connected to server: Some(
-    InitializeResult {
-        protocol_version: ProtocolVersion(
-            "2025-03-26",
-        ),
-        capabilities: ServerCapabilities {
-            experimental: None,
-            logging: None,
-            completions: None,
-            prompts: None,
-            resources: None,
-            tools: Some(
-                ToolsCapability {
-                    list_changed: None,
-                },
-            ),
-        },
-        server_info: Implementation {
-            name: "rmcp",
-            version: "0.1.5",
-        },
-        instructions: Some(
-            "A TiDB MCP server",
-        ),
-    },
-)
-2025-05-29T07:54:57.313695Z  INFO gaia_tidb_mcp_client: 78: Available tools:
-{
-  "tools": [
-    {
-      "name": "search",
-      "description": "Search for documents in a TiDB database",
-      "inputSchema": {
-        "properties": {
-          "database": {
-            "description": "the database of the tidb server",
-            "type": "string"
-          },
-          "limit": {
-            "description": "the number of rows to return",
-            "format": "uint64",
-            "minimum": 0.0,
-            "nullable": true,
-            "type": "integer"
-          },
-          "query": {
-            "description": "the query to search for",
-            "type": "string"
-          },
-          "table_name": {
-            "description": "the table name to search in",
-            "type": "string"
-          }
-        },
-        "required": [
-          "database",
-          "query",
-          "table_name"
-        ],
-        "title": "TidbSearchRequest",
-        "type": "object"
-      }
-    }
-  ]
-}
-2025-05-29T07:55:26.317373Z  INFO gaia_tidb_mcp_client: 104: search response:
-{
-  "content": [
-    {
-      "type": "text",
-      "text": "{\"hits\":[{\"id\":11,\"title\":\"无线消噪耳机\",\"content\":\"无线消噪耳机-黑色 手势触控蓝牙降噪 主动降噪头戴式耳机（智能降噪 长久续航）\"},{\"id\":14,\"title\":\"无线蓝牙耳机\",\"content\":\"无线蓝牙耳机超长续航42小时快速充电 流光金属耳机\"},{\"id\":12,\"title\":\"专业版USB7.1声道游戏耳机\",\"content\":\"专业版USB7.1声道游戏耳机电竞耳麦头戴式电脑网课办公麦克风带线控\"}]}"
-    }
-  ],
-  "isError": false
-}
-2025-05-29T07:55:26.317419Z  INFO gaia_tidb_mcp_client: 111: search_result:
-{
-  "hits": [
-    {
-      "id": 11,
-      "title": "无线消噪耳机",
-      "content": "无线消噪耳机-黑色 手势触控蓝牙降噪 主动降噪头戴式耳机（智能降噪 长久续航）"
-    },
-    {
-      "id": 14,
-      "title": "无线蓝牙耳机",
-      "content": "无线蓝牙耳机超长续航42小时快速充电 流光金属耳机"
-    },
-    {
-      "id": 12,
-      "title": "专业版USB7.1声道游戏耳机",
-      "content": "专业版USB7.1声道游戏耳机电竞耳麦头戴式电脑网课办公麦克风带线控"
-    }
-  ]
-}
-2025-05-29T07:55:26.317529Z  INFO rmcp::service: 625: task cancelled
-2025-05-29T07:55:26.317632Z  INFO rmcp::service: 811: serve finished quit_reason=Cancelled
+2025-06-11T08:53:01.132781Z  INFO rmcp::service: 625: task cancelled
+2025-06-11T08:53:01.132808Z  INFO rmcp::service: 811: serve finished quit_reason=Cancelled
 ```
 
 </details>
