@@ -926,6 +926,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "gaia-kwsearch-mcp-server"
+version = "0.2.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "clap",
+ "endpoints",
+ "futures",
+ "gaia-kwsearch-mcp-common",
+ "hyper",
+ "hyper-util",
+ "once_cell",
+ "pin-project-lite",
+ "rand 0.8.5",
+ "reqwest",
+ "rmcp",
+ "schemars 0.9.0",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "gaia-kwsearch-mcp-server-sse"
 version = "0.2.0"
 dependencies = [

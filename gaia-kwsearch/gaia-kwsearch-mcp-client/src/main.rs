@@ -9,7 +9,6 @@ use tokio::process::Command;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 const SOCKET_ADDR: &str = "127.0.0.1:8005";
-const KWSEARCH_INDEX_NAME: &str = "mcp-test";
 
 #[derive(Debug, Clone, ValueEnum)]
 enum TransportType {
@@ -21,9 +20,12 @@ enum TransportType {
 #[derive(Parser, Debug)]
 #[command(author, version, about = "Gaia Keyword Search MCP client")]
 struct Args {
-    /// Transport type to use (tcp or stdio)
-    #[arg(short, long, value_enum, default_value = "tcp")]
+    /// Transport type to use
+    #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
+    /// The name of the index to use
+    #[arg(short, long, required = true)]
+    index: String,
 }
 
 #[tokio::main]
@@ -88,7 +90,7 @@ async fn main() -> anyhow::Result<()> {
                 arguments: Some(serde_json::Map::from_iter([
                     (
                         "name".to_string(),
-                        serde_json::Value::from(KWSEARCH_INDEX_NAME),
+                        serde_json::Value::from(cli.index.as_str()),
                     ),
                     (
                         "documents".to_string(),
@@ -117,7 +119,7 @@ async fn main() -> anyhow::Result<()> {
                 arguments: Some(serde_json::Map::from_iter([
                     (
                         "index_name".to_string(),
-                        serde_json::Value::from(KWSEARCH_INDEX_NAME),
+                        serde_json::Value::from(cli.index.as_str()),
                     ),
                     ("query".to_string(), serde_json::Value::from("Gaianet")),
                     ("limit".to_string(), serde_json::Value::from(2)),
@@ -174,7 +176,7 @@ async fn main() -> anyhow::Result<()> {
                 arguments: Some(serde_json::Map::from_iter([
                     (
                         "name".to_string(),
-                        serde_json::Value::from(KWSEARCH_INDEX_NAME),
+                        serde_json::Value::from(cli.index.as_str()),
                     ),
                     (
                         "documents".to_string(),
@@ -203,7 +205,7 @@ async fn main() -> anyhow::Result<()> {
                 arguments: Some(serde_json::Map::from_iter([
                     (
                         "index_name".to_string(),
-                        serde_json::Value::from(KWSEARCH_INDEX_NAME),
+                        serde_json::Value::from(cli.index.as_str()),
                     ),
                     ("query".to_string(), serde_json::Value::from("Gaianet")),
                     ("limit".to_string(), serde_json::Value::from(2)),
@@ -269,7 +271,7 @@ async fn main() -> anyhow::Result<()> {
                 arguments: Some(serde_json::Map::from_iter([
                     (
                         "name".to_string(),
-                        serde_json::Value::from(KWSEARCH_INDEX_NAME),
+                        serde_json::Value::from(cli.index.as_str()),
                     ),
                     (
                         "documents".to_string(),
@@ -298,7 +300,7 @@ async fn main() -> anyhow::Result<()> {
                 arguments: Some(serde_json::Map::from_iter([
                     (
                         "index_name".to_string(),
-                        serde_json::Value::from(KWSEARCH_INDEX_NAME),
+                        serde_json::Value::from(cli.index.as_str()),
                     ),
                     ("query".to_string(), serde_json::Value::from("Gaianet")),
                     ("limit".to_string(), serde_json::Value::from(2)),
