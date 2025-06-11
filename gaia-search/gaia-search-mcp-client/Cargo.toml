@@ -1,0 +1,21 @@
+[package]
+name                 = "gaia-search-mcp-client"
+edition.workspace    = true
+version.workspace    = true
+repository.workspace = true
+license.workspace    = true
+
+[dependencies]
+rmcp = { workspace = true, features = [
+    "client",
+    "macros",
+    "transport-sse-client",
+    "reqwest",
+    "transport-streamable-http-client",
+] }
+tokio = { workspace = true, features = ["macros", "rt", "rt-multi-thread", "io-std", "net", "fs", "time"] }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+clap = { workspace = true, features = ["cargo", "derive"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

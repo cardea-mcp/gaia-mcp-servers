@@ -16,6 +16,9 @@ members = [
     "gaia-tidb/gaia-tidb-mcp-common",
     "gaia-tidb/gaia-tidb-mcp-server",
     "gaia-tidb/gaia-tidb-mcp-client",
+    "gaia-search/gaia-search-mcp-server",
+    "gaia-search/gaia-search-mcp-client",
+
 ]
 resolver = "3"
 
