@@ -8,11 +8,13 @@ use rmcp::transport::{
 };
 use rustls::crypto::{CryptoProvider, ring::default_provider};
 use std::path::PathBuf;
-use tidb::TidbServer;
+use tidb::{TidbAccessConfig, TidbServer};
+use tokio::sync::RwLock as TokioRwLock;
 use tracing::{error, info};
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
 
 pub static SSL_CA_PATH: OnceCell<PathBuf> = OnceCell::new();
+pub static TIDB_ACCESS_CONFIG: OnceCell<TokioRwLock<TidbAccessConfig>> = OnceCell::new();
 
 const DEFAULT_SOCKET_ADDR: &str = "127.0.0.1:8007";
 
@@ -22,7 +24,7 @@ struct Args {
     /// Path to the SSL CA certificate. On macOS, this is typically
     /// `/etc/ssl/cert.pem`. On Debian/Ubuntu/Arch Linux, it's typically
     /// `/etc/ssl/certs/ca-certificates.crt`.
-    #[arg(long)]
+    #[arg(long, required = true)]
     ssl_ca: PathBuf,
     /// Socket address to bind to
     #[arg(short, long, default_value = DEFAULT_SOCKET_ADDR)]
@@ -30,6 +32,15 @@ struct Args {
     /// Transport type to use (sse or stream-http)
     #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
+    /// Database name
+    #[arg(long, required = true)]
+    database: String,
+    /// Table name
+    #[arg(long, required = true)]
+    table_name: String,
+    /// Maximum number of query results to return
+    #[arg(long, default_value = "10")]
+    limit: u64,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -45,7 +56,7 @@ async fn main() -> anyhow::Result<()> {
             tracing_subscriber::EnvFilter::try_from_default_env()
                 .unwrap_or_else(|_| "debug".to_string().into()),
         )
-        .with(tracing_subscriber::fmt::layer())
+        .with(tracing_subscriber::fmt::layer().with_line_number(true))
         .init();
 
     CryptoProvider::install_default(default_provider()).map_err(|e| {
@@ -58,11 +69,18 @@ async fn main() -> anyhow::Result<()> {
 
     let args = Args::parse();
 
-    info!("Starting Gaia TiDB MCP server on {}", args.socket_addr);
+    let config = TidbAccessConfig {
+        database: args.database,
+        table_name: args.table_name,
+        limit: args.limit,
+        ssl_ca_path: args.ssl_ca,
+    };
 
-    SSL_CA_PATH
-        .set(args.ssl_ca)
-        .map_err(|_| anyhow::anyhow!("Failed to set SSL CA path"))?;
+    TIDB_ACCESS_CONFIG
+        .set(TokioRwLock::new(config))
+        .map_err(|_| anyhow::anyhow!("Failed to set TIDB_ACCESS_CONFIG"))?;
+
+    info!("Starting Gaia TiDB MCP server on {}", args.socket_addr);
 
     match args.transport {
         TransportType::StreamHttp => {

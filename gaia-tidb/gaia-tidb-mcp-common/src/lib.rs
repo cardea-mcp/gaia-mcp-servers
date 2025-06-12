@@ -5,14 +5,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct TidbSearchRequest {
-    #[schemars(description = "the database of the tidb server")]
-    pub database: String,
-    #[schemars(description = "the table name to search in")]
-    pub table_name: String,
     #[schemars(description = "the query to search for")]
     pub query: String,
-    #[schemars(description = "the number of rows to return")]
-    pub limit: Option<u64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]

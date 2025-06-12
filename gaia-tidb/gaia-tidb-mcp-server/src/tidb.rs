@@ -1,4 +1,4 @@
-use crate::SSL_CA_PATH;
+use crate::TIDB_ACCESS_CONFIG;
 use gaia_tidb_mcp_common::*;
 use mysql::prelude::*;
 use mysql::*;
@@ -7,7 +7,7 @@ use rmcp::{
     model::{CallToolResult, Content, ErrorCode, ServerCapabilities, ServerInfo},
     tool,
 };
-use std::env;
+use std::{env, path::PathBuf};
 use tracing::{error, info};
 
 #[derive(Debug, Clone)]
@@ -27,14 +27,20 @@ impl TidbServer {
     #[tool(description = "Search for documents in a TiDB database")]
     async fn search(
         &self,
-        #[tool(aggr)] TidbSearchRequest {
-            database,
-            table_name,
-            query,
-            limit,
-        }: TidbSearchRequest,
+        #[tool(aggr)] TidbSearchRequest { query }: TidbSearchRequest,
     ) -> std::result::Result<CallToolResult, McpError> {
-        let ssl_ca_path = SSL_CA_PATH.get().unwrap();
+        let config = match TIDB_ACCESS_CONFIG.get() {
+            Some(config) => config.read().await,
+            None => {
+                let error_message = "TIDB_ACCESS_CONFIG is not set";
+                error!(error_message);
+                return Err(McpError::new(
+                    ErrorCode::INTERNAL_ERROR,
+                    error_message,
+                    None,
+                ));
+            }
+        };
 
         // parse host
         let host = match env::var("TIDB_HOST") {
@@ -110,9 +116,9 @@ impl TidbServer {
             .tcp_port(port)
             .user(Some(username))
             .pass(Some(password))
-            .db_name(Some(database.clone()))
+            .db_name(Some(config.database.clone()))
             .ssl_opts(Some(
-                SslOpts::default().with_root_cert_path(Some(ssl_ca_path)),
+                SslOpts::default().with_root_cert_path(Some(config.ssl_ca_path.clone())),
             ));
 
         // create connection pool
@@ -164,7 +170,7 @@ impl TidbServer {
         let check_table_sql = format!(
             "SELECT COUNT(*) FROM information_schema.tables
                 WHERE table_schema = '{}' AND table_name = '{}'",
-            database, table_name
+            config.database, config.table_name
         );
         info!("Executing check table SQL: {}", check_table_sql);
         let table_exists: i32 = conn
@@ -179,7 +185,10 @@ impl TidbServer {
             .unwrap_or(0);
 
         if table_exists == 0 {
-            let error_message = format!("Not found table `{table_name}` in database `{database}`");
+            let error_message = format!(
+                "Not found table `{}` in database `{}`",
+                config.table_name, config.database
+            );
 
             error!(error_message);
 
@@ -191,14 +200,13 @@ impl TidbServer {
         }
 
         // execute full-text search
-        let limit = limit.unwrap_or(10);
         info!("\nExecuting full-text search for '{}'...", query);
         let search_sql = format!(
             r"SELECT * FROM {}
                 WHERE fts_match_word('{}', content)
                 ORDER BY fts_match_word('{}', content)
                 DESC LIMIT {}",
-            table_name, query, query, limit
+            config.table_name, query, query, config.limit
         );
 
         let hits: Vec<TidbSearchHit> = conn.query(&search_sql).map_err(|e| {
@@ -223,4 +231,12 @@ impl TidbServer {
 
         Ok(CallToolResult::success(vec![content]))
     }
+}
+
+#[derive(Debug, Clone)]
+pub struct TidbAccessConfig {
+    pub database: String,
+    pub table_name: String,
+    pub limit: u64,
+    pub ssl_ca_path: PathBuf,
 }
