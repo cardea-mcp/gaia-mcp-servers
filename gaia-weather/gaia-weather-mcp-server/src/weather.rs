@@ -1,6 +1,6 @@
 use rmcp::{
     Error as McpError, ServerHandler,
-    model::{CallToolResult, Content, ErrorCode, ServerCapabilities, ServerInfo},
+    model::{CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo},
     schemars, tool,
 };
 
@@ -145,6 +145,10 @@ impl ServerHandler for WeatherServer {
         ServerInfo {
             instructions: Some("A MCP server that can get the weather for a given city".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
+            server_info: Implementation {
+                name: std::env!("CARGO_PKG_NAME").to_string(),
+                version: std::env!("CARGO_PKG_VERSION").to_string(),
+            },
             ..Default::default()
         }
     }
