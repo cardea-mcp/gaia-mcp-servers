@@ -4,7 +4,7 @@ use mysql::prelude::*;
 use mysql::*;
 use rmcp::{
     Error as McpError, ServerHandler,
-    model::{CallToolResult, Content, ErrorCode, ServerCapabilities, ServerInfo},
+    model::{CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo},
     tool,
 };
 use std::{env, path::PathBuf};
@@ -18,6 +18,10 @@ impl ServerHandler for TidbServer {
         ServerInfo {
             instructions: Some("A TiDB MCP server".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
+            server_info: Implementation {
+                name: std::env!("CARGO_PKG_NAME").to_string(),
+                version: std::env!("CARGO_PKG_VERSION").to_string(),
+            },
             ..Default::default()
         }
     }
