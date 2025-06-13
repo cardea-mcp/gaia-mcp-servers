@@ -270,7 +270,7 @@ async fn main() -> anyhow::Result<()> {
                 name: "create_index".into(),
                 arguments: Some(serde_json::Map::from_iter([
                     (
-                        "name".to_string(),
+                        "index".to_string(),
                         serde_json::Value::from(cli.index.as_str()),
                     ),
                     (
@@ -296,15 +296,11 @@ async fn main() -> anyhow::Result<()> {
 
             // * search documents
             let request_param = CallToolRequestParam {
-                name: "search_documents".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "index_name".to_string(),
-                        serde_json::Value::from(cli.index.as_str()),
-                    ),
-                    ("query".to_string(), serde_json::Value::from("Gaianet")),
-                    ("limit".to_string(), serde_json::Value::from(2)),
-                ])),
+                name: "search".into(),
+                arguments: Some(serde_json::Map::from_iter([(
+                    "query".to_string(),
+                    serde_json::Value::from("Gaianet"),
+                )])),
             };
 
             let tool_result = mcp_client.peer().call_tool(request_param).await?;
@@ -313,7 +309,7 @@ async fn main() -> anyhow::Result<()> {
                 serde_json::to_string_pretty(&tool_result)?
             );
             let search_response = SearchDocumentsResponse::from(tool_result);
-            tracing::info!("search documents response:\n{:?}", &search_response);
+            tracing::info!("search response:\n{:?}", &search_response);
 
             mcp_client.cancel().await?;
         }
