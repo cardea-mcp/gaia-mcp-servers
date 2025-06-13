@@ -1,6 +1,6 @@
 use rmcp::{
     ServerHandler,
-    model::{ServerCapabilities, ServerInfo},
+    model::{Implementation, ServerCapabilities, ServerInfo},
     schemars, tool,
 };
 
@@ -41,6 +41,10 @@ impl ServerHandler for Calculator {
         ServerInfo {
             instructions: Some("A simple calculator".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
+            server_info: Implementation {
+                name: std::env!("CARGO_PKG_NAME").to_string(),
+                version: std::env!("CARGO_PKG_VERSION").to_string(),
+            },
             ..Default::default()
         }
     }
