@@ -13,21 +13,11 @@ use tracing::{error, info};
 #[derive(Debug, Clone)]
 pub struct KeywordSearchServer;
 #[tool(tool_box)]
-impl ServerHandler for KeywordSearchServer {
-    fn get_info(&self) -> ServerInfo {
-        ServerInfo {
-            instructions: Some("A MCP server that can access the KeywordSearch database".into()),
-            capabilities: ServerCapabilities::builder().enable_tools().build(),
-            ..Default::default()
-        }
-    }
-}
-#[tool(tool_box)]
 impl KeywordSearchServer {
     #[tool(description = "Create an index in the KeywordSearch database")]
     async fn create_index(
         &self,
-        #[tool(aggr)] CreateIndexRequest { name, documents }: CreateIndexRequest,
+        #[tool(aggr)] CreateIndexRequest { index, documents }: CreateIndexRequest,
     ) -> Result<CallToolResult, McpError> {
         info!("Creating index in KeywordSearch database");
 
@@ -53,7 +43,7 @@ impl KeywordSearchServer {
         let url = format!("{}/v1/index/create", base_url);
 
         let index_request = IndexRequest {
-            index: name,
+            index: Some(index),
             documents: documents.into_iter().map(|d| d.into()).collect::<Vec<_>>(),
         };
 
@@ -85,14 +75,10 @@ impl KeywordSearchServer {
         Ok(CallToolResult::success(vec![content]))
     }
 
-    #[tool(description = "Search for documents in the KeywordSearch database")]
-    async fn search_documents(
+    #[tool(description = "Perform a keyword search")]
+    async fn search(
         &self,
-        #[tool(aggr)] SearchDocumentsRequest {
-            index_name,
-            query,
-            limit,
-        }: SearchDocumentsRequest,
+        #[tool(aggr)] SearchDocumentsRequest { query }: SearchDocumentsRequest,
     ) -> Result<CallToolResult, McpError> {
         info!("Searching for documents in KeywordSearch database");
 
@@ -119,8 +105,8 @@ impl KeywordSearchServer {
 
         let query_request = QueryRequest {
             query,
-            top_k: limit,
-            index: index_name,
+            top_k: conn_config.limit,
+            index: conn_config.index,
         };
 
         let response = reqwest::Client::new()
@@ -150,4 +136,23 @@ impl KeywordSearchServer {
 
         Ok(CallToolResult::success(vec![content]))
     }
+}
+#[tool(tool_box)]
+impl ServerHandler for KeywordSearchServer {
+    fn get_info(&self) -> ServerInfo {
+        ServerInfo {
+            instructions: Some("A MCP server that can access the KeywordSearch database".into()),
+            capabilities: ServerCapabilities::builder().enable_tools().build(),
+            ..Default::default()
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ConnectionConfig {
+    pub base_url: String,
+    #[allow(dead_code)]
+    pub api_key: Option<String>,
+    pub index: String,
+    pub limit: usize,
 }

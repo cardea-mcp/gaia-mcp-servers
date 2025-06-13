@@ -1,7 +1,6 @@
 mod search;
 
 use clap::{Parser, ValueEnum};
-use gaia_kwsearch_mcp_common::ConnectionConfig;
 use once_cell::sync::OnceCell;
 use rmcp::{
     ServiceExt,
@@ -11,13 +10,13 @@ use rmcp::{
         streamable_http_server::{StreamableHttpService, session::local::LocalSessionManager},
     },
 };
-use search::KeywordSearchServer;
-use tokio::sync::RwLock;
+use search::{ConnectionConfig, KeywordSearchServer};
+use tokio::sync::RwLock as TokioRwLock;
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
 
 const DEFAULT_SOCKET_ADDR: &str = "127.0.0.1:8005";
 
-static CONNECTION_CONFIG: OnceCell<RwLock<ConnectionConfig>> = OnceCell::new();
+static CONNECTION_CONFIG: OnceCell<TokioRwLock<ConnectionConfig>> = OnceCell::new();
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -31,6 +30,12 @@ struct Args {
     /// Transport type to use
     #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
+    /// Index to search
+    #[arg(long)]
+    index: String,
+    /// Maximum number of query results to return
+    #[arg(long, default_value = "10")]
+    limit: usize,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -55,11 +60,13 @@ async fn main() -> anyhow::Result<()> {
     let connection_config = ConnectionConfig {
         base_url: args.base_url,
         api_key: None,
+        index: args.index,
+        limit: args.limit,
     };
 
     CONNECTION_CONFIG
-        .set(RwLock::new(connection_config))
-        .unwrap();
+        .set(TokioRwLock::new(connection_config))
+        .map_err(|_| anyhow::anyhow!("Failed to set CONNECTION_CONFIG"))?;
 
     tracing::info!(
         "Starting Gaia KeywordSearch MCP server on {}",
