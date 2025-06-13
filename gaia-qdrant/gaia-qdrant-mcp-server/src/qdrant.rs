@@ -2,7 +2,7 @@ use crate::CONNECTION_CONFIG;
 use gaia_qdrant_mcp_common::*;
 use rmcp::{
     Error as McpError, ServerHandler,
-    model::{CallToolResult, Content, ErrorCode, ServerCapabilities, ServerInfo},
+    model::{CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo},
     tool,
 };
 use serde_json::{Value, json};
@@ -802,6 +802,10 @@ impl ServerHandler for QdrantServer {
         ServerInfo {
             instructions: Some("A MCP server that can access the Qdrant database".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
+            server_info: Implementation {
+                name: std::env!("CARGO_PKG_NAME").to_string(),
+                version: std::env!("CARGO_PKG_VERSION").to_string(),
+            },
             ..Default::default()
         }
     }
