@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
 pub struct CreateIndexRequest {
     #[schemars(description = "the name of the index to create")]
-    pub name: Option<String>,
+    pub index: String,
     #[schemars(description = "the documents to index")]
     pub documents: Vec<KwDocumentInput>,
 }
@@ -76,12 +76,8 @@ impl From<DocumentResult> for KwDocumentResult {
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct SearchDocumentsRequest {
-    #[schemars(description = "the index to search")]
-    pub index_name: String,
     #[schemars(description = "the query to search for")]
     pub query: String,
-    #[schemars(description = "the number of results to return")]
-    pub limit: usize,
 }
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
@@ -121,10 +117,4 @@ impl From<SearchHit> for KwSearchHit {
             score: value.score,
         }
     }
-}
-
-#[derive(Debug, Clone)]
-pub struct ConnectionConfig {
-    pub base_url: String,
-    pub api_key: Option<String>,
 }
