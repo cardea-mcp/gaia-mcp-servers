@@ -18,18 +18,9 @@ enum TransportType {
 #[derive(Parser, Debug)]
 #[command(author, version, about = "Gaia TiDB MCP client")]
 struct Args {
-    /// Transport type to use (sse)
-    #[arg(long, value_enum, default_value = "sse")]
+    /// Transport type to use
+    #[arg(long, value_enum, default_value = "stream-http")]
     transport: TransportType,
-    /// database
-    #[arg(long)]
-    tidb_database: String,
-    /// table name
-    #[arg(long)]
-    tidb_table_name: String,
-    /// limit
-    #[arg(long, default_value = "10")]
-    tidb_limit: u64,
     /// query
     #[arg(long)]
     query: String,
@@ -83,21 +74,10 @@ async fn main() -> anyhow::Result<()> {
             // create request param
             let request_param = CallToolRequestParam {
                 name: "search".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "database".to_string(),
-                        serde_json::Value::from(cli.tidb_database.clone()),
-                    ),
-                    (
-                        "table_name".to_string(),
-                        serde_json::Value::from(cli.tidb_table_name.clone()),
-                    ),
-                    ("limit".to_string(), serde_json::Value::from(cli.tidb_limit)),
-                    (
-                        "query".to_string(),
-                        serde_json::Value::from(cli.query.clone()),
-                    ),
-                ])),
+                arguments: Some(serde_json::Map::from_iter([(
+                    "query".to_string(),
+                    serde_json::Value::from(cli.query.clone()),
+                )])),
             };
 
             let tool_result = mcp_client.peer().call_tool(request_param).await?;
@@ -146,21 +126,10 @@ async fn main() -> anyhow::Result<()> {
             // create request param
             let request_param = CallToolRequestParam {
                 name: "search".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "database".to_string(),
-                        serde_json::Value::from(cli.tidb_database.clone()),
-                    ),
-                    (
-                        "table_name".to_string(),
-                        serde_json::Value::from(cli.tidb_table_name.clone()),
-                    ),
-                    ("limit".to_string(), serde_json::Value::from(cli.tidb_limit)),
-                    (
-                        "query".to_string(),
-                        serde_json::Value::from(cli.query.clone()),
-                    ),
-                ])),
+                arguments: Some(serde_json::Map::from_iter([(
+                    "query".to_string(),
+                    serde_json::Value::from(cli.query.clone()),
+                )])),
             };
 
             let tool_result = mcp_client.peer().call_tool(request_param).await?;
