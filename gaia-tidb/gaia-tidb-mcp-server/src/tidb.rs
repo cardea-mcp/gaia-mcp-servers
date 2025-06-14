@@ -28,7 +28,7 @@ impl ServerHandler for TidbServer {
 }
 #[tool(tool_box)]
 impl TidbServer {
-    #[tool(description = "Search for documents in a TiDB database")]
+    #[tool(description = "Perform a keyword search")]
     async fn search(
         &self,
         #[tool(aggr)] TidbSearchRequest { query }: TidbSearchRequest,
