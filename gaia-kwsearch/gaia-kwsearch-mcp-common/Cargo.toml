@@ -1,11 +1,11 @@
 [package]
-name        = "gaia-kwsearch-mcp-common"
-version     = "0.1.0"
-edition     = { workspace = true }
-repository  = { workspace = true }
-license     = { workspace = true }
-categories  = ["data-structures"]
-description = "Data types and utilities for the Gaia keyword search MCP"
+name                 = "gaia-kwsearch-mcp-common"
+edition.workspace    = true
+version.workspace    = true
+repository.workspace = true
+license.workspace    = true
+categories           = ["data-structures"]
+description          = "Data types and utilities for the Gaia keyword search MCP"
 
 [dependencies]
 rmcp               = { workspace = true, features = ["server", "macros"] }
