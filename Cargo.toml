@@ -1,23 +1,23 @@
 [workspace]
 members = [
-    "gaia-calculator/gaia-calculator-mcp-server",
     "gaia-calculator/gaia-calculator-mcp-client",
-    "gaia-weather/gaia-weather-mcp-server",
-    "gaia-weather/gaia-weather-mcp-client",
-    "gaia-qdrant/gaia-qdrant-mcp-common",
-    "gaia-qdrant/gaia-qdrant-mcp-server",
-    "gaia-qdrant/gaia-qdrant-mcp-client",
-    "gaia-kwsearch/gaia-kwsearch-mcp-common",
-    "gaia-kwsearch/gaia-kwsearch-mcp-server",
-    "gaia-kwsearch/gaia-kwsearch-mcp-client",
+    "gaia-calculator/gaia-calculator-mcp-server",
+    "gaia-elastic/gaia-elastic-mcp-client",
     "gaia-elastic/gaia-elastic-mcp-common",
     "gaia-elastic/gaia-elastic-mcp-server",
-    "gaia-elastic/gaia-elastic-mcp-client",
+    "gaia-kwsearch/gaia-kwsearch-mcp-client",
+    "gaia-kwsearch/gaia-kwsearch-mcp-common",
+    "gaia-kwsearch/gaia-kwsearch-mcp-server",
+    "gaia-qdrant/gaia-qdrant-mcp-client",
+    "gaia-qdrant/gaia-qdrant-mcp-common",
+    "gaia-qdrant/gaia-qdrant-mcp-server",
+    "gaia-search/gaia-search-mcp-client",
+    "gaia-search/gaia-search-mcp-server",
+    "gaia-tidb/gaia-tidb-mcp-client",
     "gaia-tidb/gaia-tidb-mcp-common",
     "gaia-tidb/gaia-tidb-mcp-server",
-    "gaia-tidb/gaia-tidb-mcp-client",
-    "gaia-search/gaia-search-mcp-server",
-    "gaia-search/gaia-search-mcp-client",
+    "gaia-weather/gaia-weather-mcp-client",
+    "gaia-weather/gaia-weather-mcp-server",
 
 ]
 resolver = "3"
@@ -43,7 +43,7 @@ gaia-kwsearch-mcp-common = { path = "gaia-kwsearch/gaia-kwsearch-mcp-common" }
 gaia-elastic-mcp-common  = { path = "gaia-elastic/gaia-elastic-mcp-common" }
 gaia-tidb-mcp-common     = { path = "gaia-tidb/gaia-tidb-mcp-common" }
 clap                     = "4.5"
-endpoints                = "0.30.0"
+endpoints                = "0.31.0"
 mysql                    = "26.0.0"
 once_cell                = "1.18"
 axum                     = "0.8"
