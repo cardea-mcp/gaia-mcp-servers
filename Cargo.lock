@@ -928,42 +928,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gaia-search-mcp-client"
-version = "0.4.0"
-dependencies = [
- "anyhow",
- "clap",
- "rmcp",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-search-mcp-server"
-version = "0.4.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "futures",
- "hyper",
- "hyper-util",
- "pin-project-lite",
- "rand 0.8.5",
- "reqwest",
- "rmcp",
- "schemars 0.9.0",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "gaia-tidb-mcp-client"
 version = "0.4.0"
 dependencies = [
