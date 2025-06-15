@@ -26,12 +26,15 @@ cargo build --package gaia-tidb-mcp-client --release
 The CLI options of the mcp server are as follows:
 
 ```bash
-Usage: gaia-tidb-mcp-server [OPTIONS] --ssl-ca <SSL_CA>
+Usage: gaia-tidb-mcp-server [OPTIONS] --ssl-ca <SSL_CA> --database <DATABASE> --table-name <TABLE_NAME>
 
 Options:
       --ssl-ca <SSL_CA>            Path to the SSL CA certificate. On macOS, this is typically `/etc/ssl/cert.pem`. On Debian/Ubuntu/Arch Linux, it's typically `/etc/ssl/certs/ca-certificates.crt`
   -s, --socket-addr <SOCKET_ADDR>  Socket address to bind to [default: 127.0.0.1:8007]
   -t, --transport <TRANSPORT>      Transport type to use (sse or stream-http) [default: stream-http] [possible values: sse, stream-http]
+      --database <DATABASE>        Database name
+      --table-name <TABLE_NAME>    Table name
+      --limit <LIMIT>              Maximum number of query results to return [default: 10]
   -h, --help                       Print help
   -V, --version                    Print version
 ```
@@ -50,11 +53,8 @@ export TIDB_PORT=<your-tidb-port>
 export TIDB_USERNAME=<your-tidb-username>
 export TIDB_PASSWORD=<your-tidb-password>
 
-# run the mcp server (stream-http)
-./target/release/gaia-tidb-mcp-server --transport stream-http --ssl-ca $SSL_CA_PATH
-
-# run the mcp server (sse)
-./target/release/gaia-tidb-mcp-server --transport sse --ssl-ca $SSL_CA_PATH
+# run the mcp server
+./target/release/gaia-tidb-mcp-server --transport stream-http --ssl-ca $SSL_CA_PATH --database <your-tidb-database> --table-name <your-table-name>
 ```
 
 > [!IMPORTANT]
@@ -68,49 +68,23 @@ Starting Gaia TiDB MCP server on 127.0.0.1:8007
 
 ### Run mcp client
 
-The CLI options of the mcp client are as follows:
+To demonstrate the mcp server, we can use the mcp client to interact with the mcp server. The CLI options of the mcp client are as follows:
 
 ```bash
-Usage: gaia-tidb-mcp-client [OPTIONS] --tidb-database <TIDB_DATABASE> --tidb-table-name <TIDB_TABLE_NAME> --query <QUERY>
+Usage: gaia-tidb-mcp-client [OPTIONS] --query <QUERY>
 
 Options:
-      --transport <TRANSPORT>
-          Transport type to use (sse) [default: sse] [possible values: sse, stream-http]
-      --tidb-database <TIDB_DATABASE>
-          database
-      --tidb-table-name <TIDB_TABLE_NAME>
-          table name
-      --tidb-limit <TIDB_LIMIT>
-          limit [default: 10]
-      --query <QUERY>
-          query
-  -h, --help
-          Print help
-  -V, --version
-          Print version
+      --transport <TRANSPORT>  Transport type to use [default: stream-http] [possible values: sse, stream-http]
+      --query <QUERY>          query
+  -h, --help                   Print help
+  -V, --version                Print version
 ```
 
 Now, let's run the mcp client by running the following command:
 
 ```bash
-export DATABASE=<your-tidb-database>
-export TABLE_NAME=<your-tidb-table-name>
-export LIMIT=<your-tidb-limit>
-export QUERY=<your-query>
-
-# run the mcp client (stream-http)
-./target/release/gaia-tidb-mcp-client --tidb-database $DATABASE \
-    --tidb-table-name $TABLE_NAME \
-    --tidb-limit $LIMIT \
-    --query $QUERY \
-    --transport stream-http
-
-# run the mcp client (sse)
-./target/release/gaia-tidb-mcp-client --tidb-database $DATABASE \
-    --tidb-table-name $TABLE_NAME \
-    --tidb-limit $LIMIT \
-    --query $QUERY \
-    --transport sse
+# run the mcp client
+./target/release/gaia-tidb-mcp-client --transport stream-http --query <your-query-text>
 ```
 
 If start successfully, you will see a response similar to the following output. The output is different depending on the transport type you used. The output of `stream-http` is shown below.
@@ -118,9 +92,9 @@ If start successfully, you will see a response similar to the following output. 
 <details><summary>Expand to view the output</summary>
 
 ```console
-2025-06-11T08:52:48.630379Z  INFO gaia_tidb_mcp_client: 120: Connecting to Gaia TiDB MCP server via stream-http: http://127.0.0.1:8007/mcp
-2025-06-11T08:52:48.650413Z  INFO serve_inner: rmcp::service: 541: Service initialized as client peer_info=Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A TiDB MCP server") })
-2025-06-11T08:52:48.650447Z  INFO gaia_tidb_mcp_client: 140: Connected to server: Some(
+2025-06-15T09:09:04.116185Z  INFO gaia_tidb_mcp_client: 100: Connecting to Gaia TiDB MCP server via stream-http: http://127.0.0.1:8007/mcp
+2025-06-15T09:09:04.151349Z  INFO serve_inner: rmcp::service: 541: Service initialized as client peer_info=Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "gaia-tidb-mcp-server", version: "0.4.0" }, instructions: Some("A TiDB MCP server") })
+2025-06-15T09:09:04.151383Z  INFO gaia_tidb_mcp_client: 120: Connected to server: Some(
     InitializeResult {
         protocol_version: ProtocolVersion(
             "2025-03-26",
@@ -138,48 +112,31 @@ If start successfully, you will see a response similar to the following output. 
             ),
         },
         server_info: Implementation {
-            name: "rmcp",
-            version: "0.1.5",
+            name: "gaia-tidb-mcp-server",
+            version: "0.4.0",
         },
         instructions: Some(
             "A TiDB MCP server",
         ),
     },
 )
-2025-06-11T08:52:48.652772Z  INFO gaia_tidb_mcp_client: 144: Available tools: ListToolsResult {
+2025-06-15T09:09:04.158072Z  INFO gaia_tidb_mcp_client: 124: Available tools: ListToolsResult {
     next_cursor: None,
     tools: [
         Tool {
             name: "search",
             description: Some(
-                "Search for documents in a TiDB database",
+                "Perform a keyword search",
             ),
             input_schema: {
                 "properties": Object {
-                    "database": Object {
-                        "description": String("the database of the tidb server"),
-                        "type": String("string"),
-                    },
-                    "limit": Object {
-                        "description": String("the number of rows to return"),
-                        "format": String("uint64"),
-                        "minimum": Number(0.0),
-                        "nullable": Bool(true),
-                        "type": String("integer"),
-                    },
                     "query": Object {
                         "description": String("the query to search for"),
                         "type": String("string"),
                     },
-                    "table_name": Object {
-                        "description": String("the table name to search in"),
-                        "type": String("string"),
-                    },
                 },
                 "required": Array [
-                    String("database"),
                     String("query"),
-                    String("table_name"),
                 ],
                 "title": String("TidbSearchRequest"),
                 "type": String("object"),
@@ -188,33 +145,28 @@ If start successfully, you will see a response similar to the following output. 
         },
     ],
 }
-2025-06-11T08:53:01.132500Z  INFO gaia_tidb_mcp_client: 167: search response:
+2025-06-15T09:09:16.273464Z  INFO gaia_tidb_mcp_client: 136: search response:
 {
   "content": [
     {
       "type": "text",
-      "text": "{\"hits\":[{\"id\":6,\"title\":\"Lightweight Bluetooth Earbuds with 48 Hours Playtime\",\"content\":\"Lightweight Bluetooth Earbuds with 48 Hours Playtime\"},{\"id\":1,\"title\":\"イヤホン bluetooth ワイヤレスイヤホン\",\"content\":\"イヤホン bluetooth ワイヤレスイヤホン\"},{\"id\":7,\"title\":\"True Wireless Noise Cancelling Earbuds - Compatible with Apple & Android, Built-in Microphone\",\"content\":\"True Wireless Noise Cancelling Earbuds - Compatible with Apple & Android, Built-in Microphone\"},{\"id\":3,\"title\":\"ワイヤレス ヘッドホン Bluetooth 5.3 65時間再生 ヘッドホン 40mm HD\",\"content\":\"ワイヤレス ヘッドホン Bluetooth 5.3 65時間再生 ヘッドホン 40mm HD\"}]}"
+      "text": "{\"hits\":[{\"id\":1,\"title\":\"イヤホン bluetooth ワイヤレスイヤホン\",\"content\":\"イヤホン bluetooth ワイヤレスイヤホン\"},{\"id\":6,\"title\":\"Lightweight Bluetooth Earbuds with 48 Hours Playtime\",\"content\":\"Lightweight Bluetooth Earbuds with 48 Hours Playtime\"},{\"id\":3,\"title\":\"ワイヤレス ヘッドホン Bluetooth 5.3 65時間再生 ヘッドホン 40mm HD\",\"content\":\"ワイヤレス ヘッドホン Bluetooth 5.3 65時間再生 ヘッドホン 40mm HD\"}]}"
     }
   ],
   "isError": false
 }
-2025-06-11T08:53:01.132742Z  INFO gaia_tidb_mcp_client: 174: search_result:
+2025-06-15T09:09:16.273501Z  INFO gaia_tidb_mcp_client: 143: search_result:
 {
   "hits": [
-    {
-      "id": 6,
-      "title": "Lightweight Bluetooth Earbuds with 48 Hours Playtime",
-      "content": "Lightweight Bluetooth Earbuds with 48 Hours Playtime"
-    },
     {
       "id": 1,
       "title": "イヤホン bluetooth ワイヤレスイヤホン",
       "content": "イヤホン bluetooth ワイヤレスイヤホン"
     },
     {
-      "id": 7,
-      "title": "True Wireless Noise Cancelling Earbuds - Compatible with Apple & Android, Built-in Microphone",
-      "content": "True Wireless Noise Cancelling Earbuds - Compatible with Apple & Android, Built-in Microphone"
+      "id": 6,
+      "title": "Lightweight Bluetooth Earbuds with 48 Hours Playtime",
+      "content": "Lightweight Bluetooth Earbuds with 48 Hours Playtime"
     },
     {
       "id": 3,
@@ -223,8 +175,8 @@ If start successfully, you will see a response similar to the following output. 
     }
   ]
 }
-2025-06-11T08:53:01.132781Z  INFO rmcp::service: 625: task cancelled
-2025-06-11T08:53:01.132808Z  INFO rmcp::service: 811: serve finished quit_reason=Cancelled
+2025-06-15T09:09:16.274167Z  INFO rmcp::service: 625: task cancelled
+2025-06-15T09:09:16.274490Z  INFO rmcp::service: 811: serve finished quit_reason=Cancelled
 ```
 
 </details>
