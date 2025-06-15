@@ -497,31 +497,13 @@ async fn main() -> anyhow::Result<()> {
                 // query
                 let query = "What is the location of Paris, France along the Seine river?";
 
-                // fields
-                let fields = vec!["title", "content"];
-
                 // request param
                 let request_param = CallToolRequestParam {
                     name: "search".into(),
-                    arguments: Some(serde_json::Map::from_iter([
-                        (
-                            "index".to_string(),
-                            serde_json::Value::String(index_name.to_string()),
-                        ),
-                        (
-                            "query".to_string(),
-                            serde_json::Value::String(query.to_string()),
-                        ),
-                        (
-                            "fields".to_string(),
-                            serde_json::Value::Array(
-                                fields
-                                    .iter()
-                                    .map(|f| serde_json::Value::String(f.to_string()))
-                                    .collect(),
-                            ),
-                        ),
-                    ])),
+                    arguments: Some(serde_json::Map::from_iter([(
+                        "query".to_string(),
+                        serde_json::Value::String(query.to_string()),
+                    )])),
                 };
 
                 // call tool
