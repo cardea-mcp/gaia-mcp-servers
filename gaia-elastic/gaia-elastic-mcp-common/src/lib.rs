@@ -75,15 +75,8 @@ pub struct AliasInfo {
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct SearchRequest {
-    /// index name
-    pub index: String,
     /// user query
     pub query: String,
-    /// name of fields to search
-    pub fields: Vec<String>,
-    /// number of results to return
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub size: Option<u64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
@@ -144,10 +137,4 @@ pub struct Reason {
     pub ty: String,
     /// A human-readable explanation of the error, in English.
     pub reason: String,
-}
-
-#[derive(Debug, Clone)]
-pub struct ConnectionConfig {
-    pub base_url: String,
-    pub api_key: Option<String>,
 }
