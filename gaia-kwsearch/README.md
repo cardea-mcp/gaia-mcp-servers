@@ -53,12 +53,14 @@ cargo build --package gaia-kwsearch-mcp-client --release
 The CLI options of the mcp server are as follows:
 
 ```bash
-Usage: gaia-kwsearch-mcp-server [OPTIONS]
+Usage: gaia-kwsearch-mcp-server [OPTIONS] --index <INDEX>
 
 Options:
       --base-url <BASE_URL>        The base URL of the kw-search-server [default: http://127.0.0.1:12306]
   -s, --socket-addr <SOCKET_ADDR>  Socket address to bind to [default: 127.0.0.1:8005]
   -t, --transport <TRANSPORT>      Transport type to use [default: stream-http] [possible values: stdio, sse, stream-http]
+      --index <INDEX>              Index to search
+      --limit <LIMIT>              Maximum number of query results to return [default: 10]
   -h, --help                       Print help
   -V, --version                    Print version
 ```
@@ -66,25 +68,19 @@ Options:
 Now, let's start the mcp server:
 
 ```bash
-# run mcp server (stream-http)
-./target/release/gaia-kwsearch-mcp-server-streamhttp --transport stream-http
-
-# run mcp server (sse)
-./target/release/gaia-kwsearch-mcp-server --transport sse
-
-# run mcp server (stdio)
-./target/release/gaia-kwsearch-mcp-server --transport stdio
+# run mcp server
+./target/release/gaia-kwsearch-mcp-server --transport stream-http --index test01
 ```
 
 If start successfully, you will see the following output:
 
 ```bash
-Keyword Search MCP server is listening on 127.0.0.1:8005
+Starting Gaia KeywordSearch MCP server on 127.0.0.1:8005
 ```
 
 ### Run mcp client
 
-The CLI options of the mcp client are as follows:
+To demonstrate the mcp server, we can use the mcp client to interact with the mcp server. The CLI options of the mcp client are as follows:
 
 ```bash
 Usage: gaia-kwsearch-mcp-client [OPTIONS] --index <INDEX>
@@ -100,23 +96,17 @@ Now, let's run the mcp client by running the following command:
 
 ```bash
 # run mcp client
-./target/release/gaia-kwsearch-mcp-client --transport stream-http --index test01
-
-# run mcp client (sse)
-./target/release/gaia-kwsearch-mcp-client --transport sse --index test01
-
-# run mcp client (stdio)
-./target/release/gaia-kwsearch-mcp-client --transport stdio --index test01
+./target/release/gaia-kwsearch-mcp-client --transport stream-http --index test01 --limit 2
 ```
 
-If start successfully, you will see the following output. The output is different depending on the transport type you used. The output of `stream-http` is shown below.
+If start successfully, you will see the following output returned by the mcp client. The output is different depending on the transport type you used. The output of `stream-http` is shown below.
 
 <details><summary>Expand to view the output</summary>
 
 ```console
-2025-06-11T08:08:47.654136Z  INFO gaia_kwsearch_mcp_client: 227: Connecting to Gaia KeywordSearch MCP server via stream-http: http://127.0.0.1:8005/mcp
-2025-06-11T08:08:47.669158Z  INFO serve_inner: rmcp::service: 541: Service initialized as client peer_info=Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "rmcp", version: "0.1.5" }, instructions: Some("A MCP server that can access the KeywordSearch database") })
-2025-06-11T08:08:47.669191Z  INFO gaia_kwsearch_mcp_client: 247: Connected to server: Some(
+2025-06-15T08:57:40.141883Z  INFO gaia_kwsearch_mcp_client: 227: Connecting to Gaia KeywordSearch MCP server via stream-http: http://127.0.0.1:8005/mcp
+2025-06-15T08:57:40.154481Z  INFO serve_inner: rmcp::service: 541: Service initialized as client peer_info=Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: None, resources: None, tools: Some(ToolsCapability { list_changed: None }) }, server_info: Implementation { name: "gaia-kwsearch-mcp-server", version: "0.4.0" }, instructions: Some("A MCP server that can access the KeywordSearch database") })
+2025-06-15T08:57:40.154531Z  INFO gaia_kwsearch_mcp_client: 247: Connected to server: Some(
     InitializeResult {
         protocol_version: ProtocolVersion(
             "2025-03-26",
@@ -134,16 +124,33 @@ If start successfully, you will see the following output. The output is differen
             ),
         },
         server_info: Implementation {
-            name: "rmcp",
-            version: "0.1.5",
+            name: "gaia-kwsearch-mcp-server",
+            version: "0.4.0",
         },
         instructions: Some(
             "A MCP server that can access the KeywordSearch database",
         ),
     },
 )
-2025-06-11T08:08:47.670977Z  INFO gaia_kwsearch_mcp_client: 251: {
+2025-06-15T08:57:40.160663Z  INFO gaia_kwsearch_mcp_client: 251: {
   "tools": [
+    {
+      "name": "search",
+      "description": "Perform a keyword search",
+      "inputSchema": {
+        "properties": {
+          "query": {
+            "description": "the query to search for",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "SearchDocumentsRequest",
+        "type": "object"
+      }
+    },
     {
       "name": "create_index",
       "description": "Create an index in the KeywordSearch database",
@@ -175,63 +182,34 @@ If start successfully, you will see the following output. The output is differen
             },
             "type": "array"
           },
-          "name": {
+          "index": {
             "description": "the name of the index to create",
-            "nullable": true,
             "type": "string"
           }
         },
         "required": [
-          "documents"
+          "documents",
+          "index"
         ],
         "title": "CreateIndexRequest",
-        "type": "object"
-      }
-    },
-    {
-      "name": "search_documents",
-      "description": "Search for documents in the KeywordSearch database",
-      "inputSchema": {
-        "properties": {
-          "index_name": {
-            "description": "the index to search",
-            "type": "string"
-          },
-          "limit": {
-            "description": "the number of results to return",
-            "format": "uint",
-            "minimum": 0.0,
-            "type": "integer"
-          },
-          "query": {
-            "description": "the query to search for",
-            "type": "string"
-          }
-        },
-        "required": [
-          "index_name",
-          "limit",
-          "query"
-        ],
-        "title": "SearchDocumentsRequest",
         "type": "object"
       }
     }
   ]
 }
-2025-06-11T08:08:47.886377Z  INFO gaia_kwsearch_mcp_client: 289: create index response:
+2025-06-15T08:57:40.168113Z  INFO gaia_kwsearch_mcp_client: 289: create index response:
 {
   "content": [
     {
       "type": "text",
-      "text": "{\"index_name\":\"test01\",\"results\":[{\"filename\":\"section 1\",\"status\":\"indexed\"},{\"filename\":\"section 2\",\"status\":\"indexed\"}]}"
+      "text": "{\"results\":[]}"
     }
   ],
   "isError": false
 }
-2025-06-11T08:08:47.886410Z  INFO gaia_kwsearch_mcp_client: 295: create index response:
-CreateIndexResponse { index_name: Some("test01"), results: [KwDocumentResult { filename: Some("section 1"), status: "indexed", error: None }, KwDocumentResult { filename: Some("section 2"), status: "indexed", error: None }] }
-2025-06-11T08:08:47.894065Z  INFO gaia_kwsearch_mcp_client: 311: search documents response:
+2025-06-15T08:57:40.168137Z  INFO gaia_kwsearch_mcp_client: 295: create index response:
+CreateIndexResponse { index_name: None, results: [] }
+2025-06-15T08:57:40.194073Z  INFO gaia_kwsearch_mcp_client: 307: search documents response:
 {
   "content": [
     {
@@ -241,10 +219,10 @@ CreateIndexResponse { index_name: Some("test01"), results: [KwDocumentResult { f
   ],
   "isError": false
 }
-2025-06-11T08:08:47.894091Z  INFO gaia_kwsearch_mcp_client: 316: search documents response:
+2025-06-15T08:57:40.194098Z  INFO gaia_kwsearch_mcp_client: 312: search response:
 SearchDocumentsResponse { hits: [KwSearchHit { title: "section 1", content: "Gaianet is revolutionizing the AI landscape with a distributed AI infrastructure that seeks to decentralize the dominance of major players such as OpenAI, Google, and Anthropic. By leveraging a network of edge-computing nodes owned by individuals around the world, Gaianet enables hosting of both open-source and finely-tuned models. This infrastructure is designed to cater to diverse AI demands, offering a scalable alternative to traditional centralized servers.", score: 0.2501709759235382 }, KwSearchHit { title: "section 2", content: "The inception of Gaianet is driven by the necessity to address key issues in the current AI industry: censorship and bias in AI outputs, lack of privacy for user data, and the high costs associated with accessing and developing on centralized AI models. These challenges have restricted the dissemination of unbiased information, compromised data security, and erected barriers to innovation and broader application of AI technologies.", score: 0.18627282977104187 }] }
-2025-06-11T08:08:47.894129Z  INFO rmcp::service: 625: task cancelled
-2025-06-11T08:08:47.894346Z  INFO rmcp::service: 811: serve finished quit_reason=Cancelled
+2025-06-15T08:57:40.194122Z  INFO rmcp::service: 625: task cancelled
+2025-06-15T08:57:40.194185Z  INFO rmcp::service: 811: serve finished quit_reason=Cancelled
 ```
 
 </details>
