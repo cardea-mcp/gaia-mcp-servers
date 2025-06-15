@@ -202,15 +202,10 @@ impl ElasticSearchServer {
         }
     }
 
-    #[tool(description = "Search for documents in an Elasticsearch index")]
+    #[tool(description = "Perform a keyword search")]
     async fn search(
         &self,
-        #[tool(aggr)] SearchRequest {
-            index,
-            query,
-            fields,
-            size,
-        }: SearchRequest,
+        #[tool(aggr)] SearchRequest { query }: SearchRequest,
     ) -> Result<CallToolResult, McpError> {
         // get connection config
         let conn_config = match CONNECTION_CONFIG.get() {
@@ -229,6 +224,14 @@ impl ElasticSearchServer {
             }
         };
 
+        let index = conn_config.index;
+        let fields = conn_config.fields;
+        let size = conn_config.size;
+
+        tracing::info!("index: {}", index);
+        tracing::info!("fields: {:?}", fields);
+        tracing::info!("size: {}", size);
+
         // build url
         let base_url = conn_config.base_url.trim_end_matches('/');
         let url = format!("{base_url}/{index}/_search");
@@ -236,25 +239,15 @@ impl ElasticSearchServer {
         // get api key
         let api_key = conn_config.api_key;
 
-        let body = match size {
-            Some(size) => json!({
-                "query": {
-                    "multi_match": {
-                        "query": query,
-                        "fields": fields
-                    },
+        let body = json!({
+            "query": {
+                "multi_match": {
+                    "query": query,
+                    "fields": fields
                 },
-                "size": size
-            }),
-            None => json!({
-                "query": {
-                    "multi_match": {
-                        "query": query,
-                        "fields": fields
-                    },
-                }
-            }),
-        };
+            },
+            "size": size
+        });
 
         let client = reqwest::Client::new();
         let result = match api_key {

@@ -2,7 +2,6 @@ mod elastic;
 
 use clap::{Parser, ValueEnum};
 use elastic::ElasticSearchServer;
-use gaia_elastic_mcp_common::ConnectionConfig;
 use once_cell::sync::OnceCell;
 use rmcp::transport::{
     sse_server::SseServer,
@@ -27,6 +26,15 @@ struct Args {
     /// Transport type to use (sse or stream-http)
     #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
+    /// Index to search
+    #[arg(long)]
+    index: String,
+    /// Name of fields to search
+    #[arg(long, value_delimiter = ',', default_value = "title,content")]
+    fields: Vec<String>,
+    /// Maximum number of query results to return
+    #[arg(long, default_value = "10")]
+    size: u64,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -61,6 +69,9 @@ async fn main() -> anyhow::Result<()> {
     let connection_config = ConnectionConfig {
         base_url: args.base_url,
         api_key: Some(api_key),
+        index: args.index,
+        fields: args.fields,
+        size: args.size,
     };
 
     CONNECTION_CONFIG
@@ -94,4 +105,16 @@ async fn main() -> anyhow::Result<()> {
     }
 
     Ok(())
+}
+
+#[derive(Debug, Clone)]
+pub struct ConnectionConfig {
+    pub base_url: String,
+    pub api_key: Option<String>,
+    /// index name
+    pub index: String,
+    /// name of fields to search
+    pub fields: Vec<String>,
+    /// number of results to return
+    pub size: u64,
 }
