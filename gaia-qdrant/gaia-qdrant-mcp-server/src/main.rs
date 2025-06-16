@@ -1,7 +1,6 @@
 mod qdrant;
 
 use clap::{Parser, ValueEnum};
-use gaia_qdrant_mcp_common::ConnectionConfig;
 use once_cell::sync::OnceCell;
 use qdrant::QdrantServer;
 use rmcp::{
@@ -34,6 +33,15 @@ struct Args {
     /// Transport type to use
     #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
+    /// Name of the collection to search
+    #[arg(long, required = true)]
+    collection: String,
+    /// Maximum number of results to return
+    #[arg(long, default_value = "10")]
+    limit: u64,
+    /// Score threshold for the results
+    #[arg(long, default_value = "0.5")]
+    score_threshold: f32,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -58,6 +66,9 @@ async fn main() -> anyhow::Result<()> {
     let connection_config = ConnectionConfig {
         base_url: args.base_url,
         api_key: args.api_key,
+        collection: args.collection,
+        limit: args.limit,
+        score_threshold: args.score_threshold,
     };
 
     CONNECTION_CONFIG
@@ -99,4 +110,13 @@ async fn main() -> anyhow::Result<()> {
     }
 
     Ok(())
+}
+
+#[derive(Debug, Clone)]
+pub struct ConnectionConfig {
+    pub base_url: String,
+    pub api_key: Option<String>,
+    pub collection: String,
+    pub limit: u64,
+    pub score_threshold: f32,
 }

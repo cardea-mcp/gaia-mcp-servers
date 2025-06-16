@@ -643,12 +643,7 @@ impl QdrantServer {
     #[tool(description = "Search for points in a collection in the Qdrant database")]
     async fn search_points(
         &self,
-        #[tool(aggr)] SearchPointsRequest {
-            name,
-            vector,
-            limit,
-            score_threshold,
-        }: SearchPointsRequest,
+        #[tool(aggr)] SearchPointsRequest { vector }: SearchPointsRequest,
     ) -> Result<CallToolResult, McpError> {
         // get connection config
         let conn_config = match CONNECTION_CONFIG.get() {
@@ -669,7 +664,10 @@ impl QdrantServer {
 
         // build url
         let base_url = conn_config.base_url.trim_end_matches('/');
-        let url = format!("{}/collections/{}/points/search", base_url, name);
+        let url = format!(
+            "{}/collections/{}/points/search",
+            base_url, conn_config.collection
+        );
 
         // get api key
         let api_key = conn_config.api_key;
@@ -677,10 +675,10 @@ impl QdrantServer {
         // build params
         let params = json!({
             "vector": vector,
-            "limit": limit,
+            "limit": conn_config.limit,
             "with_payload": true,
             "with_vector": true,
-            "score_threshold": score_threshold.unwrap_or(0.0),
+            "score_threshold": conn_config.score_threshold,
         });
 
         let client = reqwest::Client::new();
