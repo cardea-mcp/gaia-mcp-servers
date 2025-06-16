@@ -204,22 +204,15 @@ async fn main() -> anyhow::Result<()> {
             // * search points
             let search_points = CallToolRequestParam {
                 name: "search_points".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "name".to_string(),
-                        serde_json::Value::String(cli.collection.as_str().into()),
+                arguments: Some(serde_json::Map::from_iter([(
+                    "vector".to_string(),
+                    serde_json::Value::Array(
+                        vec![0.2, 0.1, 0.9, 0.7]
+                            .into_iter()
+                            .map(|v| serde_json::Value::from(v))
+                            .collect(),
                     ),
-                    (
-                        "vector".to_string(),
-                        serde_json::Value::Array(
-                            vec![0.2, 0.1, 0.9, 0.7]
-                                .into_iter()
-                                .map(|v| serde_json::Value::from(v))
-                                .collect(),
-                        ),
-                    ),
-                    ("limit".to_string(), serde_json::Value::from(2)),
-                ])),
+                )])),
             };
             let tool_result = mcp_client.peer().call_tool(search_points).await?;
             let response = qdrant::SearchPointsResponse::from(tool_result);
@@ -386,22 +379,15 @@ async fn main() -> anyhow::Result<()> {
             // * search points
             let search_points = CallToolRequestParam {
                 name: "search_points".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "name".to_string(),
-                        serde_json::Value::String(cli.collection.as_str().into()),
+                arguments: Some(serde_json::Map::from_iter([(
+                    "vector".to_string(),
+                    serde_json::Value::Array(
+                        vec![0.2, 0.1, 0.9, 0.7]
+                            .into_iter()
+                            .map(|v| serde_json::Value::from(v))
+                            .collect(),
                     ),
-                    (
-                        "vector".to_string(),
-                        serde_json::Value::Array(
-                            vec![0.2, 0.1, 0.9, 0.7]
-                                .into_iter()
-                                .map(|v| serde_json::Value::from(v))
-                                .collect(),
-                        ),
-                    ),
-                    ("limit".to_string(), serde_json::Value::from(2)),
-                ])),
+                )])),
             };
             let tool_result = mcp_client.peer().call_tool(search_points).await?;
             let response = qdrant::SearchPointsResponse::from(tool_result);
@@ -575,26 +561,15 @@ async fn main() -> anyhow::Result<()> {
             // * search points
             let search_points = CallToolRequestParam {
                 name: "search_points".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "base_url".to_string(),
-                        serde_json::Value::String(QDRANT_BASE_URL.into()),
+                arguments: Some(serde_json::Map::from_iter([(
+                    "vector".to_string(),
+                    serde_json::Value::Array(
+                        vec![0.2, 0.1, 0.9, 0.7]
+                            .into_iter()
+                            .map(|v| serde_json::Value::from(v))
+                            .collect(),
                     ),
-                    (
-                        "name".to_string(),
-                        serde_json::Value::String(cli.collection.as_str().into()),
-                    ),
-                    (
-                        "vector".to_string(),
-                        serde_json::Value::Array(
-                            vec![0.2, 0.1, 0.9, 0.7]
-                                .into_iter()
-                                .map(|v| serde_json::Value::from(v))
-                                .collect(),
-                        ),
-                    ),
-                    ("limit".to_string(), serde_json::Value::from(2)),
-                ])),
+                )])),
             };
             let tool_result = mcp_client.peer().call_tool(search_points).await?;
             let response = qdrant::SearchPointsResponse::from(tool_result);
