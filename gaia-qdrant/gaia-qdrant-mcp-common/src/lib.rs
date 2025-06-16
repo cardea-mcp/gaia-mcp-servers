@@ -97,14 +97,8 @@ impl From<rmcp::model::CallToolResult> for UpsertPointsResponse {
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct SearchPointsRequest {
-    #[schemars(description = "the name of the collection to search")]
-    pub name: String,
     #[schemars(description = "the vector to search for")]
     pub vector: Vec<f32>,
-    #[schemars(description = "the number of results to return")]
-    pub limit: u64,
-    #[schemars(description = "the score threshold for the results")]
-    pub score_threshold: Option<f32>,
 }
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]

@@ -1,6 +1,7 @@
 [package]
 name        = "gaia-qdrant-mcp-common"
 edition     = { workspace = true }
+version     = { workspace = true }
 repository  = { workspace = true }
 license     = { workspace = true }
 categories  = ["data-structures"]
