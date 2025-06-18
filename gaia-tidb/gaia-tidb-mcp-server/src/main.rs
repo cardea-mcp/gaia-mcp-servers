@@ -44,9 +44,9 @@ struct Args {
     /// The description for the search tool
     #[arg(long, default_value = "Perform keyword search in TiDB")]
     search_tool_desc: String,
-    /// The description for the query parameter
-    #[arg(long, default_value = "the query to search for")]
-    query_param_desc: String,
+    /// The description for the search tool parameter
+    #[arg(long, default_value = "Input query to search for")]
+    search_tool_param_desc: String,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -90,7 +90,7 @@ async fn main() -> anyhow::Result<()> {
     set_search_description(args.search_tool_desc);
 
     // Set the query parameter description from CLI
-    set_query_param_description(args.query_param_desc);
+    set_query_param_description(args.search_tool_param_desc);
 
     info!("Starting Gaia TiDB MCP server on {}", args.socket_addr);
 
