@@ -42,7 +42,7 @@ struct Args {
     #[arg(long, default_value = "10")]
     limit: u64,
     /// The description for the search tool
-    #[arg(long, default_value = "Perform a keyword search")]
+    #[arg(long, default_value = "Perform keyword search in TiDB")]
     search_tool_desc: String,
 }
 
