@@ -24,14 +24,24 @@ The CLI options of the mcp server are as follows:
 Usage: gaia-tidb-mcp-server [OPTIONS] --ssl-ca <SSL_CA> --database <DATABASE> --table-name <TABLE_NAME>
 
 Options:
-      --ssl-ca <SSL_CA>            Path to the SSL CA certificate. On macOS, this is typically `/etc/ssl/cert.pem`. On Debian/Ubuntu/Arch Linux, it's typically `/etc/ssl/certs/ca-certificates.crt`
-  -s, --socket-addr <SOCKET_ADDR>  Socket address to bind to [default: 127.0.0.1:8007]
-  -t, --transport <TRANSPORT>      Transport type to use (sse or stream-http) [default: stream-http] [possible values: sse, stream-http]
-      --database <DATABASE>        Database name
-      --table-name <TABLE_NAME>    Table name
-      --limit <LIMIT>              Maximum number of query results to return [default: 10]
-  -h, --help                       Print help
-  -V, --version                    Print version
+      --ssl-ca <SSL_CA>
+          Path to the SSL CA certificate. On macOS, this is typically `/etc/ssl/cert.pem`. On Debian/Ubuntu/Arch Linux, it's typically `/etc/ssl/certs/ca-certificates.crt`
+  -s, --socket-addr <SOCKET_ADDR>
+          Socket address to bind to [default: 127.0.0.1:8007]
+  -t, --transport <TRANSPORT>
+          Transport type to use (sse or stream-http) [default: stream-http] [possible values: sse, stream-http]
+      --database <DATABASE>
+          Database name
+      --table-name <TABLE_NAME>
+          Table name
+      --limit <LIMIT>
+          Maximum number of query results to return [default: 10]
+      --search-tool-desc <SEARCH_TOOL_DESC>
+          The description for the search tool [default: "Perform keyword search in TiDB"]
+  -h, --help
+          Print help
+  -V, --version
+          Print version
 ```
 
 Now, let's start the mcp server by running the following command:
@@ -49,7 +59,17 @@ export TIDB_USERNAME=<your-tidb-username>
 export TIDB_PASSWORD=<your-tidb-password>
 
 # run the mcp server
-./target/release/gaia-tidb-mcp-server --transport stream-http --ssl-ca $SSL_CA_PATH --database <your-tidb-database> --table-name <your-table-name>
+./target/release/gaia-tidb-mcp-server --transport stream-http \
+    --ssl-ca $SSL_CA_PATH \
+    --database <your-tidb-database> \
+    --table-name <your-table-name>
+
+# run the mcp server with a custom search tool description
+./target/release/gaia-tidb-mcp-server --transport stream-http \
+    --ssl-ca $SSL_CA_PATH \
+    --database <your-tidb-database> \
+    --table-name <your-table-name> \
+    --search-tool-desc "Perform keyword search in TiDB"
 ```
 
 > [!IMPORTANT]
