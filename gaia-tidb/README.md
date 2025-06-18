@@ -38,6 +38,8 @@ Options:
           Maximum number of query results to return [default: 10]
       --search-tool-desc <SEARCH_TOOL_DESC>
           The description for the search tool [default: "Perform keyword search in TiDB"]
+      --search-tool-param-desc <SEARCH_TOOL_PARAM_DESC>
+          The description for the search tool parameter [default: "Input query to search for"]
   -h, --help
           Print help
   -V, --version
@@ -64,12 +66,13 @@ export TIDB_PASSWORD=<your-tidb-password>
     --database <your-tidb-database> \
     --table-name <your-table-name>
 
-# run the mcp server with a custom search tool description
+# run the mcp server with a custom search tool description and query parameter description
 ./target/release/gaia-tidb-mcp-server --transport stream-http \
     --ssl-ca $SSL_CA_PATH \
     --database <your-tidb-database> \
     --table-name <your-table-name> \
-    --search-tool-desc "Perform keyword search in TiDB"
+    --search-tool-desc "Perform keyword search in TiDB" \
+    --search-tool-param-desc "Input query to search for"
 ```
 
 > [!IMPORTANT]
