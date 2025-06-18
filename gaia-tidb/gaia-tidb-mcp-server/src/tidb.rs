@@ -4,19 +4,27 @@ use mysql::prelude::*;
 use mysql::*;
 use rmcp::{
     Error as McpError, ServerHandler,
+    handler::server::tool::*,
     model::{CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo},
     tool,
 };
-use std::{env, path::PathBuf};
+use std::{env, path::PathBuf, sync::OnceLock};
 use tracing::{error, info};
+
+static SEARCH_TOOL_DESC: OnceLock<String> = OnceLock::new();
+
+pub fn set_search_description(description: String) {
+    SEARCH_TOOL_DESC.set(description).unwrap_or_default();
+}
 
 #[derive(Debug, Clone)]
 pub struct TidbServer;
+
 #[tool(tool_box)]
 impl ServerHandler for TidbServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
-            instructions: Some("A TiDB MCP server".into()),
+            instructions: Some("Gaia TiDB MCP server".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
             server_info: Implementation {
                 name: std::env!("CARGO_PKG_NAME").to_string(),
@@ -26,12 +34,35 @@ impl ServerHandler for TidbServer {
         }
     }
 }
-#[tool(tool_box)]
 impl TidbServer {
-    #[tool(description = "Perform a keyword search")]
+    fn search_tool_attr() -> rmcp::model::Tool {
+        let description = SEARCH_TOOL_DESC
+            .get()
+            .cloned()
+            .unwrap_or_else(|| "Perform a keyword search".to_string());
+
+        rmcp::model::Tool {
+            name: "search".into(),
+            description: Some(description.into()),
+            input_schema: cached_schema_for_type::<TidbSearchRequest>().into(),
+            annotations: None,
+        }
+    }
+
+    async fn search_tool_call(
+        context: ToolCallContext<'_, Self>,
+    ) -> std::result::Result<rmcp::model::CallToolResult, rmcp::Error> {
+        let (__rmcp_tool_receiver, context) = <&Self>::from_tool_call_context_part(context)?;
+        let (Parameters(TidbSearchRequest { query }), _context) =
+            <Parameters<TidbSearchRequest>>::from_tool_call_context_part(context)?;
+        Self::search(__rmcp_tool_receiver, TidbSearchRequest { query })
+            .await
+            .into_call_tool_result()
+    }
+
     async fn search(
         &self,
-        #[tool(aggr)] TidbSearchRequest { query }: TidbSearchRequest,
+        TidbSearchRequest { query }: TidbSearchRequest,
     ) -> std::result::Result<CallToolResult, McpError> {
         let config = match TIDB_ACCESS_CONFIG.get() {
             Some(config) => config.read().await,
@@ -234,6 +265,19 @@ impl TidbServer {
         info!("Search results fetched from TiDB");
 
         Ok(CallToolResult::success(vec![content]))
+    }
+
+    fn tool_box() -> &'static ToolBox<TidbServer> {
+        use ::rmcp::handler::server::tool::{ToolBox, ToolBoxItem};
+        static TOOL_BOX: std::sync::OnceLock<ToolBox<TidbServer>> = std::sync::OnceLock::new();
+        TOOL_BOX.get_or_init(|| {
+            let mut tool_box = ToolBox::new();
+            tool_box.add(ToolBoxItem::new(
+                TidbServer::search_tool_attr(),
+                |context| Box::pin(TidbServer::search_tool_call(context)),
+            ));
+            tool_box
+        })
     }
 }
 

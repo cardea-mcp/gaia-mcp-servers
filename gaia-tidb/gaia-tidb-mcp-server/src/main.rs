@@ -8,7 +8,7 @@ use rmcp::transport::{
 };
 use rustls::crypto::{CryptoProvider, ring::default_provider};
 use std::path::PathBuf;
-use tidb::{TidbAccessConfig, TidbServer};
+use tidb::{TidbAccessConfig, TidbServer, set_search_description};
 use tokio::sync::RwLock as TokioRwLock;
 use tracing::{error, info};
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
@@ -19,7 +19,7 @@ pub static TIDB_ACCESS_CONFIG: OnceCell<TokioRwLock<TidbAccessConfig>> = OnceCel
 const DEFAULT_SOCKET_ADDR: &str = "127.0.0.1:8007";
 
 #[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+#[command(author, version, about = "Gaia TiDB MCP server")]
 struct Args {
     /// Path to the SSL CA certificate. On macOS, this is typically
     /// `/etc/ssl/cert.pem`. On Debian/Ubuntu/Arch Linux, it's typically
@@ -41,6 +41,9 @@ struct Args {
     /// Maximum number of query results to return
     #[arg(long, default_value = "10")]
     limit: u64,
+    /// The description for the search tool
+    #[arg(long, default_value = "Perform a keyword search")]
+    search_tool_desc: String,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -54,7 +57,7 @@ async fn main() -> anyhow::Result<()> {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "debug".to_string().into()),
+                .unwrap_or_else(|_| format!("info,{}=debug", env!("CARGO_CRATE_NAME")).into()),
         )
         .with(tracing_subscriber::fmt::layer().with_line_number(true))
         .init();
@@ -79,6 +82,9 @@ async fn main() -> anyhow::Result<()> {
     TIDB_ACCESS_CONFIG
         .set(TokioRwLock::new(config))
         .map_err(|_| anyhow::anyhow!("Failed to set TIDB_ACCESS_CONFIG"))?;
+
+    // Set the search tool description from CLI
+    set_search_description(args.search_tool_desc);
 
     info!("Starting Gaia TiDB MCP server on {}", args.socket_addr);
 
