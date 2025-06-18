@@ -8,7 +8,7 @@ use rmcp::transport::{
 };
 use rustls::crypto::{CryptoProvider, ring::default_provider};
 use std::path::PathBuf;
-use tidb::{TidbAccessConfig, TidbServer, set_search_description};
+use tidb::{TidbAccessConfig, TidbServer, set_query_param_description, set_search_description};
 use tokio::sync::RwLock as TokioRwLock;
 use tracing::{error, info};
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
@@ -44,6 +44,9 @@ struct Args {
     /// The description for the search tool
     #[arg(long, default_value = "Perform keyword search in TiDB")]
     search_tool_desc: String,
+    /// The description for the query parameter
+    #[arg(long, default_value = "the query to search for")]
+    query_param_desc: String,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -85,6 +88,9 @@ async fn main() -> anyhow::Result<()> {
 
     // Set the search tool description from CLI
     set_search_description(args.search_tool_desc);
+
+    // Set the query parameter description from CLI
+    set_query_param_description(args.query_param_desc);
 
     info!("Starting Gaia TiDB MCP server on {}", args.socket_addr);
 
