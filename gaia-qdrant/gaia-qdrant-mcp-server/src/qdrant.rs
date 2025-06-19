@@ -640,8 +640,8 @@ impl QdrantServer {
         }
     }
 
-    #[tool(description = "Search for points in a collection in the Qdrant database")]
-    async fn search_points(
+    #[tool(description = "Perform vector search in the Qdrant database")]
+    async fn search(
         &self,
         #[tool(aggr)] SearchPointsRequest { vector }: SearchPointsRequest,
     ) -> Result<CallToolResult, McpError> {
