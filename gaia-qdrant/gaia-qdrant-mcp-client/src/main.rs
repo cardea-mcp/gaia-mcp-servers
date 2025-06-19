@@ -71,7 +71,10 @@ async fn main() -> anyhow::Result<()> {
 
             // List tools
             let tools = mcp_client.list_tools(Default::default()).await?;
-            tracing::info!("Available tools: {tools:#?}");
+            tracing::info!(
+                "Available tools:\n{}",
+                serde_json::to_string_pretty(&tools)?
+            );
 
             // * list collections
             let list_collections = CallToolRequestParam {
@@ -203,7 +206,7 @@ async fn main() -> anyhow::Result<()> {
 
             // * search points
             let search_points = CallToolRequestParam {
-                name: "search_points".into(),
+                name: "search".into(),
                 arguments: Some(serde_json::Map::from_iter([(
                     "vector".to_string(),
                     serde_json::Value::Array(
@@ -378,7 +381,7 @@ async fn main() -> anyhow::Result<()> {
 
             // * search points
             let search_points = CallToolRequestParam {
-                name: "search_points".into(),
+                name: "search".into(),
                 arguments: Some(serde_json::Map::from_iter([(
                     "vector".to_string(),
                     serde_json::Value::Array(
@@ -415,7 +418,10 @@ async fn main() -> anyhow::Result<()> {
 
             // List available tools
             let tools = mcp_client.peer().list_tools(Default::default()).await?;
-            tracing::info!("{}", serde_json::to_string_pretty(&tools)?);
+            tracing::info!(
+                "Available tools:\n{}",
+                serde_json::to_string_pretty(&tools)?
+            );
 
             // * list collections
             let list_collections = CallToolRequestParam {
@@ -560,7 +566,7 @@ async fn main() -> anyhow::Result<()> {
 
             // * search points
             let search_points = CallToolRequestParam {
-                name: "search_points".into(),
+                name: "search".into(),
                 arguments: Some(serde_json::Map::from_iter([(
                     "vector".to_string(),
                     serde_json::Value::Array(
