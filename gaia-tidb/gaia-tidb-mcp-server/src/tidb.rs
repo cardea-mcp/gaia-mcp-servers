@@ -1,7 +1,6 @@
 use crate::TIDB_ACCESS_CONFIG;
 use gaia_tidb_mcp_common::*;
 use mysql::prelude::*;
-use mysql::*;
 use rmcp::{
     Error as McpError, ServerHandler,
     handler::server::tool::*,
@@ -12,10 +11,8 @@ use rmcp::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use std::result::Result;
 use std::{
-    env,
-    path::PathBuf,
+    result::Result,
     sync::{Arc, OnceLock},
 };
 use tracing::{error, info};
@@ -91,98 +88,9 @@ impl TidbServer {
             }
         };
 
-        // parse host
-        let host = match env::var("TIDB_HOST") {
-            Ok(host) => host,
-            Err(e) => {
-                let error_message = format!("Failed to get TIDB_HOST: {}", e);
-                error!(error_message);
-                return Err(McpError::new(
-                    ErrorCode::INTERNAL_ERROR,
-                    error_message,
-                    None,
-                ));
-            }
-        };
-
-        // parse port
-        let port: u16 = match env::var("TIDB_PORT") {
-            Ok(port) => match port.parse() {
-                Ok(port) => port,
-                Err(e) => {
-                    let error_message = format!("Failed to parse TIDB_PORT: {}", e);
-                    error!(error_message);
-                    return Err(McpError::new(
-                        ErrorCode::INTERNAL_ERROR,
-                        error_message,
-                        None,
-                    ));
-                }
-            },
-            Err(e) => {
-                let error_message = format!("Failed to get TIDB_PORT: {}", e);
-                error!(error_message);
-                return Err(McpError::new(
-                    ErrorCode::INTERNAL_ERROR,
-                    error_message,
-                    None,
-                ));
-            }
-        };
-
-        // parse username
-        let username = match env::var("TIDB_USERNAME") {
-            Ok(username) => username,
-            Err(e) => {
-                let error_message = format!("Failed to get TIDB_USERNAME: {}", e);
-                error!(error_message);
-                return Err(McpError::new(
-                    ErrorCode::INTERNAL_ERROR,
-                    error_message,
-                    None,
-                ));
-            }
-        };
-
-        // parse password
-        let password = match env::var("TIDB_PASSWORD") {
-            Ok(password) => password,
-            Err(e) => {
-                let error_message = format!("Failed to get TIDB_PASSWORD: {}", e);
-                error!(error_message);
-                return Err(McpError::new(
-                    ErrorCode::INTERNAL_ERROR,
-                    error_message,
-                    None,
-                ));
-            }
-        };
-
-        // create connection options
-        info!("Creating connection options for TiDB Cloud...");
-        let opts = OptsBuilder::new()
-            .ip_or_hostname(Some(host))
-            .tcp_port(port)
-            .user(Some(username))
-            .pass(Some(password))
-            .db_name(Some(config.database.clone()))
-            .ssl_opts(Some(
-                SslOpts::default().with_root_cert_path(Some(config.ssl_ca_path.clone())),
-            ));
-
-        // create connection pool
-        info!("Creating connection pool...");
-        let pool = Pool::new(opts).map_err(|e| {
-            let error_message = format!("Failed to create connection pool: {}", e);
-
-            error!(error_message);
-
-            McpError::new(ErrorCode::INTERNAL_ERROR, error_message, None)
-        })?;
-
         // get connection
         info!("Getting connection...");
-        let mut conn = pool.get_conn().map_err(|e| {
+        let mut conn = config.pool.get_conn().map_err(|e| {
             let error_message = format!("Failed to get connection: {}", e);
 
             error!(error_message);
@@ -312,12 +220,4 @@ impl ServerHandler for TidbServer {
 #[derive(Debug, Serialize, Deserialize)]
 struct TidbSearchRequest {
     query: String,
-}
-
-#[derive(Debug, Clone)]
-pub struct TidbAccessConfig {
-    pub database: String,
-    pub table_name: String,
-    pub limit: u64,
-    pub ssl_ca_path: PathBuf,
 }

@@ -1,14 +1,16 @@
 mod tidb;
 
+use anyhow::{anyhow, bail};
 use clap::{Parser, ValueEnum};
+use mysql::*;
 use once_cell::sync::OnceCell;
 use rmcp::transport::{
     sse_server::SseServer,
     streamable_http_server::{StreamableHttpService, session::local::LocalSessionManager},
 };
 use rustls::crypto::{CryptoProvider, ring::default_provider};
-use std::path::PathBuf;
-use tidb::{TidbAccessConfig, TidbServer, set_query_param_description, set_search_description};
+use std::{env, path::PathBuf};
+use tidb::{TidbServer, set_query_param_description, set_search_description};
 use tokio::sync::RwLock as TokioRwLock;
 use tracing::{error, info};
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
@@ -67,19 +69,84 @@ async fn main() -> anyhow::Result<()> {
 
     CryptoProvider::install_default(default_provider()).map_err(|e| {
         let err_msg = format!("Failed to install default crypto provider: {:?}", e);
-
         error!("{}", err_msg);
-
-        anyhow::anyhow!(err_msg)
+        anyhow!(err_msg)
     })?;
 
     let args = Args::parse();
 
+    // parse host
+    let host = match env::var("TIDB_HOST") {
+        Ok(host) => host,
+        Err(e) => {
+            let error_message = format!("Failed to get TIDB_HOST: {}", e);
+            error!(error_message);
+            bail!(error_message);
+        }
+    };
+
+    // parse port
+    let port: u16 = match env::var("TIDB_PORT") {
+        Ok(port) => match port.parse() {
+            Ok(port) => port,
+            Err(e) => {
+                let error_message = format!("Failed to parse TIDB_PORT: {}", e);
+                error!(error_message);
+                bail!(error_message);
+            }
+        },
+        Err(e) => {
+            let error_message = format!("Failed to get TIDB_PORT: {}", e);
+            error!(error_message);
+            bail!(error_message);
+        }
+    };
+
+    // parse username
+    let username = match env::var("TIDB_USERNAME") {
+        Ok(username) => username,
+        Err(e) => {
+            let error_message = format!("Failed to get TIDB_USERNAME: {}", e);
+            error!(error_message);
+            bail!(error_message);
+        }
+    };
+
+    // parse password
+    let password = match env::var("TIDB_PASSWORD") {
+        Ok(password) => password,
+        Err(e) => {
+            let error_message = format!("Failed to get TIDB_PASSWORD: {}", e);
+            error!(error_message);
+            bail!(error_message);
+        }
+    };
+
+    // create connection options
+    info!("Creating connection options for TiDB Cloud...");
+    let opts = OptsBuilder::new()
+        .ip_or_hostname(Some(host))
+        .tcp_port(port)
+        .user(Some(username))
+        .pass(Some(password))
+        .db_name(Some(args.database.clone()))
+        .ssl_opts(Some(
+            SslOpts::default().with_root_cert_path(Some(args.ssl_ca)),
+        ));
+
+    // create connection pool
+    info!("Creating connection pool...");
+    let pool = Pool::new(opts).map_err(|e| {
+        let error_message = format!("Failed to create connection pool: {}", e);
+        error!(error_message);
+        anyhow!(error_message)
+    })?;
+
     let config = TidbAccessConfig {
+        pool,
         database: args.database,
         table_name: args.table_name,
         limit: args.limit,
-        ssl_ca_path: args.ssl_ca,
     };
 
     TIDB_ACCESS_CONFIG
@@ -119,4 +186,12 @@ async fn main() -> anyhow::Result<()> {
     }
 
     Ok(())
+}
+
+#[derive(Debug, Clone)]
+pub struct TidbAccessConfig {
+    pub pool: Pool,
+    pub database: String,
+    pub table_name: String,
+    pub limit: u64,
 }
