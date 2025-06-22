@@ -734,7 +734,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-calculator-mcp-client"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -747,7 +747,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-calculator-mcp-server"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -756,7 +756,7 @@ dependencies = [
  "hyper",
  "hyper-util",
  "pin-project-lite",
- "rand 0.8.5",
+ "rand 0.9.1",
  "reqwest",
  "rmcp",
  "schemars 0.9.0",
@@ -770,7 +770,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-elastic-mcp-client"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -785,7 +785,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-elastic-mcp-common"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "rmcp",
  "serde",
@@ -794,7 +794,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-elastic-mcp-server"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -805,7 +805,7 @@ dependencies = [
  "hyper-util",
  "once_cell",
  "pin-project-lite",
- "rand 0.8.5",
+ "rand 0.9.1",
  "reqwest",
  "rmcp",
  "schemars 0.9.0",
@@ -819,7 +819,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-kwsearch-mcp-client"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -833,7 +833,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-kwsearch-mcp-common"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "endpoints",
@@ -841,7 +841,7 @@ dependencies = [
  "hyper",
  "hyper-util",
  "pin-project-lite",
- "rand 0.8.5",
+ "rand 0.9.1",
  "reqwest",
  "rmcp",
  "schemars 0.9.0",
@@ -855,7 +855,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-kwsearch-mcp-server"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -867,7 +867,7 @@ dependencies = [
  "hyper-util",
  "once_cell",
  "pin-project-lite",
- "rand 0.8.5",
+ "rand 0.9.1",
  "reqwest",
  "rmcp",
  "schemars 0.9.0",
@@ -881,7 +881,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-qdrant-mcp-client"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -895,7 +895,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-qdrant-mcp-common"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "rmcp",
  "serde",
@@ -904,7 +904,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-qdrant-mcp-server"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -915,7 +915,7 @@ dependencies = [
  "hyper-util",
  "once_cell",
  "pin-project-lite",
- "rand 0.8.5",
+ "rand 0.9.1",
  "reqwest",
  "rmcp",
  "schemars 0.9.0",
@@ -929,7 +929,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-tidb-mcp-client"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -944,7 +944,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-tidb-mcp-common"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "endpoints",
  "mysql",
@@ -955,7 +955,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-tidb-mcp-server"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -968,7 +968,7 @@ dependencies = [
  "mysql",
  "once_cell",
  "pin-project-lite",
- "rand 0.8.5",
+ "rand 0.9.1",
  "reqwest",
  "rmcp",
  "rustls",
@@ -983,7 +983,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-weather-mcp-client"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -996,7 +996,7 @@ dependencies = [
 
 [[package]]
 name = "gaia-weather-mcp-server"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -1005,7 +1005,7 @@ dependencies = [
  "hyper",
  "hyper-util",
  "pin-project-lite",
- "rand 0.8.5",
+ "rand 0.9.1",
  "reqwest",
  "rmcp",
  "schemars 0.9.0",
@@ -2186,7 +2186,7 @@ dependencies = [
 [[package]]
 name = "rmcp"
 version = "0.1.5"
-source = "git+https://github.com/modelcontextprotocol/rust-sdk.git?rev=9fc6af09#9fc6af091d9b36a98e38f8584123328cd5640257"
+source = "git+https://github.com/modelcontextprotocol/rust-sdk.git?rev=a62c6d1d#a62c6d1db8c8daf271aabaf49627de5f3a30613d"
 dependencies = [
  "axum",
  "base64",
@@ -2218,7 +2218,7 @@ dependencies = [
 [[package]]
 name = "rmcp-macros"
 version = "0.1.5"
-source = "git+https://github.com/modelcontextprotocol/rust-sdk.git?rev=9fc6af09#9fc6af091d9b36a98e38f8584123328cd5640257"
+source = "git+https://github.com/modelcontextprotocol/rust-sdk.git?rev=a62c6d1d#a62c6d1db8c8daf271aabaf49627de5f3a30613d"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2800,9 +2800,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-tungstenite"
-version = "0.26.2"
+version = "0.27.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a9daff607c6d2bf6c16fd681ccb7eecc83e4e2cdc1ca067ffaadfca5de7f084"
+checksum = "489a59b6730eda1b0171fcfda8b121f4bee2b35cba8645ca35c5f7ba3eb736c1"
 dependencies = [
  "futures-util",
  "log",
@@ -2956,9 +2956,9 @@ checksum = "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b"
 
 [[package]]
 name = "tungstenite"
-version = "0.26.2"
+version = "0.27.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4793cb5e56680ecbb1d843515b23b6de9a75eb04b66643e256a396d43be33c13"
+checksum = "eadc29d668c91fcc564941132e17b28a7ceb2f3ebf0b9dae3e03fd7a6748eb0d"
 dependencies = [
  "bytes",
  "data-encoding",
