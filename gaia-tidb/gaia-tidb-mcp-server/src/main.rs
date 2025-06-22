@@ -164,7 +164,7 @@ async fn main() -> anyhow::Result<()> {
     match args.transport {
         TransportType::StreamHttp => {
             let service = StreamableHttpService::new(
-                || TidbServer,
+                || Ok(TidbServer),
                 LocalSessionManager::default().into(),
                 Default::default(),
             );

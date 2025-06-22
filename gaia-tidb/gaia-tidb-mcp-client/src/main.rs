@@ -19,7 +19,7 @@ enum TransportType {
 #[command(author, version, about = "Gaia TiDB MCP client")]
 struct Args {
     /// Transport type to use
-    #[arg(long, value_enum, default_value = "stream-http")]
+    #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
     /// query
     #[arg(long)]
@@ -56,16 +56,16 @@ async fn main() -> anyhow::Result<()> {
                     version: client_version.to_string(),
                 },
             };
-            let mcp_client = client_info.serve(transport).await.inspect_err(|e| {
+            let service = client_info.serve(transport).await.inspect_err(|e| {
                 tracing::error!("client error: {:?}", e);
             })?;
 
             // Initialize
-            let server_info = mcp_client.peer_info();
+            let server_info = service.peer_info();
             tracing::info!("Connected to server: {server_info:#?}");
 
             // List available tools
-            let tools = mcp_client.peer().list_tools(Default::default()).await?;
+            let tools = service.list_all_tools().await?;
             tracing::info!(
                 "Available tools:\n{}",
                 serde_json::to_string_pretty(&tools)?
@@ -80,7 +80,7 @@ async fn main() -> anyhow::Result<()> {
                 )])),
             };
 
-            let tool_result = mcp_client.peer().call_tool(request_param).await?;
+            let tool_result = service.call_tool(request_param).await?;
             tracing::info!(
                 "search response:\n{}",
                 serde_json::to_string_pretty(&tool_result)?
@@ -93,7 +93,7 @@ async fn main() -> anyhow::Result<()> {
                 serde_json::to_string_pretty(&search_result)?
             );
 
-            mcp_client.cancel().await?;
+            service.cancel().await?;
         }
         TransportType::StreamHttp => {
             let url = format!("http://{SOCKET_ADDR}/mcp");
@@ -111,16 +111,16 @@ async fn main() -> anyhow::Result<()> {
                     version: "0.0.1".to_string(),
                 },
             };
-            let mcp_client = client_info.serve(transport).await.inspect_err(|e| {
+            let service = client_info.serve(transport).await.inspect_err(|e| {
                 tracing::error!("client error: {:?}", e);
             })?;
 
             // Initialize
-            let server_info = mcp_client.peer_info();
+            let server_info = service.peer_info();
             tracing::info!("Connected to server: {server_info:#?}");
 
             // List tools
-            let tools = mcp_client.list_tools(Default::default()).await?;
+            let tools = service.list_all_tools().await?;
             tracing::info!("Available tools: {tools:#?}");
 
             // create request param
@@ -132,7 +132,7 @@ async fn main() -> anyhow::Result<()> {
                 )])),
             };
 
-            let tool_result = mcp_client.peer().call_tool(request_param).await?;
+            let tool_result = service.call_tool(request_param).await?;
             tracing::info!(
                 "search response:\n{}",
                 serde_json::to_string_pretty(&tool_result)?
@@ -145,7 +145,7 @@ async fn main() -> anyhow::Result<()> {
                 serde_json::to_string_pretty(&search_result)?
             );
 
-            mcp_client.cancel().await?;
+            service.cancel().await?;
         }
     }
 
