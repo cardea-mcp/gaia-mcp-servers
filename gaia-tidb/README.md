@@ -81,5 +81,7 @@ export TIDB_PASSWORD=<your-tidb-password>
 If start successfully, you will see the following output:
 
 ```bash
-Starting Gaia TiDB MCP server on 127.0.0.1:8007
+2025-06-22T08:19:22.813802Z  INFO gaia_tidb_mcp_server: 126: Creating connection options for TiDB Cloud...
+2025-06-22T08:19:22.813837Z  INFO gaia_tidb_mcp_server: 138: Creating connection pool...
+2025-06-22T08:19:32.508349Z  INFO gaia_tidb_mcp_server: 162: Starting Gaia TiDB MCP server on 127.0.0.1:8007
 ```
