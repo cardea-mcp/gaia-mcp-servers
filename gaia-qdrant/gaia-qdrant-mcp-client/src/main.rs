@@ -3,7 +3,9 @@ use gaia_qdrant_mcp_common::SearchPointsResponse;
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
-    transport::{SseClientTransport, StreamableHttpClientTransport, TokioChildProcess},
+    transport::{
+        ConfigureCommandExt, SseClientTransport, StreamableHttpClientTransport, TokioChildProcess,
+    },
 };
 use tokio::process::Command;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -145,8 +147,14 @@ async fn main() -> anyhow::Result<()> {
             tracing::info!("Connecting to MCP server via stdio");
 
             // build command
-            let mut cmd = Command::new("./target/release/gaia-qdrant-mcp-server-stdio");
-            cmd.arg("--base-url").arg(QDRANT_BASE_URL);
+            let cmd = Command::new("./target/release/gaia-qdrant-mcp-server").configure(|cmd| {
+                cmd.arg("--base-url")
+                    .arg(QDRANT_BASE_URL)
+                    .arg("--transport")
+                    .arg("stdio")
+                    .arg("--collection")
+                    .arg(cli.collection);
+            });
 
             // start mcp server
             let transport = TokioChildProcess::new(cmd)?;
@@ -172,7 +180,7 @@ async fn main() -> anyhow::Result<()> {
                     ),
                 )])),
             };
-            let tool_result = mcp_client.peer().call_tool(search_points).await?;
+            let tool_result = mcp_client.call_tool(search_points).await?;
             let response = SearchPointsResponse::from(tool_result);
             tracing::info!("search points response:\n{:?}", &response);
 
