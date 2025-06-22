@@ -2,13 +2,9 @@ mod search;
 
 use clap::{Parser, ValueEnum};
 use once_cell::sync::OnceCell;
-use rmcp::{
-    ServiceExt,
-    transport::{
-        sse_server::SseServer,
-        stdio,
-        streamable_http_server::{StreamableHttpService, session::local::LocalSessionManager},
-    },
+use rmcp::transport::{
+    sse_server::SseServer,
+    streamable_http_server::{StreamableHttpService, session::local::LocalSessionManager},
 };
 use search::{ConnectionConfig, KeywordSearchServer};
 use tokio::sync::RwLock as TokioRwLock;
@@ -40,7 +36,6 @@ struct Args {
 
 #[derive(Debug, Clone, ValueEnum)]
 enum TransportType {
-    Stdio,
     Sse,
     StreamHttp,
 }
@@ -76,7 +71,7 @@ async fn main() -> anyhow::Result<()> {
     match args.transport {
         TransportType::StreamHttp => {
             let service = StreamableHttpService::new(
-                || KeywordSearchServer,
+                || Ok(KeywordSearchServer),
                 LocalSessionManager::default().into(),
                 Default::default(),
             );
@@ -94,14 +89,6 @@ async fn main() -> anyhow::Result<()> {
 
             tokio::signal::ctrl_c().await?;
             ct.cancel();
-        }
-        TransportType::Stdio => {
-            // Create an instance of our counter router
-            let service = KeywordSearchServer.serve(stdio()).await.inspect_err(|e| {
-                tracing::error!("serving error: {:?}", e);
-            })?;
-
-            service.waiting().await?;
         }
     }
 
