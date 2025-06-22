@@ -83,7 +83,7 @@ async fn main() -> anyhow::Result<()> {
     match args.transport {
         TransportType::StreamHttp => {
             let service = StreamableHttpService::new(
-                || ElasticSearchServer,
+                || Ok(ElasticSearchServer),
                 LocalSessionManager::default().into(),
                 Default::default(),
             );

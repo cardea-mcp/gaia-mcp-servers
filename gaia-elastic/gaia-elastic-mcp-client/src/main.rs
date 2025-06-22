@@ -15,7 +15,6 @@ const SOCKET_ADDR: &str = "127.0.0.1:8006";
 
 #[derive(Debug, Clone, ValueEnum)]
 enum TransportType {
-    Stdio,
     Sse,
     StreamHttp,
 }
@@ -47,33 +46,6 @@ async fn main() -> anyhow::Result<()> {
     let index_name = &cli.index;
 
     match cli.transport {
-        TransportType::Stdio => {
-            tracing::info!("Connecting to ElasticSearch MCP server via stdio");
-
-            // Start server
-            let mcp_client = ()
-                .serve(TokioChildProcess::new(Command::new("npx").configure(
-                    |cmd| {
-                        cmd.arg("-y").arg("@elastic/mcp-server-elasticsearch@0.1.1");
-                    },
-                ))?)
-                .await?;
-
-            tracing::info!("Connected to server");
-
-            // Initialize
-            let server_info = mcp_client.peer_info();
-            tracing::info!("Connected to server: {server_info:#?}");
-
-            // List available tools
-            let tools = mcp_client.peer().list_tools(Default::default()).await?;
-            tracing::info!(
-                "Available tools:\n{}",
-                serde_json::to_string_pretty(&tools)?
-            );
-
-            mcp_client.cancel().await?;
-        }
         TransportType::Sse => {
             let url = format!("http://{SOCKET_ADDR}/sse");
             tracing::info!("Connecting to ElasticSearch MCP server via sse: {}", url);
@@ -87,16 +59,16 @@ async fn main() -> anyhow::Result<()> {
                     version: "0.1.0".to_string(),
                 },
             };
-            let mcp_client = client_info.serve(transport).await.inspect_err(|e| {
+            let service = client_info.serve(transport).await.inspect_err(|e| {
                 tracing::error!("client error: {:?}", e);
             })?;
 
             // Initialize
-            let server_info = mcp_client.peer_info();
+            let server_info = service.peer_info();
             tracing::info!("Connected to server: {server_info:#?}");
 
             // List available tools
-            let tools = mcp_client.peer().list_tools(Default::default()).await?;
+            let tools = service.list_all_tools().await?;
             tracing::info!(
                 "Available tools:\n{}",
                 serde_json::to_string_pretty(&tools)?
@@ -227,7 +199,7 @@ async fn main() -> anyhow::Result<()> {
                     arguments: None,
                 };
                 // call tool
-                let tool_result = mcp_client.peer().call_tool(request_param).await?;
+                let tool_result = service.call_tool(request_param).await?;
 
                 // parse tool result
                 let indices = ListIndicesResponse::from(tool_result);
@@ -243,7 +215,7 @@ async fn main() -> anyhow::Result<()> {
                 };
 
                 // call tool
-                let tool_result = mcp_client.peer().call_tool(request_param).await?;
+                let tool_result = service.call_tool(request_param).await?;
 
                 // parse tool result
                 let aliases = ListAliasesResponse::from(tool_result);
@@ -283,7 +255,7 @@ async fn main() -> anyhow::Result<()> {
                 };
 
                 // call tool
-                let tool_result = mcp_client.peer().call_tool(request_param).await?;
+                let tool_result = service.call_tool(request_param).await?;
 
                 // parse tool result
                 let search_result = SearchResponse::from(tool_result);
@@ -311,7 +283,7 @@ async fn main() -> anyhow::Result<()> {
                 );
             }
 
-            mcp_client.cancel().await?;
+            service.cancel().await?;
         }
         TransportType::StreamHttp => {
             let url = format!("http://{SOCKET_ADDR}/mcp");
@@ -329,16 +301,16 @@ async fn main() -> anyhow::Result<()> {
                     version: "0.0.1".to_string(),
                 },
             };
-            let mcp_client = client_info.serve(transport).await.inspect_err(|e| {
+            let service = client_info.serve(transport).await.inspect_err(|e| {
                 tracing::error!("client error: {:?}", e);
             })?;
 
             // Initialize
-            let server_info = mcp_client.peer_info();
+            let server_info = service.peer_info();
             tracing::info!("Connected to server: {server_info:#?}");
 
             // List available tools
-            let tools = mcp_client.peer().list_tools(Default::default()).await?;
+            let tools = service.list_all_tools().await?;
             tracing::info!(
                 "Available tools:\n{}",
                 serde_json::to_string_pretty(&tools)?
@@ -469,7 +441,7 @@ async fn main() -> anyhow::Result<()> {
                     arguments: None,
                 };
                 // call tool
-                let tool_result = mcp_client.peer().call_tool(request_param).await?;
+                let tool_result = service.call_tool(request_param).await?;
 
                 // parse tool result
                 let indices = ListIndicesResponse::from(tool_result);
@@ -485,7 +457,7 @@ async fn main() -> anyhow::Result<()> {
                 };
 
                 // call tool
-                let tool_result = mcp_client.peer().call_tool(request_param).await?;
+                let tool_result = service.call_tool(request_param).await?;
 
                 // parse tool result
                 let aliases = ListAliasesResponse::from(tool_result);
@@ -507,7 +479,7 @@ async fn main() -> anyhow::Result<()> {
                 };
 
                 // call tool
-                let tool_result = mcp_client.peer().call_tool(request_param).await?;
+                let tool_result = service.call_tool(request_param).await?;
 
                 // parse tool result
                 let search_result = SearchResponse::from(tool_result);
@@ -535,7 +507,7 @@ async fn main() -> anyhow::Result<()> {
                 );
             }
 
-            mcp_client.cancel().await?;
+            service.cancel().await?;
         }
     }
 
