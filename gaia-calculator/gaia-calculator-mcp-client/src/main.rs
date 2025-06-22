@@ -2,7 +2,9 @@ use clap::{Parser, ValueEnum};
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
-    transport::{SseClientTransport, StreamableHttpClientTransport, TokioChildProcess},
+    transport::{
+        ConfigureCommandExt, SseClientTransport, StreamableHttpClientTransport, TokioChildProcess,
+    },
 };
 use tokio::process::Command;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -80,9 +82,13 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Stdio => {
             tracing::info!("Connecting to MCP server via stdio");
 
-            let transport = TokioChildProcess::new(Command::new(
-                "./target/release/gaia-calculator-mcp-server-stdio",
-            ))?;
+            // build command
+            let cmd =
+                Command::new("./target/release/gaia-calculator-mcp-server").configure(|cmd| {
+                    cmd.arg("--transport").arg("stdio");
+                });
+
+            let transport = TokioChildProcess::new(cmd)?;
 
             let service = ().serve(transport).await?;
 
@@ -91,8 +97,8 @@ async fn main() -> anyhow::Result<()> {
             tracing::info!("Connected to server: {server_info:#?}");
 
             // List available tools
-            let tools = service.peer().list_tools(Default::default()).await?;
-            tracing::info!("{}", serde_json::to_string_pretty(&tools)?);
+            let tools = service.list_all_tools().await?;
+            tracing::info!("Available tools: {tools:#?}");
 
             let request_param = CallToolRequestParam {
                 name: "sum".into(),
@@ -103,7 +109,7 @@ async fn main() -> anyhow::Result<()> {
             };
 
             // Call the sum tool
-            let sum_result = service.peer().call_tool(request_param).await?;
+            let sum_result = service.call_tool(request_param).await?;
 
             tracing::info!("Sum result: {}", serde_json::to_string_pretty(&sum_result)?);
 
