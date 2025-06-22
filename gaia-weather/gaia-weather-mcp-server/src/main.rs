@@ -49,7 +49,7 @@ async fn main() -> anyhow::Result<()> {
     match args.transport {
         TransportType::StreamHttp => {
             let service = StreamableHttpService::new(
-                || WeatherServer,
+                || Ok(WeatherServer),
                 LocalSessionManager::default().into(),
                 Default::default(),
             );

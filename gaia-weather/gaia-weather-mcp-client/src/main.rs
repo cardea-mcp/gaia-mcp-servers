@@ -2,7 +2,9 @@ use clap::{Parser, ValueEnum};
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
-    transport::{SseClientTransport, StreamableHttpClientTransport, TokioChildProcess},
+    transport::{
+        ConfigureCommandExt, SseClientTransport, StreamableHttpClientTransport, TokioChildProcess,
+    },
 };
 use tokio::process::Command;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -99,9 +101,12 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Stdio => {
             tracing::info!("Connecting to MCP server via stdio");
 
-            let transport = TokioChildProcess::new(Command::new(
-                "./target/release/gaia-weather-mcp-server-stdio",
-            ))?;
+            // build command
+            let cmd = Command::new("./target/release/gaia-weather-mcp-server").configure(|cmd| {
+                cmd.arg("--transport").arg("stdio");
+            });
+
+            let transport = TokioChildProcess::new(cmd)?;
 
             let mcp_client = ().serve(transport).await?;
 
@@ -110,7 +115,7 @@ async fn main() -> anyhow::Result<()> {
             tracing::info!("Connected to server: {server_info:#?}");
 
             // List available tools
-            let tools = mcp_client.peer().list_tools(Default::default()).await?;
+            let tools = mcp_client.list_tools(Default::default()).await?;
             tracing::info!("{}", serde_json::to_string_pretty(&tools)?);
 
             // request param
@@ -137,7 +142,7 @@ async fn main() -> anyhow::Result<()> {
             };
 
             // Call the sum tool
-            let weather_result = mcp_client.peer().call_tool(request_param).await?;
+            let weather_result = mcp_client.call_tool(request_param).await?;
 
             tracing::info!(
                 "Weather result: {}",
