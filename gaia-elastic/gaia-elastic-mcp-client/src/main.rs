@@ -3,12 +3,9 @@ use gaia_elastic_mcp_common::*;
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
-    transport::{
-        ConfigureCommandExt, SseClientTransport, StreamableHttpClientTransport, TokioChildProcess,
-    },
+    transport::{SseClientTransport, StreamableHttpClientTransport},
 };
 use serde_json::json;
-use tokio::process::Command;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 const SOCKET_ADDR: &str = "127.0.0.1:8006";
