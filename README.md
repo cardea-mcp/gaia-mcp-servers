@@ -23,3 +23,7 @@ Visit [gaia-elastic/README.md](gaia-elastic/README.md) for more information.
 ## Gaia TiDB MCP Server
 
 Visit [gaia-tidb/README.md](gaia-tidb/README.md) for more information.
+
+## Gaia Github MCP Server
+
+Visit [gaia-github/README.md](gaia-github/README.md) for more information.
