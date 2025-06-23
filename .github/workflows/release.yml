@@ -79,6 +79,7 @@ jobs:
           strip "target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server"
           strip "target/${{ matrix.target }}/release/gaia-elastic-mcp-server"
           strip "target/${{ matrix.target }}/release/gaia-tidb-mcp-server"
+          strip "target/${{ matrix.target }}/release/gaia-github-mcp-server"
 
           ls -al "target/${{ matrix.target }}/release"
 
@@ -96,6 +97,7 @@ jobs:
             cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-elastic-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-tidb-mcp-server" ./
+            cp "../target/${{ matrix.target }}/release/gaia-github-mcp-server" ./
 
             tar -czf "${{ matrix.archive-name }}" *
           fi
@@ -108,6 +110,7 @@ jobs:
             cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-elastic-mcp-server" ./
             cp "../target/${{ matrix.target }}/release/gaia-tidb-mcp-server" ./
+            cp "../target/${{ matrix.target }}/release/gaia-github-mcp-server" ./
 
             tar -czf "${{ matrix.archive-name }}" *
           fi
