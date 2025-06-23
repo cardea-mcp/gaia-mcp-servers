@@ -285,7 +285,7 @@ async fn main() -> anyhow::Result<()> {
         TransportType::StreamHttp => {
             let url = format!("http://{SOCKET_ADDR}/mcp");
             tracing::info!(
-                "Connecting to Gaia Qdrant MCP server via stream-http: {}",
+                "Connecting to Gaia Elastic MCP server via stream-http: {}",
                 url
             );
 
