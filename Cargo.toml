@@ -5,6 +5,9 @@ members = [
     "gaia-elastic/gaia-elastic-mcp-client",
     "gaia-elastic/gaia-elastic-mcp-common",
     "gaia-elastic/gaia-elastic-mcp-server",
+    "gaia-github/gaia-github-mcp-client",
+    "gaia-github/gaia-github-mcp-common",
+    "gaia-github/gaia-github-mcp-server",
     "gaia-kwsearch/gaia-kwsearch-mcp-client",
     "gaia-kwsearch/gaia-kwsearch-mcp-common",
     "gaia-kwsearch/gaia-kwsearch-mcp-server",
@@ -40,6 +43,7 @@ gaia-qdrant-mcp-common   = { path = "gaia-qdrant/gaia-qdrant-mcp-common" }
 gaia-kwsearch-mcp-common = { path = "gaia-kwsearch/gaia-kwsearch-mcp-common" }
 gaia-elastic-mcp-common  = { path = "gaia-elastic/gaia-elastic-mcp-common" }
 gaia-tidb-mcp-common     = { path = "gaia-tidb/gaia-tidb-mcp-common" }
+gaia-github-mcp-common   = { path = "gaia-github/gaia-github-mcp-common" }
 clap                     = "4.5"
 endpoints                = "0.31.0"
 mysql                    = "26.0.0"
