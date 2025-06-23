@@ -2,7 +2,7 @@ mod qdrant;
 
 use clap::{Parser, ValueEnum};
 use once_cell::sync::OnceCell;
-use qdrant::QdrantServer;
+use qdrant::{QdrantServer, set_search_tool_description, set_search_tool_param_description};
 use rmcp::{
     ServiceExt,
     transport::{
@@ -42,6 +42,15 @@ struct Args {
     /// Score threshold for the results
     #[arg(long, default_value = "0.5")]
     score_threshold: f32,
+    /// The description for the search tool
+    #[arg(long, default_value = "Perform vector search in the Qdrant database")]
+    search_tool_desc: String,
+    /// The description for the search tool parameter
+    #[arg(
+        long,
+        default_value = "The vector to search for in the Qdrant database"
+    )]
+    search_tool_param_desc: String,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -74,6 +83,12 @@ async fn main() -> anyhow::Result<()> {
     CONNECTION_CONFIG
         .set(RwLock::new(connection_config))
         .unwrap();
+
+    // Set the search tool description from CLI
+    set_search_tool_description(args.search_tool_desc);
+
+    // Set the query parameter description from CLI
+    set_search_tool_param_description(args.search_tool_param_desc);
 
     tracing::info!("Starting Gaia Qdrant MCP server on {}", args.socket_addr);
 
