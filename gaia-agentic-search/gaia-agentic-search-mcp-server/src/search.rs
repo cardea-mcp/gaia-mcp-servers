@@ -68,7 +68,7 @@ impl AgenticSearchServer {
         let mut output = String::new();
         for (idx, hit) in hits.iter().enumerate() {
             let source = hit.payload.get("source").unwrap().as_str().unwrap();
-            output.push_str(&format!("Source {}: {}\n", idx, source));
+            output.push_str(&format!("Source {}: {}\n", idx + 1, source));
             output.push_str("\n");
         }
 
@@ -98,10 +98,16 @@ impl AgenticSearchServer {
         let vector_search_result = self.vector_search(query.as_str()).await?;
         let keyword_search_result = self.keyword_search(query.as_str()).await?;
 
-        let output = format!(
-            "Vector search result:\n{}\n\nKeyword search result:\n{}",
-            vector_search_result, keyword_search_result,
-        );
+        let output = if !vector_search_result.is_empty() && !keyword_search_result.is_empty() {
+            format!(
+                "Vector search result:\n{}\n\nKeyword search result:\n{}",
+                vector_search_result, keyword_search_result,
+            )
+        } else if !vector_search_result.is_empty() {
+            vector_search_result
+        } else {
+            keyword_search_result
+        };
 
         Ok(CallToolResult::success(vec![Content::text(output)]))
     }
