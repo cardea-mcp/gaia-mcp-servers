@@ -1,0 +1,35 @@
+[package]
+name                 = "gaia-agentic-search-mcp-server"
+edition.workspace    = true
+version.workspace    = true
+repository.workspace = true
+license.workspace    = true
+
+[dependencies]
+rmcp = { workspace = true, features = [
+    "server",
+    "macros",
+    "transport-streamable-http-server",
+    "transport-worker",
+    "transport-sse-server",
+] }
+tokio = { workspace = true, features = ["macros", "rt", "rt-multi-thread", "io-std", "net", "fs", "time", "signal"] }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["env-filter", "std", "fmt"] }
+futures = { workspace = true }
+rand = { workspace = true }
+schemars = { workspace = true }
+hyper = { workspace = true, features = ["client", "server", "http1"] }
+hyper-util = { workspace = true, features = ["tokio"] }
+tokio-tungstenite = { workspace = true }
+reqwest = { workspace = true, features = ["json"] }
+pin-project-lite = { workspace = true }
+endpoints = { workspace = true, features = ["index"] }
+gaia-agentic-search-mcp-common = { workspace = true }
+mysql = { workspace = true, features = ["rustls-tls"] }
+clap = { workspace = true, features = ["derive"] }
+rustls = { version = "0.23.27", features = ["ring"] }
+axum = { workspace = true, features = ["macros"] }

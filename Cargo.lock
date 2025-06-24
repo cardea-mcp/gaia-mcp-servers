@@ -769,6 +769,69 @@ dependencies = [
 ]
 
 [[package]]
+name = "gaia-agentic-search-mcp-client"
+version = "0.5.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "gaia-agentic-search-mcp-common",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "gaia-agentic-search-mcp-common"
+version = "0.5.0"
+dependencies = [
+ "anyhow",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "mysql",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "reqwest",
+ "rmcp",
+ "schemars 0.9.0",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "gaia-agentic-search-mcp-server"
+version = "0.5.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "clap",
+ "endpoints",
+ "futures",
+ "gaia-agentic-search-mcp-common",
+ "hyper",
+ "hyper-util",
+ "mysql",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "reqwest",
+ "rmcp",
+ "rustls",
+ "schemars 0.9.0",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "gaia-calculator-mcp-client"
 version = "0.5.0"
 dependencies = [
