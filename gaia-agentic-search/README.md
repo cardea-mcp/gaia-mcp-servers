@@ -29,17 +29,17 @@ The server supports three search modes through subcommands:
 ```bash
 ./gaia-agentic-search-mcp-server qdrant \
     --qdrant-collection my_collection \
-    --chat-service-url http://localhost:8080 \
-    --embedding-service-url http://localhost:8081 \
+    --chat-service http://localhost:8080 \
+    --embedding-service http://localhost:8081 \
     --limit 20 \
     --score-threshold 0.7
 ```
 
 **Options:**
 - `--qdrant-base-url`: Qdrant database URL (default: http://127.0.0.1:6333)
-- `--qdrant-collection`: Collection name in Qdrant (required)
-- `--chat-service-url`: Chat service URL for keyword extraction (required)
-- `--embedding-service-url`: Embedding service URL for vector generation (required)
+- `--qdrant-collection`: Collection name in Qdrant (**required**)
+- `--chat-service`: Chat service base URL (**required**)
+- `--embedding-service`: Embedding service base URL (**required**)
 - `--limit`: Maximum number of results (default: 10)
 - `--score-threshold`: Score threshold for results (default: 0.5)
 
@@ -50,15 +50,15 @@ The server supports three search modes through subcommands:
     --tidb-ssl-ca /path/to/ca.pem \
     --tidb-database my_database \
     --tidb-table-name my_table \
-    --chat-service-url http://localhost:8080 \
+    --chat-service http://localhost:8080 \
     --limit 15
 ```
 
 **Options:**
-- `--tidb-ssl-ca`: TiDB SSL CA certificate path (required)
-- `--tidb-database`: Database name in TiDB (required)
-- `--tidb-table-name`: Table name in TiDB (required)
-- `--chat-service-url`: Chat service URL for keyword extraction (required)
+- `--tidb-ssl-ca`: TiDB SSL CA certificate path (**required**)
+- `--tidb-database`: Database name in TiDB (**required**)
+- `--tidb-table-name`: Table name in TiDB (**required**)
+- `--chat-service`: Chat service base URL (**required**)
 - `--limit`: Maximum number of results (default: 10)
 - `--score-threshold`: Score threshold for results (default: 0.5)
 
@@ -70,14 +70,21 @@ The server supports three search modes through subcommands:
     --tidb-ssl-ca /path/to/ca.pem \
     --tidb-database my_database \
     --tidb-table-name my_table \
-    --chat-service-url http://localhost:8080 \
-    --embedding-service-url http://localhost:8081 \
+    --chat-service http://localhost:8080 \
+    --embedding-service http://localhost:8081 \
     --limit 25
 ```
 
 **Options:**
-- All options from Qdrant and TiDB search modes
-- Combines both vector and keyword search results
+- `--qdrant-base-url`: Qdrant database URL (default: http://127.0.0.1:6333)
+- `--qdrant-collection`: Collection name in Qdrant (**required**)
+- `--tidb-ssl-ca`: TiDB SSL CA certificate path (**required**)
+- `--tidb-database`: Database name in TiDB (**required**)
+- `--tidb-table-name`: Table name in TiDB (**required**)
+- `--chat-service`: Chat service base URL (**required**)
+- `--embedding-service`: Embedding service base URL (**required**)
+- `--limit`: Maximum number of results (default: 10)
+- `--score-threshold`: Score threshold for results (default: 0.5)
 
 ### Environment Variables
 
@@ -113,8 +120,8 @@ export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
 ./gaia-agentic-search-mcp-server qdrant \
     --qdrant-base-url http://localhost:6333 \
     --qdrant-collection documents \
-    --chat-service-url http://localhost:8080 \
-    --embedding-service-url http://localhost:8081 \
+    --chat-service http://localhost:8080 \
+    --embedding-service http://localhost:8081 \
     --limit 10 \
     --score-threshold 0.6
 ```
@@ -132,7 +139,7 @@ export CHAT_SERVICE_API_KEY=your_chat_api_key
     --tidb-ssl-ca /etc/ssl/certs/ca.pem \
     --tidb-database search_db \
     --tidb-table-name documents \
-    --chat-service-url http://localhost:8080 \
+    --chat-service http://localhost:8080 \
     --limit 20 \
     --score-threshold 0.4
 ```
@@ -153,8 +160,8 @@ export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
     --tidb-ssl-ca /etc/ssl/certs/ca.pem \
     --tidb-database search_db \
     --tidb-table-name documents \
-    --chat-service-url http://localhost:8080 \
-    --embedding-service-url http://localhost:8081 \
+    --chat-service http://localhost:8080 \
+    --embedding-service http://localhost:8081 \
     --limit 30 \
     --score-threshold 0.5
 ```
