@@ -47,14 +47,16 @@ enum SearchMode {
         score_threshold: f32,
         /// The base URL of the chat server
         #[arg(long, required = true)]
-        chat_service_url: String,
+        chat_service: String,
         /// The base URL of the embedding server
         #[arg(long, required = true)]
-        embedding_service_url: String,
+        embedding_service: String,
     },
     /// Enable keyword search only
     Tidb {
-        /// TiDB SSL CA certificate path
+        /// Path to the SSL CA certificate. On macOS, this is typically
+        /// `/etc/ssl/cert.pem`. On Debian/Ubuntu/Arch Linux, it's typically
+        /// `/etc/ssl/certs/ca-certificates.crt`.
         #[arg(long, required = true)]
         tidb_ssl_ca: PathBuf,
         /// Database name to search in TiDB
@@ -71,7 +73,7 @@ enum SearchMode {
         score_threshold: f32,
         /// The base URL of the chat server
         #[arg(long, required = true)]
-        chat_service_url: String,
+        chat_service: String,
     },
     /// Enable both vector and keyword search
     Search {
@@ -98,10 +100,10 @@ enum SearchMode {
         score_threshold: f32,
         /// The base URL of the chat server
         #[arg(long, required = true)]
-        chat_service_url: String,
+        chat_service: String,
         /// The base URL of the embedding server
         #[arg(long, required = true)]
-        embedding_service_url: String,
+        embedding_service: String,
     },
 }
 
@@ -130,8 +132,8 @@ async fn main() -> anyhow::Result<()> {
             qdrant_collection,
             limit,
             score_threshold,
-            chat_service_url,
-            embedding_service_url,
+            chat_service,
+            embedding_service,
         } => {
             info!("Enabling vector search mode");
 
@@ -154,11 +156,11 @@ async fn main() -> anyhow::Result<()> {
                 limit,
                 score_threshold,
                 chat_service: ServiceConfig {
-                    url: chat_service_url,
+                    url: chat_service,
                     api_key: chat_service_api_key,
                 },
                 embedding_service: Some(ServiceConfig {
-                    url: embedding_service_url,
+                    url: embedding_service,
                     api_key: embedding_service_api_key,
                 }),
             }
@@ -169,7 +171,7 @@ async fn main() -> anyhow::Result<()> {
             tidb_table_name,
             limit,
             score_threshold,
-            chat_service_url,
+            chat_service,
         } => {
             info!("Enabling keyword search mode");
 
@@ -259,7 +261,7 @@ async fn main() -> anyhow::Result<()> {
                 limit,
                 score_threshold,
                 chat_service: ServiceConfig {
-                    url: chat_service_url,
+                    url: chat_service,
                     api_key: chat_service_api_key,
                 },
                 embedding_service: None,
@@ -273,8 +275,8 @@ async fn main() -> anyhow::Result<()> {
             tidb_table_name,
             limit,
             score_threshold,
-            chat_service_url,
-            embedding_service_url,
+            chat_service,
+            embedding_service,
         } => {
             info!("Enabling both vector and keyword search modes");
 
@@ -374,11 +376,11 @@ async fn main() -> anyhow::Result<()> {
                 limit,
                 score_threshold,
                 chat_service: ServiceConfig {
-                    url: chat_service_url,
+                    url: chat_service,
                     api_key: chat_service_api_key,
                 },
                 embedding_service: Some(ServiceConfig {
-                    url: embedding_service_url,
+                    url: embedding_service,
                     api_key: embedding_service_api_key,
                 }),
             }
