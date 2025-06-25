@@ -15,7 +15,7 @@ use rmcp::{
     tool,
 };
 use serde_json::{Value, json};
-use tracing::{error, info};
+use tracing::{debug, error, info, warn};
 
 #[derive(Debug, Clone)]
 pub struct AgenticSearchServer {
@@ -59,44 +59,72 @@ impl AgenticSearchServer {
     }
 
     async fn vector_search(&self, query: impl AsRef<str>) -> Result<String, McpError> {
+        info!("Starting vector search ...");
+
         // compute the embedding of the query
+        info!("Computing embedding of the query...");
         let embedding = self.compute_embedding(query.as_ref()).await?;
 
         // search in qdrant
+        info!("Searching in Qdrant...");
         let hits = self.search_in_qdrant(embedding).await?;
 
-        let mut output = String::new();
-        for (idx, hit) in hits.iter().enumerate() {
-            let source = hit.payload.get("source").unwrap().as_str().unwrap();
-            output.push_str(&format!("Source {}: {}\n", idx + 1, source));
-            output.push_str("\n");
-        }
+        if !hits.is_empty() {
+            info!("Extracting the source of the vector search results...");
+            let mut output = String::new();
+            for (idx, hit) in hits.iter().enumerate() {
+                let source = hit.payload.get("source").unwrap().as_str().unwrap();
+                output.push_str(&format!("Source {}: {}\n", idx + 1, source));
+                output.push_str("\n");
+            }
 
-        Ok(output)
+            info!("Vector search done! 🎉");
+
+            Ok(output)
+        } else {
+            let error_message = "No vector search results found in Qdrant";
+            warn!("{}", error_message);
+            Ok(String::new())
+        }
     }
 
     async fn keyword_search(&self, query: impl AsRef<str>) -> Result<String, McpError> {
+        info!("Starting keyword search ...");
+
         // extract keywords from the query
+        info!("Extracting keywords from the query...");
         let keywords = self.extract_keywords(query.as_ref()).await?;
 
         // search in tidb
+        info!("Searching in TiDB...");
         let hits = self.search_in_tidb(keywords).await?;
 
-        // format the search results
-        let mut output = String::new();
-        for hit in hits {
-            output.push_str(&format!("ID: {}\n", hit.id));
-            output.push_str(&format!("Title: {}\n", hit.title));
-            output.push_str(&format!("Content: {}\n", hit.content));
-            output.push_str("\n");
-        }
+        if !hits.is_empty() {
+            // format the search results
+            info!("Extracting the source of the keyword search results...");
+            let mut output = String::new();
+            for hit in hits {
+                output.push_str(&format!("ID: {}\n", hit.id));
+                output.push_str(&format!("Title: {}\n", hit.title));
+                output.push_str(&format!("Content: {}\n", hit.content));
+                output.push_str("\n");
+            }
 
-        Ok(output)
+            info!("Keyword search done! 🎉");
+
+            Ok(output)
+        } else {
+            let error_message = "No keyword search results found in TiDB";
+            warn!("{}", error_message);
+            Ok(String::new())
+        }
     }
 
     async fn combined_search(&self, query: String) -> Result<CallToolResult, McpError> {
         let vector_search_result = self.vector_search(query.as_str()).await?;
         let keyword_search_result = self.keyword_search(query.as_str()).await?;
+
+        info!("Combining vector and keyword search results ...");
 
         let output = if !vector_search_result.is_empty() && !keyword_search_result.is_empty() {
             format!(
@@ -108,6 +136,8 @@ impl AgenticSearchServer {
         } else {
             keyword_search_result
         };
+
+        info!("Combined search done! 🎉");
 
         Ok(CallToolResult::success(vec![Content::text(output)]))
     }
@@ -325,7 +355,7 @@ impl AgenticSearchServer {
         let request = ChatCompletionRequestBuilder::new(&[user_message]).build();
 
         let chat_service_url = format!("{}/v1/chat/completions", config.url.trim_end_matches('/'));
-        info!(
+        debug!(
             "Forward the chat request to {} for extracting keywords",
             chat_service_url,
         );
@@ -387,7 +417,7 @@ impl AgenticSearchServer {
         match &self.config.tidb_config {
             Some(tidb_config) => {
                 // get connection
-                info!("Getting connection...");
+                debug!("Getting connection to TiDB Cloud...");
                 let mut conn = tidb_config.pool.get_conn().map_err(|e| {
                     let error_message = format!("Failed to get connection: {}", e);
 
@@ -397,7 +427,7 @@ impl AgenticSearchServer {
                 })?;
 
                 // test connection
-                info!("Testing connection...");
+                debug!("Testing connection...");
                 let version: String = match conn.query_first("SELECT VERSION()").map_err(|e| {
                     let error_message = format!("Failed to query version: {}", e);
 
@@ -418,16 +448,15 @@ impl AgenticSearchServer {
                         ));
                     }
                 };
-                info!("Connected to TiDB Cloud! Version: {}", version);
+                debug!("Connected to TiDB Cloud! Version: {}", version);
 
                 // check if table exists
-                info!("Checking if table exists...");
+                debug!("Checking if table exists...");
                 let check_table_sql = format!(
                     "SELECT COUNT(*) FROM information_schema.tables
                 WHERE table_schema = '{}' AND table_name = '{}'",
                     tidb_config.database, tidb_config.table_name
                 );
-                info!("Executing check table SQL: {}", check_table_sql);
                 let table_exists: i32 = conn
                     .query_first(&check_table_sql)
                     .map_err(|e| {
@@ -456,7 +485,7 @@ impl AgenticSearchServer {
 
                 // execute full-text search
                 let query = keywords.as_ref();
-                info!("\nExecuting full-text search for '{}'...", query);
+                debug!("\nExecuting full-text search for '{}'...", query);
                 let search_sql = format!(
                     r"SELECT * FROM {}
                 WHERE fts_match_word('{}', content)
