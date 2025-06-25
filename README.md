@@ -27,3 +27,7 @@ Visit [gaia-tidb/README.md](gaia-tidb/README.md) for more information.
 ## Gaia Github MCP Server
 
 Visit [gaia-github/README.md](gaia-github/README.md) for more information.
+
+## Gaia Agentic Search MCP Server
+
+Visit [gaia-agentic-search/README.md](gaia-agentic-search/README.md) for more information.
