@@ -56,6 +56,6 @@ axum                           = "0.8"
 
 [workspace.package]
 edition    = "2024"
-version    = "0.5.0"
+version    = "0.6.0"
 repository = "https://github.com/decentralized-mcp/gaia-mcp-servers"
 license    = "Apache-2.0"
