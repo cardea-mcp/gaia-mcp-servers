@@ -49,7 +49,7 @@ gaia-tidb-mcp-common           = { path = "gaia-tidb/gaia-tidb-mcp-common" }
 gaia-github-mcp-common         = { path = "gaia-github/gaia-github-mcp-common" }
 gaia-agentic-search-mcp-common = { path = "gaia-agentic-search/gaia-agentic-search-mcp-common" }
 clap                           = "4.5"
-endpoints                      = "0.31.0"
+endpoints                      = "0.32.0"
 mysql                          = "26.0.0"
 once_cell                      = "1.18"
 axum                           = "0.8"
