@@ -37,15 +37,14 @@ impl WeatherServer {
         tracing::info!("getting geocode for {}", location);
 
         let geocode_url = format!(
-            "http://api.openweathermap.org/geo/1.0/direct?q={}&appid={}&limit=1&units={}",
-            location, api_key, openweathermap_unit
+            "http://api.openweathermap.org/geo/1.0/direct?q={location}&appid={api_key}&limit=1&units={openweathermap_unit}"
         );
 
         // send the request to get the geocode
         let response = reqwest::get(geocode_url).await.map_err(|e| {
             McpError::new(
                 ErrorCode::INTERNAL_ERROR,
-                format!("Failed to get geocode: {}", e),
+                format!("Failed to get geocode: {e}"),
                 None,
             )
         })?;
@@ -53,7 +52,7 @@ impl WeatherServer {
         let geocode_data = response.json::<serde_json::Value>().await.map_err(|e| {
             McpError::new(
                 ErrorCode::INTERNAL_ERROR,
-                format!("Failed to parse geocode response: {}", e),
+                format!("Failed to parse geocode response: {e}"),
                 None,
             )
         })?;
@@ -64,15 +63,14 @@ impl WeatherServer {
         // * get weather data
         tracing::info!("getting weather for {} at {} {}", location, lat, lon);
         let weather_url = format!(
-            "http://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}&units={}",
-            lat, lon, api_key, openweathermap_unit
+            "http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units={openweathermap_unit}"
         );
 
         // send the request to get the weather
         let response = reqwest::get(weather_url).await.map_err(|e| {
             McpError::new(
                 ErrorCode::INTERNAL_ERROR,
-                format!("Failed to get weather: {}", e),
+                format!("Failed to get weather: {e}"),
                 None,
             )
         })?;
@@ -80,7 +78,7 @@ impl WeatherServer {
         let weather_data = response.json::<serde_json::Value>().await.map_err(|e| {
             McpError::new(
                 ErrorCode::INTERNAL_ERROR,
-                format!("Failed to parse weather response: {}", e),
+                format!("Failed to parse weather response: {e}"),
                 None,
             )
         })?;

@@ -54,7 +54,7 @@ async fn main() -> anyhow::Result<()> {
         .init();
 
     let api_key = match std::env::var("ES_API_KEY") {
-        Ok(api_key) => format!("ApiKey {}", api_key),
+        Ok(api_key) => format!("ApiKey {api_key}"),
         Err(_) => {
             let err_message = "The environment variable `ES_API_KEY` is not set";
 

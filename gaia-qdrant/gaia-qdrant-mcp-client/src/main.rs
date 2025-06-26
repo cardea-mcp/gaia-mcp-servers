@@ -85,7 +85,7 @@ async fn main() -> anyhow::Result<()> {
                     serde_json::Value::Array(
                         vec![0.2, 0.1, 0.9, 0.7]
                             .into_iter()
-                            .map(|v| serde_json::Value::from(v))
+                            .map(serde_json::Value::from)
                             .collect(),
                     ),
                 )])),
@@ -132,7 +132,7 @@ async fn main() -> anyhow::Result<()> {
                     serde_json::Value::Array(
                         vec![0.2, 0.1, 0.9, 0.7]
                             .into_iter()
-                            .map(|v| serde_json::Value::from(v))
+                            .map(serde_json::Value::from)
                             .collect(),
                     ),
                 )])),
@@ -175,7 +175,7 @@ async fn main() -> anyhow::Result<()> {
                     serde_json::Value::Array(
                         vec![0.2, 0.1, 0.9, 0.7]
                             .into_iter()
-                            .map(|v| serde_json::Value::from(v))
+                            .map(serde_json::Value::from)
                             .collect(),
                     ),
                 )])),

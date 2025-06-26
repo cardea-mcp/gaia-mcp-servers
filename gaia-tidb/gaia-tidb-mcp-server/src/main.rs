@@ -68,7 +68,7 @@ async fn main() -> anyhow::Result<()> {
         .init();
 
     CryptoProvider::install_default(default_provider()).map_err(|e| {
-        let err_msg = format!("Failed to install default crypto provider: {:?}", e);
+        let err_msg = format!("Failed to install default crypto provider: {e:?}");
         error!("{}", err_msg);
         anyhow!(err_msg)
     })?;
@@ -79,7 +79,7 @@ async fn main() -> anyhow::Result<()> {
     let host = match env::var("TIDB_HOST") {
         Ok(host) => host,
         Err(e) => {
-            let error_message = format!("Failed to get TIDB_HOST: {}", e);
+            let error_message = format!("Failed to get TIDB_HOST: {e}");
             error!(error_message);
             bail!(error_message);
         }
@@ -90,13 +90,13 @@ async fn main() -> anyhow::Result<()> {
         Ok(port) => match port.parse() {
             Ok(port) => port,
             Err(e) => {
-                let error_message = format!("Failed to parse TIDB_PORT: {}", e);
+                let error_message = format!("Failed to parse TIDB_PORT: {e}");
                 error!(error_message);
                 bail!(error_message);
             }
         },
         Err(e) => {
-            let error_message = format!("Failed to get TIDB_PORT: {}", e);
+            let error_message = format!("Failed to get TIDB_PORT: {e}");
             error!(error_message);
             bail!(error_message);
         }
@@ -106,7 +106,7 @@ async fn main() -> anyhow::Result<()> {
     let username = match env::var("TIDB_USERNAME") {
         Ok(username) => username,
         Err(e) => {
-            let error_message = format!("Failed to get TIDB_USERNAME: {}", e);
+            let error_message = format!("Failed to get TIDB_USERNAME: {e}");
             error!(error_message);
             bail!(error_message);
         }
@@ -116,7 +116,7 @@ async fn main() -> anyhow::Result<()> {
     let password = match env::var("TIDB_PASSWORD") {
         Ok(password) => password,
         Err(e) => {
-            let error_message = format!("Failed to get TIDB_PASSWORD: {}", e);
+            let error_message = format!("Failed to get TIDB_PASSWORD: {e}");
             error!(error_message);
             bail!(error_message);
         }
@@ -137,7 +137,7 @@ async fn main() -> anyhow::Result<()> {
     // create connection pool
     info!("Creating connection pool...");
     let pool = Pool::new(opts).map_err(|e| {
-        let error_message = format!("Failed to create connection pool: {}", e);
+        let error_message = format!("Failed to create connection pool: {e}");
         error!(error_message);
         anyhow!(error_message)
     })?;

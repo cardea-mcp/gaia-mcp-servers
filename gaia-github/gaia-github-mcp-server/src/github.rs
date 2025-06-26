@@ -26,20 +26,20 @@ impl GithubServer {
                 .personal_token(token)
                 .build()
                 .map_err(|e| {
-                    let error_message = format!("Failed to build Octocrab: {}", e);
+                    let error_message = format!("Failed to build Octocrab: {e}");
                     error!("{}", error_message);
                     McpError::new(ErrorCode::INTERNAL_ERROR, error_message, None)
                 })?
         } else {
             OctocrabBuilder::new().build().map_err(|e| {
-                let error_message = format!("Failed to build Octocrab: {}", e);
+                let error_message = format!("Failed to build Octocrab: {e}");
                 error!("{}", error_message);
                 McpError::new(ErrorCode::INTERNAL_ERROR, error_message, None)
             })?
         };
 
         let repo = octocrab.repos(owner, repo).get().await.map_err(|e| {
-            let error_message = format!("Failed to get repository: {}", e);
+            let error_message = format!("Failed to get repository: {e}");
             error!("{}", error_message);
             McpError::new(ErrorCode::INTERNAL_ERROR, error_message, None)
         })?;

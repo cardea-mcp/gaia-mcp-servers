@@ -49,11 +49,11 @@ impl AgenticSearchServer {
             (false, false) => {
                 let error_message = "No search mode configured";
                 error!("{}", error_message);
-                return Err(McpError::new(
+                Err(McpError::new(
                     ErrorCode::INTERNAL_ERROR,
                     error_message,
                     None,
-                ));
+                ))
             }
         }
     }
@@ -75,7 +75,7 @@ impl AgenticSearchServer {
             for (idx, hit) in hits.iter().enumerate() {
                 let source = hit.payload.get("source").unwrap().as_str().unwrap();
                 output.push_str(&format!("Source {}: {}\n", idx + 1, source));
-                output.push_str("\n");
+                output.push('\n');
             }
 
             info!("Vector search done! 🎉");
@@ -107,7 +107,7 @@ impl AgenticSearchServer {
                 output.push_str(&format!("ID: {}\n", hit.id));
                 output.push_str(&format!("Title: {}\n", hit.title));
                 output.push_str(&format!("Content: {}\n", hit.content));
-                output.push_str("\n");
+                output.push('\n');
             }
 
             info!("Keyword search done! 🎉");
@@ -128,8 +128,7 @@ impl AgenticSearchServer {
 
         let output = if !vector_search_result.is_empty() && !keyword_search_result.is_empty() {
             format!(
-                "Vector search result:\n{}\n\nKeyword search result:\n{}",
-                vector_search_result, keyword_search_result,
+                "Vector search result:\n{vector_search_result}\n\nKeyword search result:\n{keyword_search_result}",
             )
         } else if !vector_search_result.is_empty() {
             vector_search_result
@@ -207,11 +206,11 @@ impl AgenticSearchServer {
             None => {
                 let error_message = "Embedding service URL is not configured";
                 error!("{}", error_message);
-                return Err(McpError::new(
+                Err(McpError::new(
                     ErrorCode::INTERNAL_ERROR,
                     error_message,
                     None,
-                ));
+                ))
             }
         }
     }
@@ -299,32 +298,32 @@ impl AgenticSearchServer {
                             let error_message =
                                 "Failed to search points. The given key 'result' does not exist.";
                             error!("{}", error_message);
-                            return Err(McpError::new(
+                            Err(McpError::new(
                                 ErrorCode::INTERNAL_ERROR,
                                 error_message,
                                 None,
-                            ));
+                            ))
                         }
                     },
                     Err(e) => {
-                        let error_message = format!("Failed to search points: {}", e);
+                        let error_message = format!("Failed to search points: {e}");
                         error!("{}", error_message);
-                        return Err(McpError::new(
+                        Err(McpError::new(
                             ErrorCode::INTERNAL_ERROR,
                             error_message,
                             None,
-                        ));
+                        ))
                     }
                 }
             }
             None => {
                 let error_message = "Qdrant config is not set";
                 error!("{}", error_message);
-                return Err(McpError::new(
+                Err(McpError::new(
                     ErrorCode::INTERNAL_ERROR,
                     error_message,
                     None,
-                ));
+                ))
             }
         }
     }
@@ -419,7 +418,7 @@ impl AgenticSearchServer {
                 // get connection
                 debug!("Getting connection to TiDB Cloud...");
                 let mut conn = tidb_config.pool.get_conn().map_err(|e| {
-                    let error_message = format!("Failed to get connection: {}", e);
+                    let error_message = format!("Failed to get connection: {e}");
 
                     error!(error_message);
 
@@ -429,7 +428,7 @@ impl AgenticSearchServer {
                 // test connection
                 debug!("Testing connection...");
                 let version: String = match conn.query_first("SELECT VERSION()").map_err(|e| {
-                    let error_message = format!("Failed to query version: {}", e);
+                    let error_message = format!("Failed to query version: {e}");
 
                     error!(error_message);
 
@@ -460,7 +459,7 @@ impl AgenticSearchServer {
                 let table_exists: i32 = conn
                     .query_first(&check_table_sql)
                     .map_err(|e| {
-                        let error_message = format!("Failed to check table: {}", e);
+                        let error_message = format!("Failed to check table: {e}");
 
                         error!(error_message);
 
@@ -495,7 +494,7 @@ impl AgenticSearchServer {
                 );
 
                 conn.query(&search_sql).map_err(|e| {
-                    let error_message = format!("Failed to execute search: {}", e);
+                    let error_message = format!("Failed to execute search: {e}");
 
                     error!(error_message);
 
@@ -505,11 +504,11 @@ impl AgenticSearchServer {
             None => {
                 let error_message = "TiDB config is not set";
                 error!("{}", error_message);
-                return Err(McpError::new(
+                Err(McpError::new(
                     ErrorCode::INTERNAL_ERROR,
                     error_message,
                     None,
-                ));
+                ))
             }
         }
     }

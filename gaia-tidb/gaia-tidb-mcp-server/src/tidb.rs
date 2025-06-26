@@ -91,7 +91,7 @@ impl TidbServer {
         // get connection
         info!("Getting connection...");
         let mut conn = config.pool.get_conn().map_err(|e| {
-            let error_message = format!("Failed to get connection: {}", e);
+            let error_message = format!("Failed to get connection: {e}");
 
             error!(error_message);
 
@@ -101,7 +101,7 @@ impl TidbServer {
         // test connection
         info!("Testing connection...");
         let version: String = match conn.query_first("SELECT VERSION()").map_err(|e| {
-            let error_message = format!("Failed to query version: {}", e);
+            let error_message = format!("Failed to query version: {e}");
 
             error!(error_message);
 
@@ -133,7 +133,7 @@ impl TidbServer {
         let table_exists: i32 = conn
             .query_first(&check_table_sql)
             .map_err(|e| {
-                let error_message = format!("Failed to check table: {}", e);
+                let error_message = format!("Failed to check table: {e}");
 
                 error!(error_message);
 
@@ -167,7 +167,7 @@ impl TidbServer {
         );
 
         let hits: Vec<TidbSearchHit> = conn.query(&search_sql).map_err(|e| {
-            let error_message = format!("Failed to execute search: {}", e);
+            let error_message = format!("Failed to execute search: {e}");
 
             error!(error_message);
 

@@ -72,7 +72,7 @@ async fn main() -> anyhow::Result<()> {
             );
 
             let mut api_key = std::env::var("ES_API_KEY").unwrap();
-            api_key = format!("ApiKey {}", api_key);
+            api_key = format!("ApiKey {api_key}");
 
             // create index
             {
@@ -225,7 +225,7 @@ async fn main() -> anyhow::Result<()> {
                 let query = "What is the location of Paris, France along the Seine river?";
 
                 // fields
-                let fields = vec!["title", "content"];
+                let fields = ["title", "content"];
 
                 // request param
                 let request_param = CallToolRequestParam {
@@ -314,7 +314,7 @@ async fn main() -> anyhow::Result<()> {
             );
 
             let mut api_key = std::env::var("ES_API_KEY").unwrap();
-            api_key = format!("ApiKey {}", api_key);
+            api_key = format!("ApiKey {api_key}");
 
             // create index
             {

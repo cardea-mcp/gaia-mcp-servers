@@ -21,8 +21,7 @@ pub struct CreateCollectionResponse {
 impl From<rmcp::model::CallToolResult> for CreateCollectionResponse {
     fn from(result: rmcp::model::CallToolResult) -> Self {
         let content = result.content[0].as_text().unwrap().text.as_ref();
-        let response = serde_json::from_str::<CreateCollectionResponse>(content).unwrap();
-        response
+        serde_json::from_str::<CreateCollectionResponse>(content).unwrap()
     }
 }
 
@@ -90,8 +89,7 @@ pub struct UpsertPointsResponse {
 impl From<rmcp::model::CallToolResult> for UpsertPointsResponse {
     fn from(result: rmcp::model::CallToolResult) -> Self {
         let content = result.content[0].as_text().unwrap().text.as_ref();
-        let response = serde_json::from_str::<UpsertPointsResponse>(content).unwrap();
-        response
+        serde_json::from_str::<UpsertPointsResponse>(content).unwrap()
     }
 }
 
@@ -111,8 +109,7 @@ pub struct SearchPointsResponse {
 impl From<rmcp::model::CallToolResult> for SearchPointsResponse {
     fn from(result: rmcp::model::CallToolResult) -> Self {
         let content = result.content[0].as_text().unwrap().text.as_ref();
-        let response = serde_json::from_str::<SearchPointsResponse>(content).unwrap();
-        response
+        serde_json::from_str::<SearchPointsResponse>(content).unwrap()
     }
 }
 

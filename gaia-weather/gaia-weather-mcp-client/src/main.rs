@@ -82,8 +82,7 @@ async fn main() -> anyhow::Result<()> {
                         serde_json::Value::String(
                             std::env::var("OPENWEATHERMAP_API_KEY")
                                 .unwrap_or_else(|_| "".to_string()),
-                        )
-                        .into(),
+                        ),
                     ),
                 ])),
             };
@@ -135,8 +134,7 @@ async fn main() -> anyhow::Result<()> {
                         serde_json::Value::String(
                             std::env::var("OPENWEATHERMAP_API_KEY")
                                 .unwrap_or_else(|_| "".to_string()),
-                        )
-                        .into(),
+                        ),
                     ),
                 ])),
             };
@@ -196,8 +194,7 @@ async fn main() -> anyhow::Result<()> {
                         serde_json::Value::String(
                             std::env::var("OPENWEATHERMAP_API_KEY")
                                 .unwrap_or_else(|_| "".to_string()),
-                        )
-                        .into(),
+                        ),
                     ),
                 ])),
             };

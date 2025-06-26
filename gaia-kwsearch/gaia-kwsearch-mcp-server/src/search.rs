@@ -40,7 +40,7 @@ impl KeywordSearchServer {
 
         // build url
         let base_url = conn_config.base_url.trim_end_matches('/');
-        let url = format!("{}/v1/index/create", base_url);
+        let url = format!("{base_url}/v1/index/create");
 
         let index_request = IndexRequest {
             index: Some(index),
@@ -53,7 +53,7 @@ impl KeywordSearchServer {
             .send()
             .await
             .map_err(|e| {
-                let error_message = format!("Failed to create index: {}", e);
+                let error_message = format!("Failed to create index: {e}");
 
                 error!("{}", error_message);
 
@@ -61,7 +61,7 @@ impl KeywordSearchServer {
             })?;
 
         let index_response = response.json::<IndexResponse>().await.map_err(|e| {
-            let error_message = format!("Failed to parse index response: {}", e);
+            let error_message = format!("Failed to parse index response: {e}");
 
             error!("{}", error_message);
 
@@ -101,7 +101,7 @@ impl KeywordSearchServer {
 
         // build url
         let base_url = conn_config.base_url.trim_end_matches('/');
-        let url = format!("{}/v1/search", base_url);
+        let url = format!("{base_url}/v1/search");
 
         let query_request = QueryRequest {
             query,
@@ -115,7 +115,7 @@ impl KeywordSearchServer {
             .send()
             .await
             .map_err(|e| {
-                let error_message = format!("Failed to search documents: {}", e);
+                let error_message = format!("Failed to search documents: {e}");
 
                 error!("{}", error_message);
 
@@ -123,7 +123,7 @@ impl KeywordSearchServer {
             })?;
 
         let query_response = response.json::<QueryResponse>().await.map_err(|e| {
-            let error_message = format!("Failed to parse query response: {}", e);
+            let error_message = format!("Failed to parse query response: {e}");
 
             error!("{}", error_message);
 

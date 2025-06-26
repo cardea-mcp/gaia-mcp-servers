@@ -33,7 +33,7 @@ impl ElasticSearchServer {
 
         // build url
         let base_url = conn_config.base_url.trim_end_matches('/');
-        let url = format!("{}/_cat/indices?v=true&s=index&format=json", base_url);
+        let url = format!("{base_url}/_cat/indices?v=true&s=index&format=json");
 
         // get api key
         let api_key = conn_config.api_key;
@@ -53,7 +53,7 @@ impl ElasticSearchServer {
         let response = match result {
             Ok(response) => response,
             Err(e) => {
-                let error_message = format!("Failed to list indices: {}", e);
+                let error_message = format!("Failed to list indices: {e}");
 
                 error!(error_message);
 
@@ -69,7 +69,7 @@ impl ElasticSearchServer {
             true => match response.json::<Value>().await {
                 Ok(json) => {
                     let indices: Vec<IndexInfo> = serde_json::from_value(json).map_err(|e| {
-                        let error_message = format!("Failed to parse indices: {}", e);
+                        let error_message = format!("Failed to parse indices: {e}");
 
                         error!(error_message);
 
@@ -81,15 +81,15 @@ impl ElasticSearchServer {
                     Ok(CallToolResult::success(vec![content]))
                 }
                 Err(e) => {
-                    let error_message = format!("Failed to parse indices: {}", e);
+                    let error_message = format!("Failed to parse indices: {e}");
 
                     error!(error_message);
 
-                    return Err(McpError::new(
+                    Err(McpError::new(
                         ErrorCode::INTERNAL_ERROR,
                         error_message,
                         None,
-                    ));
+                    ))
                 }
             },
             false => {
@@ -97,11 +97,11 @@ impl ElasticSearchServer {
 
                 error!(error_message);
 
-                return Err(McpError::new(
+                Err(McpError::new(
                     ErrorCode::INTERNAL_ERROR,
                     error_message,
                     None,
-                ));
+                ))
             }
         }
     }
@@ -129,7 +129,7 @@ impl ElasticSearchServer {
 
         // build url
         let base_url = conn_config.base_url.trim_end_matches('/');
-        let url = format!("{}/_cat/aliases?format=json&v=true", base_url);
+        let url = format!("{base_url}/_cat/aliases?format=json&v=true");
 
         // get api key
         let api_key = conn_config.api_key;
@@ -149,7 +149,7 @@ impl ElasticSearchServer {
         let response = match result {
             Ok(response) => response,
             Err(e) => {
-                let error_message = format!("Failed to list aliases: {}", e);
+                let error_message = format!("Failed to list aliases: {e}");
 
                 error!(error_message);
 
@@ -165,7 +165,7 @@ impl ElasticSearchServer {
             true => match response.json::<Value>().await {
                 Ok(json) => {
                     let aliases: Vec<AliasInfo> = serde_json::from_value(json).map_err(|e| {
-                        let error_message = format!("Failed to parse aliases: {}", e);
+                        let error_message = format!("Failed to parse aliases: {e}");
 
                         error!(error_message);
 
@@ -177,15 +177,15 @@ impl ElasticSearchServer {
                     Ok(CallToolResult::success(vec![content]))
                 }
                 Err(e) => {
-                    let error_message = format!("Failed to parse aliases: {}", e);
+                    let error_message = format!("Failed to parse aliases: {e}");
 
                     error!(error_message);
 
-                    return Err(McpError::new(
+                    Err(McpError::new(
                         ErrorCode::INTERNAL_ERROR,
                         error_message,
                         None,
-                    ));
+                    ))
                 }
             },
             false => {
@@ -193,11 +193,11 @@ impl ElasticSearchServer {
 
                 error!(error_message);
 
-                return Err(McpError::new(
+                Err(McpError::new(
                     ErrorCode::INTERNAL_ERROR,
                     error_message,
                     None,
-                ));
+                ))
             }
         }
     }
@@ -273,7 +273,7 @@ impl ElasticSearchServer {
         let response = match result {
             Ok(response) => response,
             Err(e) => {
-                let error_message = format!("Failed to search: {}", e);
+                let error_message = format!("Failed to search: {e}");
 
                 error!(error_message);
 
@@ -295,7 +295,7 @@ impl ElasticSearchServer {
 
                     let search_response: SearchResponse =
                         serde_json::from_value(json).map_err(|e| {
-                            let error_message = format!("Failed to parse search result: {}", e);
+                            let error_message = format!("Failed to parse search result: {e}");
 
                             error!(error_message);
 
@@ -307,15 +307,15 @@ impl ElasticSearchServer {
                     Ok(CallToolResult::success(vec![content]))
                 }
                 Err(e) => {
-                    let error_message = format!("Failed to parse search result: {}", e);
+                    let error_message = format!("Failed to parse search result: {e}");
 
                     error!(error_message);
 
-                    return Err(McpError::new(
+                    Err(McpError::new(
                         ErrorCode::INTERNAL_ERROR,
                         error_message,
                         None,
-                    ));
+                    ))
                 }
             },
             false => {
@@ -323,11 +323,11 @@ impl ElasticSearchServer {
 
                 error!(error_message);
 
-                return Err(McpError::new(
+                Err(McpError::new(
                     ErrorCode::INTERNAL_ERROR,
                     error_message,
                     None,
-                ));
+                ))
             }
         }
     }

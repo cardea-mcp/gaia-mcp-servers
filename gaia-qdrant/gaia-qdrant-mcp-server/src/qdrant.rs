@@ -136,7 +136,7 @@ impl QdrantServer {
         let response = match result {
             Ok(response) => response,
             Err(e) => {
-                let error_message = format!("Failed to search points: {}", e);
+                let error_message = format!("Failed to search points: {e}");
 
                 error!("{}", error_message);
 
@@ -192,23 +192,23 @@ impl QdrantServer {
 
                         error!("{}", error_message);
 
-                        return Err(McpError::new(
+                        Err(McpError::new(
                             ErrorCode::INTERNAL_ERROR,
                             error_message,
                             None,
-                        ));
+                        ))
                     }
                 },
                 Err(e) => {
-                    let error_message = format!("Failed to search points: {}", e);
+                    let error_message = format!("Failed to search points: {e}");
 
                     error!("{}", error_message);
 
-                    return Err(McpError::new(
+                    Err(McpError::new(
                         ErrorCode::INTERNAL_ERROR,
                         error_message,
                         None,
-                    ));
+                    ))
                 }
             },
             false => {
@@ -216,11 +216,11 @@ impl QdrantServer {
 
                 error!("{}", error_message);
 
-                return Err(McpError::new(
+                Err(McpError::new(
                     ErrorCode::INTERNAL_ERROR,
                     error_message,
                     None,
-                ));
+                ))
             }
         }
     }
