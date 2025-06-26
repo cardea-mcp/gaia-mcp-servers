@@ -76,17 +76,11 @@ jobs:
           - build: linux-x86_64
             os: ubuntu-22.04
             image: ubuntu:20.04
-            rust: nightly
             target: x86_64-unknown-linux-gnu
-            archive-name: llama-nexus-unknown-linux-gnu-x86_64.tar.gz
-            bin-path: linux-x86_64-binary
           - build: linux-aarch64
             os: ubuntu-22.04-arm
             image: arm64v8/ubuntu:20.04
-            rust: nightly
             target: aarch64-unknown-linux-gnu
-            archive-name: llama-nexus-unknown-linux-gnu-aarch64.tar.gz
-            bin-path: linux-aarch64-binary
       fail-fast: false
 
     steps:
@@ -101,8 +95,10 @@ jobs:
 
       - name: Install Rust-stable
         uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
 
       - name: Build
-        run: cargo build --verbose --release --target ${{ matrix.target }}
-        env:
-          RUST_BACKTRACE: 1
+        run: |
+          cargo build --verbose --release --target ${{ matrix.target }}
