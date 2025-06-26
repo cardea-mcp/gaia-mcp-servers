@@ -25,11 +25,11 @@ schemars = { workspace = true }
 hyper = { workspace = true, features = ["client", "server", "http1"] }
 hyper-util = { workspace = true, features = ["tokio"] }
 tokio-tungstenite = { workspace = true }
-reqwest = { workspace = true, features = ["json"] }
+reqwest = { workspace = true, features = ["json", "rustls-tls"] }
 pin-project-lite = { workspace = true }
 endpoints = { workspace = true, features = ["index"] }
 gaia-agentic-search-mcp-common = { workspace = true }
-mysql = { workspace = true, features = ["rustls-tls"] }
+mysql = { version = "26.0.0", default-features = false, features = ["rustls-tls-ring"] }
 clap = { workspace = true, features = ["derive"] }
-rustls = { version = "0.23.27", features = ["ring"] }
+rustls = { workspace = true, features = ["ring"] }
 axum = { workspace = true, features = ["macros"] }

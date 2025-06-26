@@ -1,4 +1,4 @@
-use mysql::prelude::FromRow;
+use mysql_common::prelude::FromRow;
 use rmcp::schemars;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
