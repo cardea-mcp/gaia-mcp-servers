@@ -29,8 +29,8 @@ reqwest = { workspace = true, features = ["json"] }
 pin-project-lite = { workspace = true }
 endpoints = { workspace = true, features = ["index"] }
 gaia-tidb-mcp-common = { workspace = true }
-mysql = { workspace = true, features = ["rustls-tls"] }
+mysql = { version = "26.0.0", default-features = false, features = ["rustls-tls-ring"] }
 clap = { workspace = true, features = ["derive"] }
 once_cell = { workspace = true }
-rustls = { version = "0.23.27", features = ["ring"] }
+rustls = { workspace = true, features = ["ring"] }
 axum = { workspace = true, features = ["macros"] }
