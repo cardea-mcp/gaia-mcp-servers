@@ -29,6 +29,7 @@ The server supports three search modes through subcommands:
 ```bash
 ./gaia-agentic-search-mcp-server qdrant \
     --qdrant-collection my_collection \
+    --qdrant-payload-field "full_text" \
     --chat-service http://localhost:8080 \
     --embedding-service http://localhost:8081 \
     --limit 20 \
@@ -38,6 +39,7 @@ The server supports three search modes through subcommands:
 **Options:**
 - `--qdrant-base-url`: Qdrant database URL (default: http://127.0.0.1:6333)
 - `--qdrant-collection`: Collection name in Qdrant (**required**)
+- `--qdrant-payload-field`: The name of the field in the payload that contains the source of the document (**required**)
 - `--chat-service`: Chat service base URL (**required**)
 - `--embedding-service`: Embedding service base URL (**required**)
 - `--limit`: Maximum number of results (default: 10)
@@ -67,6 +69,7 @@ The server supports three search modes through subcommands:
 ```bash
 ./gaia-agentic-search-mcp-server search \
     --qdrant-collection my_collection \
+    --qdrant-payload-field "full_text" \
     --tidb-ssl-ca /path/to/ca.pem \
     --tidb-database my_database \
     --tidb-table-name my_table \
@@ -78,6 +81,7 @@ The server supports three search modes through subcommands:
 **Options:**
 - `--qdrant-base-url`: Qdrant database URL (default: http://127.0.0.1:6333)
 - `--qdrant-collection`: Collection name in Qdrant (**required**)
+- `--qdrant-payload-field`: The name of the field in the payload that contains the source of the document (**required**)
 - `--tidb-ssl-ca`: TiDB SSL CA certificate path (**required**)
 - `--tidb-database`: Database name in TiDB (**required**)
 - `--tidb-table-name`: Table name in TiDB (**required**)
@@ -120,6 +124,7 @@ export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
 ./gaia-agentic-search-mcp-server qdrant \
     --qdrant-base-url http://localhost:6333 \
     --qdrant-collection documents \
+    --qdrant-payload-field "full_text" \
     --chat-service http://localhost:8080 \
     --embedding-service http://localhost:8081 \
     --limit 10 \
@@ -157,6 +162,7 @@ export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
 
 ./gaia-agentic-search-mcp-server search \
     --qdrant-collection documents \
+    --qdrant-payload-field "full_text" \
     --tidb-ssl-ca /etc/ssl/certs/ca.pem \
     --tidb-database search_db \
     --tidb-table-name documents \
