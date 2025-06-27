@@ -314,11 +314,11 @@ impl AgenticSearchServer {
                                         status.get("error").unwrap().as_str().unwrap()
                                     );
                                     error!("{}", error_message);
-                                    return Err(McpError::new(
+                                    Err(McpError::new(
                                         ErrorCode::INTERNAL_ERROR,
                                         error_message,
                                         None,
-                                    ));
+                                    ))
                                 }
                                 None => {
                                     let error_message = "Failed to search points. ";
