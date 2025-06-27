@@ -48,9 +48,6 @@ enum SearchMode {
         /// Score threshold for the results
         #[arg(long, default_value = "0.5")]
         score_threshold: f32,
-        /// The base URL of the chat server
-        #[arg(long, required = true)]
-        chat_service: String,
         /// The base URL of the embedding server
         #[arg(long, required = true)]
         embedding_service: String,
@@ -140,16 +137,12 @@ async fn main() -> anyhow::Result<()> {
             qdrant_payload_field,
             limit,
             score_threshold,
-            chat_service,
             embedding_service,
         } => {
             info!("Enabling vector search mode");
 
             // parse api key
             let qdrant_api_key = env::var("QDRANT_API_KEY").ok();
-
-            // parse chat service api key
-            let chat_service_api_key = env::var("CHAT_SERVICE_API_KEY").ok();
 
             // parse embedding service api key
             let embedding_service_api_key = env::var("EMBEDDING_SERVICE_API_KEY").ok();
@@ -164,10 +157,7 @@ async fn main() -> anyhow::Result<()> {
                 tidb_config: None,
                 limit,
                 score_threshold,
-                chat_service: ServiceConfig {
-                    url: chat_service,
-                    api_key: chat_service_api_key,
-                },
+                chat_service: None,
                 embedding_service: Some(ServiceConfig {
                     url: embedding_service,
                     api_key: embedding_service_api_key,
@@ -269,10 +259,10 @@ async fn main() -> anyhow::Result<()> {
                 }),
                 limit,
                 score_threshold,
-                chat_service: ServiceConfig {
+                chat_service: Some(ServiceConfig {
                     url: chat_service,
                     api_key: chat_service_api_key,
-                },
+                }),
                 embedding_service: None,
             }
         }
@@ -386,10 +376,10 @@ async fn main() -> anyhow::Result<()> {
                 }),
                 limit,
                 score_threshold,
-                chat_service: ServiceConfig {
+                chat_service: Some(ServiceConfig {
                     url: chat_service,
                     api_key: chat_service_api_key,
-                },
+                }),
                 embedding_service: Some(ServiceConfig {
                     url: embedding_service,
                     api_key: embedding_service_api_key,
@@ -436,7 +426,7 @@ pub struct AgenticSearchConfig {
     pub tidb_config: Option<TiDBConfig>,
     pub limit: u64,
     pub score_threshold: f32,
-    pub chat_service: ServiceConfig,
+    pub chat_service: Option<ServiceConfig>,
     pub embedding_service: Option<ServiceConfig>,
 }
 

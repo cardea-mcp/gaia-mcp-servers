@@ -365,7 +365,7 @@ impl AgenticSearchServer {
     ///
     /// A string containing the extracted keywords separated by spaces
     async fn extract_keywords(&self, query: impl AsRef<str>) -> Result<String, McpError> {
-        let config = &self.config.chat_service;
+        let config = self.config.chat_service.as_ref().unwrap();
 
         let text = query.as_ref();
         let user_prompt = format!(
