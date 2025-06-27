@@ -70,10 +70,17 @@ impl AgenticSearchServer {
         let hits = self.search_in_qdrant(embedding).await?;
 
         if !hits.is_empty() {
-            info!("Extracting the source of the vector search results...");
+            let qdrant_config = self.config.qdrant_config.as_ref().unwrap();
+            let payload_source = &qdrant_config.payload_source;
+            info!(
+                "Extracting the payload ({}) of the vector search results...",
+                payload_source
+            );
+
             let mut output = String::new();
             for (idx, hit) in hits.iter().enumerate() {
-                let source = hit.payload.get("source").unwrap().as_str().unwrap();
+                debug!("payload:\n{:#?}", &hit.payload);
+                let source = hit.payload.get(payload_source).unwrap().as_str().unwrap();
                 output.push_str(&format!("Source {}: {}\n", idx + 1, source));
                 output.push('\n');
             }
@@ -295,14 +302,34 @@ impl AgenticSearchServer {
                             Ok(hits)
                         }
                         None => {
-                            let error_message =
-                                "Failed to search points. The given key 'result' does not exist.";
-                            error!("{}", error_message);
-                            Err(McpError::new(
-                                ErrorCode::INTERNAL_ERROR,
-                                error_message,
-                                None,
-                            ))
+                            debug!(
+                                "Qdrant search response:\n{}",
+                                serde_json::to_string_pretty(&json).unwrap()
+                            );
+
+                            match json.get("status") {
+                                Some(status) => {
+                                    let error_message = format!(
+                                        "Failed to search points. {}",
+                                        status.get("error").unwrap().as_str().unwrap()
+                                    );
+                                    error!("{}", error_message);
+                                    return Err(McpError::new(
+                                        ErrorCode::INTERNAL_ERROR,
+                                        error_message,
+                                        None,
+                                    ));
+                                }
+                                None => {
+                                    let error_message = "Failed to search points. ";
+                                    error!("{}", error_message);
+                                    Err(McpError::new(
+                                        ErrorCode::INTERNAL_ERROR,
+                                        error_message,
+                                        None,
+                                    ))
+                                }
+                            }
                         }
                     },
                     Err(e) => {

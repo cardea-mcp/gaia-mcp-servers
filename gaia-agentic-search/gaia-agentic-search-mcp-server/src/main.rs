@@ -39,6 +39,9 @@ enum SearchMode {
         /// Name of the collection to search in Qdrant
         #[arg(long, required = true)]
         qdrant_collection: String,
+        /// The name of the field in the payload that contains the source of the document
+        #[arg(long, required = true)]
+        qdrant_payload_field: String,
         /// Maximum number of results to return
         #[arg(long, default_value = "10")]
         limit: u64,
@@ -83,7 +86,12 @@ enum SearchMode {
         /// Name of the collection to search in Qdrant
         #[arg(long, required = true)]
         qdrant_collection: String,
-        /// TiDB SSL CA certificate path
+        /// The name of the field in the payload that contains the source of the document
+        #[arg(long, required = true)]
+        qdrant_payload_field: String,
+        /// Path to the SSL CA certificate. On macOS, this is typically
+        /// `/etc/ssl/cert.pem`. On Debian/Ubuntu/Arch Linux, it's typically
+        /// `/etc/ssl/certs/ca-certificates.crt`.
         #[arg(long, required = true)]
         tidb_ssl_ca: PathBuf,
         /// Database name to search in TiDB
@@ -129,6 +137,7 @@ async fn main() -> anyhow::Result<()> {
         SearchMode::Qdrant {
             qdrant_base_url,
             qdrant_collection,
+            qdrant_payload_field,
             limit,
             score_threshold,
             chat_service,
@@ -150,6 +159,7 @@ async fn main() -> anyhow::Result<()> {
                     api_key: qdrant_api_key,
                     base_url: qdrant_base_url,
                     collection: qdrant_collection,
+                    payload_source: qdrant_payload_field,
                 }),
                 tidb_config: None,
                 limit,
@@ -269,6 +279,7 @@ async fn main() -> anyhow::Result<()> {
         SearchMode::Search {
             qdrant_base_url,
             qdrant_collection,
+            qdrant_payload_field,
             tidb_ssl_ca,
             tidb_database,
             tidb_table_name,
@@ -366,6 +377,7 @@ async fn main() -> anyhow::Result<()> {
                     api_key: qdrant_api_key,
                     base_url: qdrant_base_url,
                     collection: qdrant_collection,
+                    payload_source: qdrant_payload_field,
                 }),
                 tidb_config: Some(TiDBConfig {
                     database: tidb_database,
@@ -433,6 +445,7 @@ pub struct QdrantConfig {
     pub api_key: Option<String>,
     pub base_url: String,
     pub collection: String,
+    pub payload_source: String,
 }
 
 #[derive(Debug, Clone)]
