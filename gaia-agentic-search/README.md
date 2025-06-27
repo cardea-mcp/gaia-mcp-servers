@@ -30,7 +30,6 @@ The server supports three search modes through subcommands:
 ./gaia-agentic-search-mcp-server qdrant \
     --qdrant-collection my_collection \
     --qdrant-payload-field "full_text" \
-    --chat-service http://localhost:8080 \
     --embedding-service http://localhost:8081 \
     --limit 20 \
     --score-threshold 0.7
@@ -40,7 +39,6 @@ The server supports three search modes through subcommands:
 - `--qdrant-base-url`: Qdrant database URL (default: http://127.0.0.1:6333)
 - `--qdrant-collection`: Collection name in Qdrant (**required**)
 - `--qdrant-payload-field`: The name of the field in the payload that contains the source of the document (**required**)
-- `--chat-service`: Chat service base URL (**required**)
 - `--embedding-service`: Embedding service base URL (**required**)
 - `--limit`: Maximum number of results (default: 10)
 - `--score-threshold`: Score threshold for results (default: 0.5)
@@ -125,7 +123,6 @@ export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
     --qdrant-base-url http://localhost:6333 \
     --qdrant-collection documents \
     --qdrant-payload-field "full_text" \
-    --chat-service http://localhost:8080 \
     --embedding-service http://localhost:8081 \
     --limit 10 \
     --score-threshold 0.6
