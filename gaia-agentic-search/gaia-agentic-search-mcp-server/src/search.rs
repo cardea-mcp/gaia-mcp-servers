@@ -10,28 +10,41 @@ use gaia_agentic_search_mcp_common::{QdrantSearchHit, SearchRequest, TidbSearchH
 use mysql::prelude::*;
 use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use rmcp::{
-    Error as McpError, ServerHandler,
-    model::{CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo},
-    tool,
+    Error as McpError, RoleServer, ServerHandler,
+    handler::server::{router::tool::ToolRouter, tool::*},
+    model::*,
+    service::RequestContext,
+    tool, tool_handler, tool_router,
 };
 use serde_json::{Value, json};
+use std::sync::OnceLock;
 use tracing::{debug, error, info, warn};
+
+static SEARCH_TOOL_PROMPT: OnceLock<String> = OnceLock::new();
+
+pub fn set_search_tool_prompt(prompt: String) {
+    SEARCH_TOOL_PROMPT.set(prompt).unwrap_or_default();
+}
 
 #[derive(Debug, Clone)]
 pub struct AgenticSearchServer {
     config: AgenticSearchConfig,
+    tool_router: ToolRouter<Self>,
 }
 
-#[tool(tool_box)]
+#[tool_router]
 impl AgenticSearchServer {
     pub fn new(config: AgenticSearchConfig) -> Self {
-        Self { config }
+        Self {
+            config,
+            tool_router: Self::tool_router(),
+        }
     }
 
     #[tool(description = "Perform a search for the given query")]
     async fn search(
         &self,
-        #[tool(aggr)] SearchRequest { query }: SearchRequest,
+        Parameters(SearchRequest { query }): Parameters<SearchRequest>,
     ) -> Result<CallToolResult, McpError> {
         match (
             self.config.qdrant_config.is_some(),
@@ -541,7 +554,7 @@ impl AgenticSearchServer {
     }
 }
 
-#[tool(tool_box)]
+#[tool_handler]
 impl ServerHandler for AgenticSearchServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
@@ -552,6 +565,54 @@ impl ServerHandler for AgenticSearchServer {
                 version: std::env!("CARGO_PKG_VERSION").to_string(),
             },
             ..Default::default()
+        }
+    }
+
+    async fn list_prompts(
+        &self,
+        _request: Option<PaginatedRequestParam>,
+        _: RequestContext<RoleServer>,
+    ) -> Result<ListPromptsResult, McpError> {
+        let prompt = Prompt::new(
+            "search",
+            Some(
+                "This prompt is for the `search` tool, which takes a query and returns a string containing the search results",
+            ),
+            Some(vec![PromptArgument {
+                name: "query".to_string(),
+                description: Some("A user query to search for".to_string()),
+                required: Some(true),
+            }]),
+        );
+
+        Ok(ListPromptsResult {
+            next_cursor: None,
+            prompts: vec![prompt],
+        })
+    }
+
+    async fn get_prompt(
+        &self,
+        GetPromptRequestParam { name, .. }: GetPromptRequestParam,
+        _: RequestContext<RoleServer>,
+    ) -> Result<GetPromptResult, McpError> {
+        match name.as_str() {
+            "search" => {
+                let prompt = SEARCH_TOOL_PROMPT.get().unwrap();
+
+                Ok(GetPromptResult {
+                    description: None,
+                    messages: vec![PromptMessage {
+                        role: PromptMessageRole::User,
+                        content: PromptMessageContent::text(prompt.to_string()),
+                    }],
+                })
+            }
+            _ => {
+                let error_message = format!("prompt not found: {}", name);
+                error!("{}", error_message);
+                Err(McpError::invalid_params(error_message, None))
+            }
         }
     }
 }

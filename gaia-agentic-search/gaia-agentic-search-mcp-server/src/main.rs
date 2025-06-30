@@ -8,7 +8,7 @@ use rmcp::transport::{
     streamable_http_server::{StreamableHttpService, session::local::LocalSessionManager},
 };
 use rustls::crypto::{CryptoProvider, ring::default_provider};
-use search::AgenticSearchServer;
+use search::{AgenticSearchServer, set_search_tool_prompt};
 use std::{env, path::PathBuf};
 use tracing::{error, info};
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
@@ -27,6 +27,9 @@ struct Args {
     /// Search mode to enable
     #[command(subcommand)]
     search_mode: SearchMode,
+    /// The prompt for the `search` mcp tool
+    #[arg(long, default_value = "Perform a search for the given query")]
+    search_tool_prompt: String,
 }
 
 #[derive(Subcommand, Debug)]
@@ -128,6 +131,9 @@ async fn main() -> anyhow::Result<()> {
         .init();
 
     let args = Args::parse();
+
+    // Set the search tool prompt from CLI
+    set_search_tool_prompt(args.search_tool_prompt);
 
     // Determine search mode and configure connection
     let search_config = match args.search_mode {
