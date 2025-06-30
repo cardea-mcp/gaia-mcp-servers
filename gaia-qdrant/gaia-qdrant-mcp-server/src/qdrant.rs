@@ -1,81 +1,39 @@
 use crate::CONNECTION_CONFIG;
 use gaia_qdrant_mcp_common::*;
 use rmcp::{
-    Error as McpError, ServerHandler,
-    handler::server::tool::*,
-    model::{
-        CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo, Tool,
-    },
-    tool,
+    Error as McpError, RoleServer, ServerHandler,
+    handler::server::{router::tool::ToolRouter, tool::*},
+    model::*,
+    service::RequestContext,
+    tool, tool_handler, tool_router,
 };
 use serde_json::{Value, json};
-use std::sync::{Arc, OnceLock};
+use std::sync::OnceLock;
 use tracing::error;
 
-static SEARCH_TOOL_DESC: OnceLock<String> = OnceLock::new();
-static QUERY_PARAM_DESC: OnceLock<String> = OnceLock::new();
+static SEARCH_TOOL_PROMPT: OnceLock<String> = OnceLock::new();
 
-pub fn set_search_tool_description(description: String) {
-    SEARCH_TOOL_DESC.set(description).unwrap_or_default();
-}
-
-pub fn set_search_tool_param_description(description: String) {
-    QUERY_PARAM_DESC.set(description).unwrap_or_default();
+pub fn set_search_tool_prompt(prompt: String) {
+    SEARCH_TOOL_PROMPT.set(prompt).unwrap_or_default();
 }
 
 #[derive(Debug, Clone)]
-pub struct QdrantServer;
+pub struct QdrantServer {
+    tool_router: ToolRouter<Self>,
+}
+#[tool_router]
 impl QdrantServer {
-    fn search_tool_attr() -> Tool {
-        let tool_description = SEARCH_TOOL_DESC
-            .get()
-            .cloned()
-            .unwrap_or_else(|| "Perform vector search in the Qdrant database".to_string());
-
-        let query_description = QUERY_PARAM_DESC
-            .get()
-            .cloned()
-            .unwrap_or_else(|| "The vector to search for in the Qdrant database".to_string());
-
-        // build input schema
-        let input_schema = json!({
-            "properties": {
-                "vector": {
-                    "description": query_description,
-                    "items": {
-                    "format": "float",
-                    "type": "number"
-                    },
-                    "type": "array"
-                }
-            },
-            "required": [
-            "vector"
-            ],
-            "title": "SearchPointsRequest",
-            "type": "object"
-        });
-
-        Tool {
-            name: "search".into(),
-            description: Some(tool_description.into()),
-            input_schema: Arc::new(input_schema.as_object().unwrap().clone()),
-            annotations: None,
+    pub fn new() -> Self {
+        Self {
+            tool_router: Self::tool_router(),
         }
     }
 
-    async fn search_tool_call(
-        context: ToolCallContext<'_, Self>,
+    #[tool(description = "Perform vector search in the Qdrant database")]
+    async fn search(
+        &self,
+        Parameters(SearchPointsRequest { vector }): Parameters<SearchPointsRequest>,
     ) -> Result<CallToolResult, McpError> {
-        let (__rmcp_tool_receiver, context) = <&Self>::from_tool_call_context_part(context)?;
-        let (Parameters(SearchPointsRequest { vector }), _context) =
-            <Parameters<SearchPointsRequest>>::from_tool_call_context_part(context)?;
-        Self::search(__rmcp_tool_receiver, vector)
-            .await
-            .into_call_tool_result()
-    }
-
-    async fn search(&self, vector: Vec<f32>) -> Result<CallToolResult, McpError> {
         // get connection config
         let conn_config = match CONNECTION_CONFIG.get() {
             Some(connection_config) => {
@@ -224,30 +182,66 @@ impl QdrantServer {
             }
         }
     }
-
-    fn tool_box() -> &'static ToolBox<QdrantServer> {
-        static TOOL_BOX: OnceLock<ToolBox<QdrantServer>> = OnceLock::new();
-        TOOL_BOX.get_or_init(|| {
-            let mut tool_box = ToolBox::new();
-            tool_box.add(ToolBoxItem::new(
-                QdrantServer::search_tool_attr(),
-                |context| Box::pin(QdrantServer::search_tool_call(context)),
-            ));
-            tool_box
-        })
-    }
 }
-#[tool(tool_box)]
+#[tool_handler]
 impl ServerHandler for QdrantServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
-            instructions: Some("A MCP server that can access the Qdrant database".into()),
-            capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation {
-                name: std::env!("CARGO_PKG_NAME").to_string(),
-                version: std::env!("CARGO_PKG_VERSION").to_string(),
-            },
-            ..Default::default()
+            protocol_version: ProtocolVersion::default(),
+            instructions: Some(
+                "A MCP server that performs vector search in the Qdrant database".into(),
+            ),
+            capabilities: ServerCapabilities::builder()
+                .enable_tools()
+                .enable_prompts()
+                .build(),
+            server_info: Implementation::from_build_env(),
+        }
+    }
+
+    async fn list_prompts(
+        &self,
+        _request: Option<PaginatedRequestParam>,
+        _: RequestContext<RoleServer>,
+    ) -> Result<ListPromptsResult, McpError> {
+        Ok(ListPromptsResult {
+            next_cursor: None,
+            prompts: vec![Prompt::new(
+                "search",
+                Some(
+                    "This prompt is for the `search` tool, which takes a vector and returns a list of points",
+                ),
+                Some(vec![PromptArgument {
+                    name: "vector".to_string(),
+                    description: Some("A vector to search for in the Qdrant database".to_string()),
+                    required: Some(true),
+                }]),
+            )],
+        })
+    }
+
+    async fn get_prompt(
+        &self,
+        GetPromptRequestParam { name, .. }: GetPromptRequestParam,
+        _: RequestContext<RoleServer>,
+    ) -> Result<GetPromptResult, McpError> {
+        match name.as_str() {
+            "search" => {
+                let prompt = SEARCH_TOOL_PROMPT.get().unwrap();
+
+                Ok(GetPromptResult {
+                    description: None,
+                    messages: vec![PromptMessage {
+                        role: PromptMessageRole::User,
+                        content: PromptMessageContent::text(prompt.to_string()),
+                    }],
+                })
+            }
+            _ => {
+                let error_message = format!("prompt not found: {}", name);
+                error!("{}", error_message);
+                Err(McpError::invalid_params(error_message, None))
+            }
         }
     }
 }

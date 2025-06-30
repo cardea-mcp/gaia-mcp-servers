@@ -95,7 +95,7 @@ impl From<rmcp::model::CallToolResult> for UpsertPointsResponse {
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct SearchPointsRequest {
-    #[schemars(description = "the vector to search for")]
+    #[schemars(description = "The vector to search for")]
     pub vector: Vec<f32>,
 }
 

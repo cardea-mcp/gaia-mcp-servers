@@ -2,7 +2,7 @@ mod qdrant;
 
 use clap::{Parser, ValueEnum};
 use once_cell::sync::OnceCell;
-use qdrant::{QdrantServer, set_search_tool_description, set_search_tool_param_description};
+use qdrant::{QdrantServer, set_search_tool_prompt};
 use rmcp::{
     ServiceExt,
     transport::{
@@ -42,15 +42,12 @@ struct Args {
     /// Score threshold for the results
     #[arg(long, default_value = "0.5")]
     score_threshold: f32,
-    /// The description for the search tool
-    #[arg(long, default_value = "Perform vector search in the Qdrant database")]
-    search_tool_desc: String,
-    /// The description for the search tool parameter
+    /// The prompt for the `search` mcp tool
     #[arg(
         long,
-        default_value = "The vector to search for in the Qdrant database"
+        default_value = "Perform vector search with the input vector. Return a tool call that invokes the vector search tool.\n\nThe input vector is: [0.0,0.0,0.0,0.0]"
     )]
-    search_tool_param_desc: String,
+    search_tool_prompt: String,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -84,18 +81,15 @@ async fn main() -> anyhow::Result<()> {
         .set(RwLock::new(connection_config))
         .unwrap();
 
-    // Set the search tool description from CLI
-    set_search_tool_description(args.search_tool_desc);
-
-    // Set the query parameter description from CLI
-    set_search_tool_param_description(args.search_tool_param_desc);
+    // Set the search tool prompt from CLI
+    set_search_tool_prompt(args.search_tool_prompt);
 
     tracing::info!("Starting Gaia Qdrant MCP server on {}", args.socket_addr);
 
     match args.transport {
         TransportType::StreamHttp => {
             let service = StreamableHttpService::new(
-                || Ok(QdrantServer),
+                || Ok(QdrantServer::new()),
                 LocalSessionManager::default().into(),
                 Default::default(),
             );
@@ -109,14 +103,14 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Sse => {
             let ct = SseServer::serve(args.socket_addr.parse()?)
                 .await?
-                .with_service(|| QdrantServer);
+                .with_service(|| QdrantServer::new());
 
             tokio::signal::ctrl_c().await?;
             ct.cancel();
         }
         TransportType::Stdio => {
             // Create an instance of our counter router
-            let service = QdrantServer.serve(stdio()).await.inspect_err(|e| {
+            let service = QdrantServer::new().serve(stdio()).await.inspect_err(|e| {
                 tracing::error!("serving error: {:?}", e);
             })?;
 
