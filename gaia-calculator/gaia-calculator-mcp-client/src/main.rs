@@ -21,8 +21,8 @@ enum TransportType {
 #[derive(Parser, Debug)]
 #[command(author, version, about = "Calculator MCP server")]
 struct Args {
-    /// Transport type to use (tcp or stdio)
-    #[arg(short, long, value_enum, default_value = "tcp")]
+    /// Transport type to use
+    #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
 }
 
