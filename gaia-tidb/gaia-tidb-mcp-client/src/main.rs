@@ -1,7 +1,9 @@
 use clap::{Parser, ValueEnum};
 use gaia_tidb_mcp_common::TidbSearchResponse;
 use rmcp::{
-    model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
+    model::{
+        CallToolRequestParam, ClientCapabilities, ClientInfo, GetPromptRequestParam, Implementation,
+    },
     service::ServiceExt,
     transport::{SseClientTransport, StreamableHttpClientTransport},
 };
@@ -64,6 +66,25 @@ async fn main() -> anyhow::Result<()> {
             let server_info = service.peer_info();
             tracing::info!("Connected to server: {server_info:#?}");
 
+            // List prompts
+            let prompts = service.list_all_prompts().await?;
+            tracing::info!(
+                "Available prompts:\n{}",
+                serde_json::to_string_pretty(&prompts)?
+            );
+
+            // Get prompt
+            let prompt = service
+                .get_prompt(GetPromptRequestParam {
+                    name: "search".into(),
+                    arguments: Some(serde_json::Map::from_iter([(
+                        "query".to_string(),
+                        serde_json::Value::from(cli.query.clone()),
+                    )])),
+                })
+                .await?;
+            tracing::info!("Prompt:\n{}", serde_json::to_string_pretty(&prompt)?);
+
             // List available tools
             let tools = service.list_all_tools().await?;
             tracing::info!(
@@ -118,6 +139,25 @@ async fn main() -> anyhow::Result<()> {
             // Initialize
             let server_info = service.peer_info();
             tracing::info!("Connected to server: {server_info:#?}");
+
+            // List prompts
+            let prompts = service.list_all_prompts().await?;
+            tracing::info!(
+                "Available prompts:\n{}",
+                serde_json::to_string_pretty(&prompts)?
+            );
+
+            // Get prompt
+            let prompt = service
+                .get_prompt(GetPromptRequestParam {
+                    name: "search".into(),
+                    arguments: Some(serde_json::Map::from_iter([(
+                        "query".to_string(),
+                        serde_json::Value::from(cli.query.clone()),
+                    )])),
+                })
+                .await?;
+            tracing::info!("Prompt:\n{}", serde_json::to_string_pretty(&prompt)?);
 
             // List tools
             let tools = service.list_all_tools().await?;

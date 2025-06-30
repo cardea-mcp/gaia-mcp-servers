@@ -2,79 +2,38 @@ use crate::TIDB_ACCESS_CONFIG;
 use gaia_tidb_mcp_common::*;
 use mysql::prelude::*;
 use rmcp::{
-    Error as McpError, ServerHandler,
-    handler::server::tool::*,
-    model::{
-        CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo, Tool,
-    },
-    tool,
+    Error as McpError, RoleServer, ServerHandler,
+    handler::server::{router::tool::ToolRouter, tool::*},
+    model::*,
+    service::RequestContext,
+    tool, tool_handler, tool_router,
 };
-use serde::{Deserialize, Serialize};
-use serde_json::json;
-use std::{
-    result::Result,
-    sync::{Arc, OnceLock},
-};
+use std::sync::OnceLock;
 use tracing::{error, info};
 
-static SEARCH_TOOL_DESC: OnceLock<String> = OnceLock::new();
-static QUERY_PARAM_DESC: OnceLock<String> = OnceLock::new();
+static SEARCH_TOOL_PROMPT: OnceLock<String> = OnceLock::new();
 
-pub fn set_search_description(description: String) {
-    SEARCH_TOOL_DESC.set(description).unwrap_or_default();
-}
-
-pub fn set_query_param_description(description: String) {
-    QUERY_PARAM_DESC.set(description).unwrap_or_default();
+pub fn set_search_tool_prompt(prompt: String) {
+    SEARCH_TOOL_PROMPT.set(prompt).unwrap_or_default();
 }
 
 #[derive(Debug, Clone)]
-pub struct TidbServer;
+pub struct TidbServer {
+    tool_router: ToolRouter<Self>,
+}
+#[tool_router]
 impl TidbServer {
-    fn search_tool_attr() -> Tool {
-        let tool_description = SEARCH_TOOL_DESC
-            .get()
-            .cloned()
-            .unwrap_or_else(|| "Perform a keyword search".to_string());
-
-        let query_description = QUERY_PARAM_DESC
-            .get()
-            .cloned()
-            .unwrap_or_else(|| "the query to search for".to_string());
-
-        // build input schema
-        let input_schema = json!({
-            "type": "object",
-            "properties": {
-                "query": {
-                    "type": "string",
-                    "description": query_description
-                }
-            },
-            "required": ["query"],
-            "title": "SearchRequest"
-        });
-
-        Tool {
-            name: "search".into(),
-            description: Some(tool_description.into()),
-            input_schema: Arc::new(input_schema.as_object().unwrap().clone()),
-            annotations: None,
+    pub fn new() -> Self {
+        Self {
+            tool_router: Self::tool_router(),
         }
     }
 
-    async fn search_tool_call(
-        context: ToolCallContext<'_, Self>,
+    #[tool(description = "Perform keyword search in TiDB")]
+    async fn search(
+        &self,
+        Parameters(TidbSearchRequest { query }): Parameters<TidbSearchRequest>,
     ) -> Result<CallToolResult, McpError> {
-        let (__rmcp_tool_receiver, context) = <&Self>::from_tool_call_context_part(context)?;
-        let (Parameters(TidbSearchRequest { query }), _context) =
-            <Parameters<TidbSearchRequest>>::from_tool_call_context_part(context)?;
-        Self::search(__rmcp_tool_receiver, query)
-            .await
-            .into_call_tool_result()
-    }
-
-    async fn search(&self, query: String) -> Result<CallToolResult, McpError> {
         let config = match TIDB_ACCESS_CONFIG.get() {
             Some(config) => config.read().await,
             None => {
@@ -188,36 +147,71 @@ impl TidbServer {
 
         Ok(CallToolResult::success(vec![content]))
     }
-
-    fn tool_box() -> &'static ToolBox<TidbServer> {
-        static TOOL_BOX: OnceLock<ToolBox<TidbServer>> = OnceLock::new();
-        TOOL_BOX.get_or_init(|| {
-            let mut tool_box = ToolBox::new();
-            tool_box.add(ToolBoxItem::new(
-                TidbServer::search_tool_attr(),
-                |context| Box::pin(TidbServer::search_tool_call(context)),
-            ));
-            tool_box
-        })
-    }
 }
-
-#[tool(tool_box)]
+#[tool_handler]
 impl ServerHandler for TidbServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
-            instructions: Some("Gaia TiDB MCP server".into()),
-            capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation {
-                name: std::env!("CARGO_PKG_NAME").to_string(),
-                version: std::env!("CARGO_PKG_VERSION").to_string(),
-            },
-            ..Default::default()
+            protocol_version: ProtocolVersion::default(),
+            instructions: Some("A MCP server that performs keyword search in TiDB".into()),
+            capabilities: ServerCapabilities::builder()
+                .enable_tools()
+                .enable_prompts()
+                .build(),
+            server_info: Implementation::from_build_env(),
         }
     }
-}
 
-#[derive(Debug, Serialize, Deserialize)]
-struct TidbSearchRequest {
-    query: String,
+    async fn list_prompts(
+        &self,
+        _request: Option<PaginatedRequestParam>,
+        _: RequestContext<RoleServer>,
+    ) -> Result<ListPromptsResult, McpError> {
+        Ok(ListPromptsResult {
+            next_cursor: None,
+            prompts: vec![Prompt::new(
+                "search",
+                Some(
+                    "This prompt is for the `search` tool, which takes a query and returns a list of hits",
+                ),
+                Some(vec![PromptArgument {
+                    name: "query".to_string(),
+                    description: Some("A user query to search for in TiDB".to_string()),
+                    required: Some(true),
+                }]),
+            )],
+        })
+    }
+
+    async fn get_prompt(
+        &self,
+        GetPromptRequestParam { name, arguments }: GetPromptRequestParam,
+        _: RequestContext<RoleServer>,
+    ) -> Result<GetPromptResult, McpError> {
+        match name.as_str() {
+            "search" => {
+                let query = arguments
+                    .and_then(|json| json.get("query")?.as_str().map(|s| s.to_string()))
+                    .ok_or_else(|| {
+                        McpError::invalid_params("No query provided to `search` tool", None)
+                    })?;
+
+                let prompt = SEARCH_TOOL_PROMPT.get().unwrap();
+                let prompt = prompt.replace("{query}", &query);
+
+                Ok(GetPromptResult {
+                    description: None,
+                    messages: vec![PromptMessage {
+                        role: PromptMessageRole::User,
+                        content: PromptMessageContent::text(prompt),
+                    }],
+                })
+            }
+            _ => {
+                let error_message = format!("prompt not found: {}", name);
+                error!("{}", error_message);
+                Err(McpError::invalid_params(error_message, None))
+            }
+        }
+    }
 }

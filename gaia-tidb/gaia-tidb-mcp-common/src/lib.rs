@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct TidbSearchRequest {
-    #[schemars(description = "the query to search for")]
+    #[schemars(description = "The query to search for")]
     pub query: String,
 }
 

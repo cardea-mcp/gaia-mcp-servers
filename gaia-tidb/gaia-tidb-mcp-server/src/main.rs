@@ -10,7 +10,7 @@ use rmcp::transport::{
 };
 use rustls::crypto::{CryptoProvider, ring::default_provider};
 use std::{env, path::PathBuf};
-use tidb::{TidbServer, set_query_param_description, set_search_description};
+use tidb::{TidbServer, set_search_tool_prompt};
 use tokio::sync::RwLock as TokioRwLock;
 use tracing::{error, info};
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
@@ -43,12 +43,12 @@ struct Args {
     /// Maximum number of query results to return
     #[arg(long, default_value = "10")]
     limit: u64,
-    /// The description for the search tool
-    #[arg(long, default_value = "Perform keyword search in TiDB")]
-    search_tool_desc: String,
-    /// The description for the search tool parameter
-    #[arg(long, default_value = "Input query to search for")]
-    search_tool_param_desc: String,
+    /// The prompt for the `search` mcp tool
+    #[arg(
+        long,
+        default_value = "Please extract 3 to 5 keywords from my question, separated by spaces. Then, try to return a tool call that invokes the keyword search tool.\n\nMy question is: {query}"
+    )]
+    search_tool_prompt: String,
 }
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -153,18 +153,15 @@ async fn main() -> anyhow::Result<()> {
         .set(TokioRwLock::new(config))
         .map_err(|_| anyhow::anyhow!("Failed to set TIDB_ACCESS_CONFIG"))?;
 
-    // Set the search tool description from CLI
-    set_search_description(args.search_tool_desc);
-
-    // Set the query parameter description from CLI
-    set_query_param_description(args.search_tool_param_desc);
+    // Set the search tool prompt from CLI
+    set_search_tool_prompt(args.search_tool_prompt);
 
     info!("Starting Gaia TiDB MCP server on {}", args.socket_addr);
 
     match args.transport {
         TransportType::StreamHttp => {
             let service = StreamableHttpService::new(
-                || Ok(TidbServer),
+                || Ok(TidbServer::new()),
                 LocalSessionManager::default().into(),
                 Default::default(),
             );
@@ -178,7 +175,7 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Sse => {
             let ct = SseServer::serve(args.socket_addr.parse()?)
                 .await?
-                .with_service(|| TidbServer);
+                .with_service(|| TidbServer::new());
 
             tokio::signal::ctrl_c().await?;
             ct.cancel();
