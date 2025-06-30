@@ -684,6 +684,7 @@ dependencies = [
  "mysql",
  "pin-project-lite",
  "rand 0.9.1",
+ "regex",
  "reqwest",
  "rmcp",
  "rustls",

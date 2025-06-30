@@ -32,3 +32,4 @@ mysql = { version = "26.0.0", default-features = false, features = ["rustls-tls-
 clap = { workspace = true, features = ["derive"] }
 rustls = { workspace = true, features = ["ring"] }
 axum = { workspace = true, features = ["macros"] }
+regex = "1"
