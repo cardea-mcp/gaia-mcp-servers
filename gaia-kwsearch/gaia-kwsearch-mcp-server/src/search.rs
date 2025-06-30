@@ -5,19 +5,28 @@ use gaia_kwsearch_mcp_common::{
 };
 use rmcp::{
     Error as McpError, ServerHandler,
-    model::{CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo},
-    tool,
+    handler::server::{router::tool::ToolRouter, tool::*},
+    model::*,
+    tool, tool_handler, tool_router,
 };
 use tracing::{error, info};
 
 #[derive(Debug, Clone)]
-pub struct KeywordSearchServer;
-#[tool(tool_box)]
+pub struct KeywordSearchServer {
+    tool_router: ToolRouter<Self>,
+}
+#[tool_router]
 impl KeywordSearchServer {
+    pub fn new() -> Self {
+        Self {
+            tool_router: Self::tool_router(),
+        }
+    }
+
     #[tool(description = "Create an index in the KeywordSearch database")]
     async fn create_index(
         &self,
-        #[tool(aggr)] CreateIndexRequest { index, documents }: CreateIndexRequest,
+        Parameters(CreateIndexRequest { index, documents }): Parameters<CreateIndexRequest>,
     ) -> Result<CallToolResult, McpError> {
         info!("Creating index in KeywordSearch database");
 
@@ -78,7 +87,7 @@ impl KeywordSearchServer {
     #[tool(description = "Perform a keyword search")]
     async fn search(
         &self,
-        #[tool(aggr)] SearchDocumentsRequest { query }: SearchDocumentsRequest,
+        Parameters(SearchDocumentsRequest { query }): Parameters<SearchDocumentsRequest>,
     ) -> Result<CallToolResult, McpError> {
         info!("Searching for documents in KeywordSearch database");
 
@@ -137,17 +146,14 @@ impl KeywordSearchServer {
         Ok(CallToolResult::success(vec![content]))
     }
 }
-#[tool(tool_box)]
+#[tool_handler]
 impl ServerHandler for KeywordSearchServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
+            protocol_version: ProtocolVersion::default(),
             instructions: Some("A MCP server that can access the KeywordSearch database".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation {
-                name: std::env!("CARGO_PKG_NAME").to_string(),
-                version: std::env!("CARGO_PKG_VERSION").to_string(),
-            },
-            ..Default::default()
+            server_info: Implementation::from_build_env(),
         }
     }
 }
