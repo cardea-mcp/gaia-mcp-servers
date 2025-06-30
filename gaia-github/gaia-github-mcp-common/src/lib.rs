@@ -2,6 +2,14 @@ use rmcp::schemars;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
+pub struct GetStarCountRequest {
+    #[schemars(description = "The owner of the Github repository")]
+    pub owner: String,
+    #[schemars(description = "The name of the Github repository")]
+    pub repo: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
 pub struct GetStarCountResponse {
     pub count: u32,
 }

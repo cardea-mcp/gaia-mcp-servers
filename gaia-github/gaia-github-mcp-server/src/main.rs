@@ -44,7 +44,7 @@ async fn main() -> anyhow::Result<()> {
     match args.transport {
         TransportType::StreamHttp => {
             let service = StreamableHttpService::new(
-                || Ok(GithubServer),
+                || Ok(GithubServer::new()),
                 LocalSessionManager::default().into(),
                 Default::default(),
             );
@@ -58,7 +58,7 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Sse => {
             let ct = SseServer::serve(args.socket_addr.parse()?)
                 .await?
-                .with_service(|| GithubServer);
+                .with_service(|| GithubServer::new());
 
             tokio::signal::ctrl_c().await?;
             ct.cancel();
