@@ -58,7 +58,7 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Sse => {
             let ct = SseServer::serve(args.socket_addr.parse()?)
                 .await?
-                .with_service(|| GithubServer::new());
+                .with_service(GithubServer::new);
 
             tokio::signal::ctrl_c().await?;
             ct.cancel();

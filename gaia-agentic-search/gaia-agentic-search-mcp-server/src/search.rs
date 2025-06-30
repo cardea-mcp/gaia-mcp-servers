@@ -609,7 +609,7 @@ impl ServerHandler for AgenticSearchServer {
                 })
             }
             _ => {
-                let error_message = format!("prompt not found: {}", name);
+                let error_message = format!("prompt not found: {name}");
                 error!("{}", error_message);
                 Err(McpError::invalid_params(error_message, None))
             }
