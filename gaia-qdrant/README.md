@@ -46,10 +46,8 @@ Options:
           Maximum number of results to return [default: 10]
       --score-threshold <SCORE_THRESHOLD>
           Score threshold for the results [default: 0.5]
-      --search-tool-desc <SEARCH_TOOL_DESC>
-          The description for the search tool [default: "Perform vector search in the Qdrant database"]
-      --search-tool-param-desc <SEARCH_TOOL_PARAM_DESC>
-          The description for the search tool parameter [default: "The vector to search for in the Qdrant database"]
+      --search-tool-prompt <SEARCH_TOOL_PROMPT>
+          The prompt for the search mcp tool [default: "Perform vector search with the input vector. Return a tool call that invokes the vector search tool.\n\nThe input vector is: [0.0,0.0,0.0,0.0]"]
   -h, --help
           Print help
   -V, --version
@@ -64,12 +62,11 @@ Now, let's start the mcp server:
     --transport stream-http \
     --collection <your-qdrant-collection-name>
 
-# run mcp server with a custom search tool description and query parameter description
+# run mcp server with a custom search tool prompt
 ./target/release/gaia-qdrant-mcp-server --base-url http://127.0.0.1:6333 \
     --transport stream-http \
     --collection <your-qdrant-collection-name> \
-    --search-tool-desc "Perform vector search in the Qdrant database" \
-    --search-tool-param-desc "The vector to search for in the Qdrant database"
+    --search-tool-prompt "Perform vector search in the Qdrant database with the provided vector"
 ```
 
 If start successfully, you will see the following output:
