@@ -36,10 +36,8 @@ Options:
           Table name
       --limit <LIMIT>
           Maximum number of query results to return [default: 10]
-      --search-tool-desc <SEARCH_TOOL_DESC>
-          The description for the search tool [default: "Perform keyword search in TiDB"]
-      --search-tool-param-desc <SEARCH_TOOL_PARAM_DESC>
-          The description for the search tool parameter [default: "Input query to search for"]
+      --search-tool-prompt <SEARCH_TOOL_PROMPT>
+          The prompt for the search mcp tool [default: "Please extract 3 to 5 keywords from my question, separated by spaces. Then, try to return a tool call that invokes the keyword search tool.\n\nMy question is: {query}"]
   -h, --help
           Print help
   -V, --version
@@ -66,13 +64,12 @@ export TIDB_PASSWORD=<your-tidb-password>
     --database <your-tidb-database> \
     --table-name <your-table-name>
 
-# run the mcp server with a custom search tool description and query parameter description
+# run the mcp server with a custom search tool prompt
 ./target/release/gaia-tidb-mcp-server --transport stream-http \
     --ssl-ca $SSL_CA_PATH \
     --database <your-tidb-database> \
     --table-name <your-table-name> \
-    --search-tool-desc "Perform keyword search in TiDB" \
-    --search-tool-param-desc "Input query to search for"
+    --search-tool-prompt "Extract keywords from the query and perform keyword search in TiDB"
 ```
 
 > [!IMPORTANT]
