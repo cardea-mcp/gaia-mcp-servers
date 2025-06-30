@@ -2,16 +2,26 @@ use crate::CONNECTION_CONFIG;
 use gaia_elastic_mcp_common::*;
 use rmcp::{
     Error as McpError, ServerHandler,
-    model::{CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo},
-    tool,
+    handler::server::{router::tool::ToolRouter, tool::*},
+    model::*,
+    tool, tool_handler, tool_router,
 };
 use serde_json::{Value, json};
 use tracing::error;
 
 #[derive(Debug, Clone)]
-pub struct ElasticSearchServer;
-#[tool(tool_box)]
+pub struct ElasticSearchServer {
+    tool_router: ToolRouter<Self>,
+}
+
+#[tool_router]
 impl ElasticSearchServer {
+    pub fn new() -> Self {
+        Self {
+            tool_router: Self::tool_router(),
+        }
+    }
+
     #[tool(description = "List all available Elasticsearch indices")]
     async fn list_indices(&self) -> Result<CallToolResult, McpError> {
         // get connection config
@@ -205,7 +215,7 @@ impl ElasticSearchServer {
     #[tool(description = "Perform a keyword search")]
     async fn search(
         &self,
-        #[tool(aggr)] SearchRequest { query }: SearchRequest,
+        Parameters(SearchRequest { query }): Parameters<SearchRequest>,
     ) -> Result<CallToolResult, McpError> {
         // get connection config
         let conn_config = match CONNECTION_CONFIG.get() {
@@ -332,17 +342,15 @@ impl ElasticSearchServer {
         }
     }
 }
-#[tool(tool_box)]
+
+#[tool_handler]
 impl ServerHandler for ElasticSearchServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
+            protocol_version: ProtocolVersion::default(),
             instructions: Some("A ElasticSearch MCP server".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation {
-                name: std::env!("CARGO_PKG_NAME").to_string(),
-                version: std::env!("CARGO_PKG_VERSION").to_string(),
-            },
-            ..Default::default()
+            server_info: Implementation::from_build_env(),
         }
     }
 }
