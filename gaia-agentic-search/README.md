@@ -48,7 +48,6 @@ The server supports three search modes through subcommands:
 ```bash
 ./gaia-agentic-search-mcp-server tidb \
     --tidb-ssl-ca /path/to/ca.pem \
-    --tidb-database my_database \
     --tidb-table-name my_table \
     --chat-service http://localhost:8080 \
     --limit 15
@@ -56,7 +55,6 @@ The server supports three search modes through subcommands:
 
 **Options:**
 - `--tidb-ssl-ca`: TiDB SSL CA certificate path (**required**)
-- `--tidb-database`: Database name in TiDB (**required**)
 - `--tidb-table-name`: Table name in TiDB (**required**)
 - `--chat-service`: Chat service base URL (**required**)
 - `--limit`: Maximum number of results (default: 10)
@@ -69,7 +67,6 @@ The server supports three search modes through subcommands:
     --qdrant-collection my_collection \
     --qdrant-payload-field "full_text" \
     --tidb-ssl-ca /path/to/ca.pem \
-    --tidb-database my_database \
     --tidb-table-name my_table \
     --chat-service http://localhost:8080 \
     --embedding-service http://localhost:8081 \
@@ -81,7 +78,6 @@ The server supports three search modes through subcommands:
 - `--qdrant-collection`: Collection name in Qdrant (**required**)
 - `--qdrant-payload-field`: The name of the field in the payload that contains the source of the document (**required**)
 - `--tidb-ssl-ca`: TiDB SSL CA certificate path (**required**)
-- `--tidb-database`: Database name in TiDB (**required**)
 - `--tidb-table-name`: Table name in TiDB (**required**)
 - `--chat-service`: Chat service base URL (**required**)
 - `--embedding-service`: Embedding service base URL (**required**)
@@ -94,10 +90,7 @@ The server supports three search modes through subcommands:
 - `QDRANT_API_KEY`: API key for Qdrant (optional)
 
 #### For TiDB Keyword Search
-- `TIDB_HOST`: TiDB host (required)
-- `TIDB_PORT`: TiDB port (required)
-- `TIDB_USERNAME`: TiDB username (required)
-- `TIDB_PASSWORD`: TiDB password (required)
+- `TIDB_CONNECTION`: MySQL connection string in the format `mysql://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>` (**required**)
 
 #### For External Services
 - `CHAT_SERVICE_API_KEY`: API key for chat service (optional)
@@ -109,6 +102,7 @@ These options apply to all search modes:
 
 - `--socket-addr`: Socket address to bind to (default: 127.0.0.1:8009)
 - `--transport`: Transport type (sse, stream-http) (default: stream-http)
+- `--search-tool-prompt`: Custom prompt for the search MCP tool (default: "Perform a search for the given query")
 
 ## Examples
 
@@ -131,15 +125,11 @@ export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
 ### TiDB Keyword Search Example
 
 ```bash
-export TIDB_HOST=localhost
-export TIDB_PORT=4000
-export TIDB_USERNAME=root
-export TIDB_PASSWORD=mypassword
+export TIDB_CONNECTION="mysql://root:mypassword@localhost:4000/search_db"
 export CHAT_SERVICE_API_KEY=your_chat_api_key
 
 ./gaia-agentic-search-mcp-server tidb \
     --tidb-ssl-ca /etc/ssl/certs/ca.pem \
-    --tidb-database search_db \
     --tidb-table-name documents \
     --chat-service http://localhost:8080 \
     --limit 20 \
@@ -149,10 +139,7 @@ export CHAT_SERVICE_API_KEY=your_chat_api_key
 ### Combined Search Example
 
 ```bash
-export TIDB_HOST=localhost
-export TIDB_PORT=4000
-export TIDB_USERNAME=root
-export TIDB_PASSWORD=mypassword
+export TIDB_CONNECTION="mysql://root:mypassword@localhost:4000/search_db"
 export QDRANT_API_KEY=your_qdrant_api_key
 export CHAT_SERVICE_API_KEY=your_chat_api_key
 export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
@@ -161,7 +148,6 @@ export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
     --qdrant-collection documents \
     --qdrant-payload-field "full_text" \
     --tidb-ssl-ca /etc/ssl/certs/ca.pem \
-    --tidb-database search_db \
     --tidb-table-name documents \
     --chat-service http://localhost:8080 \
     --embedding-service http://localhost:8081 \
