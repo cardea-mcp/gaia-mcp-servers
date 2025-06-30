@@ -49,7 +49,7 @@ async fn main() -> anyhow::Result<()> {
     match args.transport {
         TransportType::StreamHttp => {
             let service = StreamableHttpService::new(
-                || Ok(WeatherServer),
+                || Ok(WeatherServer::new()),
                 LocalSessionManager::default().into(),
                 Default::default(),
             );
@@ -63,14 +63,14 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Sse => {
             let ct = SseServer::serve(args.socket_addr.parse()?)
                 .await?
-                .with_service(|| WeatherServer);
+                .with_service(|| WeatherServer::new());
 
             tokio::signal::ctrl_c().await?;
             ct.cancel();
         }
         TransportType::Stdio => {
             // Create an instance of our counter router
-            let service = WeatherServer.serve(stdio()).await.inspect_err(|e| {
+            let service = WeatherServer::new().serve(stdio()).await.inspect_err(|e| {
                 tracing::error!("serving error: {:?}", e);
             })?;
 
