@@ -975,6 +975,7 @@ dependencies = [
  "once_cell",
  "pin-project-lite",
  "rand 0.9.1",
+ "regex",
  "reqwest",
  "rmcp",
  "rustls",
