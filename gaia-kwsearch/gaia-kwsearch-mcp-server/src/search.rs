@@ -4,12 +4,20 @@ use gaia_kwsearch_mcp_common::{
     CreateIndexRequest, CreateIndexResponse, SearchDocumentsRequest, SearchDocumentsResponse,
 };
 use rmcp::{
-    Error as McpError, ServerHandler,
+    Error as McpError, RoleServer, ServerHandler,
     handler::server::{router::tool::ToolRouter, tool::*},
     model::*,
+    service::RequestContext,
     tool, tool_handler, tool_router,
 };
+use std::sync::OnceLock;
 use tracing::{error, info};
+
+static SEARCH_TOOL_PROMPT: OnceLock<String> = OnceLock::new();
+
+pub fn set_search_tool_prompt(prompt: String) {
+    SEARCH_TOOL_PROMPT.set(prompt).unwrap_or_default();
+}
 
 #[derive(Debug, Clone)]
 pub struct KeywordSearchServer {
@@ -154,6 +162,59 @@ impl ServerHandler for KeywordSearchServer {
             instructions: Some("A MCP server that can access the KeywordSearch database".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
             server_info: Implementation::from_build_env(),
+        }
+    }
+
+    async fn list_prompts(
+        &self,
+        _request: Option<PaginatedRequestParam>,
+        _: RequestContext<RoleServer>,
+    ) -> Result<ListPromptsResult, McpError> {
+        Ok(ListPromptsResult {
+            next_cursor: None,
+            prompts: vec![Prompt::new(
+                "search",
+                Some(
+                    "This prompt is for the `search` tool, which takes a query and returns a list of hits",
+                ),
+                Some(vec![PromptArgument {
+                    name: "query".to_string(),
+                    description: Some("A user query to search for".to_string()),
+                    required: Some(true),
+                }]),
+            )],
+        })
+    }
+
+    async fn get_prompt(
+        &self,
+        GetPromptRequestParam { name, arguments }: GetPromptRequestParam,
+        _: RequestContext<RoleServer>,
+    ) -> Result<GetPromptResult, McpError> {
+        match name.as_str() {
+            "search" => {
+                let query = arguments
+                    .and_then(|json| json.get("query")?.as_str().map(|s| s.to_string()))
+                    .ok_or_else(|| {
+                        McpError::invalid_params("No query provided to `search` tool", None)
+                    })?;
+
+                let prompt = SEARCH_TOOL_PROMPT.get().unwrap();
+                let prompt = prompt.replace("{query}", &query);
+
+                Ok(GetPromptResult {
+                    description: None,
+                    messages: vec![PromptMessage {
+                        role: PromptMessageRole::User,
+                        content: PromptMessageContent::text(prompt),
+                    }],
+                })
+            }
+            _ => {
+                let error_message = format!("prompt not found: {name}");
+                error!("{error_message}");
+                Err(McpError::invalid_params(error_message, None))
+            }
         }
     }
 }
