@@ -36,6 +36,7 @@ The server supports three search modes through subcommands:
 ```
 
 **Options:**
+
 - `--qdrant-base-url`: Qdrant database URL (default: http://127.0.0.1:6333)
 - `--qdrant-collection`: Collection name in Qdrant (**required**)
 - `--qdrant-payload-field`: The name of the field in the payload that contains the source of the document (**required**)
@@ -55,6 +56,7 @@ The server supports three search modes through subcommands:
 ```
 
 **Options:**
+
 - `--tidb-ssl-ca`: TiDB SSL CA certificate path (**required**)
 - `--tidb-database`: Database name in TiDB (**required**)
 - `--tidb-table-name`: Table name in TiDB (**required**)
@@ -77,6 +79,7 @@ The server supports three search modes through subcommands:
 ```
 
 **Options:**
+
 - `--qdrant-base-url`: Qdrant database URL (default: http://127.0.0.1:6333)
 - `--qdrant-collection`: Collection name in Qdrant (**required**)
 - `--qdrant-payload-field`: The name of the field in the payload that contains the source of the document (**required**)
@@ -91,15 +94,18 @@ The server supports three search modes through subcommands:
 ### Environment Variables
 
 #### For Qdrant Vector Search
+
 - `QDRANT_API_KEY`: API key for Qdrant (optional)
 
 #### For TiDB Keyword Search
+
 - `TIDB_HOST`: TiDB host (required)
 - `TIDB_PORT`: TiDB port (required)
 - `TIDB_USERNAME`: TiDB username (required)
 - `TIDB_PASSWORD`: TiDB password (required)
 
 #### For External Services
+
 - `CHAT_SERVICE_API_KEY`: API key for chat service (optional)
 - `EMBEDDING_SERVICE_API_KEY`: API key for embedding service (optional)
 
@@ -109,6 +115,8 @@ These options apply to all search modes:
 
 - `--socket-addr`: Socket address to bind to (default: 127.0.0.1:8009)
 - `--transport`: Transport type (sse, stream-http) (default: stream-http)
+- `--search-tool-desc`: The description for the search tool (default: "Perform a search for the given query")
+- `--search-tool-param-desc`: The description for the search tool parameter (default: "The query to search for")
 
 ## Examples
 
@@ -172,16 +180,19 @@ export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
 ## How It Works
 
 ### Vector Search Process
+
 1. **Query Processing**: The user query is sent to the embedding service to generate a vector representation
 2. **Vector Search**: The generated vector is used to search the Qdrant collection for similar documents
 3. **Result Formatting**: Results are formatted and returned with scores and metadata
 
 ### Keyword Search Process
+
 1. **Keyword Extraction**: The user query is sent to the chat service to extract relevant keywords
 2. **Full-text Search**: The extracted keywords are used to perform full-text search in TiDB
 3. **Result Formatting**: Results are formatted and returned with document content
 
 ### Combined Search Process
+
 1. **Parallel Execution**: Both vector and keyword search are executed in parallel
 2. **Result Merging**: Results from both searches are combined and formatted
 3. **Comprehensive Results**: Users get both semantic and keyword-based search results

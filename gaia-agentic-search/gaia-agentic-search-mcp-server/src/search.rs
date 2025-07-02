@@ -11,28 +11,81 @@ use mysql::prelude::*;
 use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use rmcp::{
     Error as McpError, ServerHandler,
-    model::{CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo},
+    handler::server::tool::*,
+    model::{
+        CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo, Tool,
+    },
     tool,
 };
 use serde_json::{Value, json};
+use std::sync::{Arc, OnceLock};
 use tracing::{debug, error, info, warn};
+
+static SEARCH_TOOL_DESC: OnceLock<String> = OnceLock::new();
+static SEARCH_TOOL_PARAM_DESC: OnceLock<String> = OnceLock::new();
+
+pub fn set_search_tool_description(description: String) {
+    SEARCH_TOOL_DESC.set(description).unwrap_or_default();
+}
+
+pub fn set_search_tool_param_description(description: String) {
+    SEARCH_TOOL_PARAM_DESC.set(description).unwrap_or_default();
+}
 
 #[derive(Debug, Clone)]
 pub struct AgenticSearchServer {
     config: AgenticSearchConfig,
 }
 
-#[tool(tool_box)]
 impl AgenticSearchServer {
     pub fn new(config: AgenticSearchConfig) -> Self {
         Self { config }
     }
 
-    #[tool(description = "Perform a search for the given query")]
-    async fn search(
-        &self,
-        #[tool(aggr)] SearchRequest { query }: SearchRequest,
+    fn search_tool_attr() -> Tool {
+        let tool_description = SEARCH_TOOL_DESC
+            .get()
+            .cloned()
+            .unwrap_or_else(|| "Perform a search for the given query".to_string());
+
+        let query_description = SEARCH_TOOL_PARAM_DESC
+            .get()
+            .cloned()
+            .unwrap_or_else(|| "The query to search for".to_string());
+
+        // build input schema
+        let input_schema = json!({
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": query_description
+                }
+            },
+            "required": ["query"],
+            "title": "SearchRequest"
+        });
+
+        Tool {
+            name: "search".into(),
+            description: Some(tool_description.into()),
+            input_schema: Arc::new(input_schema.as_object().unwrap().clone()),
+            annotations: None,
+        }
+    }
+
+    async fn search_tool_call(
+        context: ToolCallContext<'_, Self>,
     ) -> Result<CallToolResult, McpError> {
+        let (__rmcp_tool_receiver, context) = <&Self>::from_tool_call_context_part(context)?;
+        let (Parameters(SearchRequest { query }), _context) =
+            <Parameters<SearchRequest>>::from_tool_call_context_part(context)?;
+        Self::search(__rmcp_tool_receiver, query)
+            .await
+            .into_call_tool_result()
+    }
+
+    async fn search(&self, query: String) -> Result<CallToolResult, McpError> {
         match (
             self.config.qdrant_config.is_some(),
             self.config.tidb_config.is_some(),
@@ -57,6 +110,48 @@ impl AgenticSearchServer {
             }
         }
     }
+
+    fn tool_box() -> &'static ToolBox<AgenticSearchServer> {
+        static TOOL_BOX: OnceLock<ToolBox<AgenticSearchServer>> = OnceLock::new();
+        TOOL_BOX.get_or_init(|| {
+            let mut tool_box = ToolBox::new();
+            tool_box.add(ToolBoxItem::new(
+                AgenticSearchServer::search_tool_attr(),
+                |context| Box::pin(AgenticSearchServer::search_tool_call(context)),
+            ));
+            tool_box
+        })
+    }
+
+    // #[tool(description = "Perform a search for the given query")]
+    // async fn search(
+    //     &self,
+    //     #[tool(aggr)] SearchRequest { query }: SearchRequest,
+    // ) -> Result<CallToolResult, McpError> {
+    //     match (
+    //         self.config.qdrant_config.is_some(),
+    //         self.config.tidb_config.is_some(),
+    //     ) {
+    //         (true, true) => self.combined_search(query).await,
+    //         (true, false) => {
+    //             let content = self.vector_search(query).await?;
+    //             Ok(CallToolResult::success(vec![Content::text(content)]))
+    //         }
+    //         (false, true) => {
+    //             let content = self.keyword_search(query).await?;
+    //             Ok(CallToolResult::success(vec![Content::text(content)]))
+    //         }
+    //         (false, false) => {
+    //             let error_message = "No search mode configured";
+    //             error!("{}", error_message);
+    //             Err(McpError::new(
+    //                 ErrorCode::INTERNAL_ERROR,
+    //                 error_message,
+    //                 None,
+    //             ))
+    //         }
+    //     }
+    // }
 
     async fn vector_search(&self, query: impl AsRef<str>) -> Result<String, McpError> {
         info!("Starting vector search ...");
