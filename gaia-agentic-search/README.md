@@ -24,6 +24,15 @@ The server is designed with a modular architecture that supports different searc
 
 The server supports three search modes through subcommands:
 
+#### Global Options
+
+These options apply to all search modes:
+
+- `-s, --socket-addr`: Socket address to bind to (default: 127.0.0.1:8009)
+- `-t, --transport`: Transport type (sse, stream-http) (default: stream-http)
+- `--search-tool-desc`: The description for the search tool (default: "Perform a search for the given query")
+- `--search-tool-param-desc`: The description for the search tool parameter (default: "The query to search for")
+
 #### 1. Qdrant Vector Search Only
 
 ```bash
@@ -37,12 +46,13 @@ The server supports three search modes through subcommands:
 
 **Options:**
 
-- `--qdrant-base-url`: Qdrant database URL (default: http://127.0.0.1:6333)
 - `--qdrant-collection`: Collection name in Qdrant (**required**)
 - `--qdrant-payload-field`: The name of the field in the payload that contains the source of the document (**required**)
 - `--embedding-service`: Embedding service base URL (**required**)
 - `--limit`: Maximum number of results (default: 10)
 - `--score-threshold`: Score threshold for results (default: 0.5)
+
+**Note:** Qdrant base URL is configured via the `QDRANT_BASE_URL` environment variable (default: http://127.0.0.1:6333)
 
 #### 2. TiDB Keyword Search Only
 
@@ -57,6 +67,8 @@ The server supports three search modes through subcommands:
 **Options:**
 
 - `--tidb-ssl-ca`: TiDB SSL CA certificate path (**required**)
+  - On macOS: typically `/etc/ssl/cert.pem`
+  - On Debian/Ubuntu/Arch Linux: typically `/etc/ssl/certs/ca-certificates.crt`
 - `--tidb-table-name`: Table name in TiDB (**required**)
 - `--chat-service`: Chat service base URL (**required**)
 - `--limit`: Maximum number of results (default: 10)
@@ -77,20 +89,24 @@ The server supports three search modes through subcommands:
 
 **Options:**
 
-- `--qdrant-base-url`: Qdrant database URL (default: http://127.0.0.1:6333)
 - `--qdrant-collection`: Collection name in Qdrant (**required**)
 - `--qdrant-payload-field`: The name of the field in the payload that contains the source of the document (**required**)
 - `--tidb-ssl-ca`: TiDB SSL CA certificate path (**required**)
+  - On macOS: typically `/etc/ssl/cert.pem`
+  - On Debian/Ubuntu/Arch Linux: typically `/etc/ssl/certs/ca-certificates.crt`
 - `--tidb-table-name`: Table name in TiDB (**required**)
 - `--chat-service`: Chat service base URL (**required**)
 - `--embedding-service`: Embedding service base URL (**required**)
 - `--limit`: Maximum number of results (default: 10)
 - `--score-threshold`: Score threshold for results (default: 0.5)
 
+**Note:** Qdrant base URL is configured via the `QDRANT_BASE_URL` environment variable (default: http://127.0.0.1:6333)
+
 ### Environment Variables
 
 #### For Qdrant Vector Search
 
+- `QDRANT_BASE_URL`: Qdrant database URL (default: http://127.0.0.1:6333)
 - `QDRANT_API_KEY`: API key for Qdrant (optional)
 
 #### For TiDB Keyword Search
@@ -102,26 +118,16 @@ The server supports three search modes through subcommands:
 - `CHAT_SERVICE_API_KEY`: API key for chat service (optional)
 - `EMBEDDING_SERVICE_API_KEY`: API key for embedding service (optional)
 
-### Global Options
-
-These options apply to all search modes:
-
-- `--socket-addr`: Socket address to bind to (default: 127.0.0.1:8009)
-- `--transport`: Transport type (sse, stream-http) (default: stream-http)
-- `--search-tool-desc`: The description for the search tool (default: "Perform a search for the given query")
-- `--search-tool-param-desc`: The description for the search tool parameter (default: "The query to search for")
-
 ## Examples
 
 ### Qdrant Vector Search Example
 
 ```bash
+export QDRANT_BASE_URL=http://localhost:6333
 export QDRANT_API_KEY=your_qdrant_api_key
-export CHAT_SERVICE_API_KEY=your_chat_api_key
 export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
 
 ./gaia-agentic-search-mcp-server qdrant \
-    --qdrant-base-url http://localhost:6333 \
     --qdrant-collection documents \
     --qdrant-payload-field "full_text" \
     --embedding-service http://localhost:8081 \
@@ -147,6 +153,7 @@ export CHAT_SERVICE_API_KEY=your_chat_api_key
 
 ```bash
 export TIDB_CONNECTION="mysql://root:mypassword@localhost:4000/search_db"
+export QDRANT_BASE_URL=http://localhost:6333
 export QDRANT_API_KEY=your_qdrant_api_key
 export CHAT_SERVICE_API_KEY=your_chat_api_key
 export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key

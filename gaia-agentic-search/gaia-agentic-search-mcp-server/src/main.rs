@@ -15,6 +15,7 @@ use tracing::{error, info};
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
 
 const DEFAULT_SOCKET_ADDR: &str = "127.0.0.1:8009";
+const DEFAULT_QDRANT_BASE_URL: &str = "http://127.0.0.1:6333";
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -40,9 +41,6 @@ struct Args {
 enum SearchMode {
     /// Enable vector search only
     Qdrant {
-        /// The base URL of the Qdrant database
-        #[arg(long, default_value = "http://127.0.0.1:6333")]
-        qdrant_base_url: String,
         /// Name of the collection to search in Qdrant
         #[arg(long, required = true)]
         qdrant_collection: String,
@@ -81,9 +79,6 @@ enum SearchMode {
     },
     /// Enable both vector and keyword search
     Search {
-        /// The base URL of the Qdrant database
-        #[arg(long, default_value = "http://127.0.0.1:6333")]
-        qdrant_base_url: String,
         /// Name of the collection to search in Qdrant
         #[arg(long, required = true)]
         qdrant_collection: String,
@@ -133,7 +128,6 @@ async fn main() -> anyhow::Result<()> {
     // Determine search mode and configure connection
     let search_config = match args.search_mode {
         SearchMode::Qdrant {
-            qdrant_base_url,
             qdrant_collection,
             qdrant_payload_field,
             limit,
@@ -141,6 +135,10 @@ async fn main() -> anyhow::Result<()> {
             embedding_service,
         } => {
             info!("Enabling vector search mode");
+
+            // parse base url
+            let qdrant_base_url =
+                std::env::var("QDRANT_BASE_URL").unwrap_or(DEFAULT_QDRANT_BASE_URL.to_string());
 
             // parse api key
             let qdrant_api_key = env::var("QDRANT_API_KEY").ok();
@@ -241,7 +239,6 @@ async fn main() -> anyhow::Result<()> {
             }
         }
         SearchMode::Search {
-            qdrant_base_url,
             qdrant_collection,
             qdrant_payload_field,
             tidb_ssl_ca,
@@ -252,6 +249,10 @@ async fn main() -> anyhow::Result<()> {
             embedding_service,
         } => {
             info!("Enabling both vector and keyword search modes");
+
+            // parse base url
+            let qdrant_base_url =
+                std::env::var("QDRANT_BASE_URL").unwrap_or(DEFAULT_QDRANT_BASE_URL.to_string());
 
             // parse qdrant api key
             let qdrant_api_key = env::var("QDRANT_API_KEY").ok();
