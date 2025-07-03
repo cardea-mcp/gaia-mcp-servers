@@ -3,6 +3,7 @@ mod search;
 use anyhow::{anyhow, bail};
 use clap::{Parser, Subcommand, ValueEnum};
 use mysql::*;
+use regex::Regex;
 use rmcp::transport::{
     sse_server::SseServer,
     streamable_http_server::{StreamableHttpService, session::local::LocalSessionManager},
@@ -65,9 +66,6 @@ enum SearchMode {
         /// `/etc/ssl/certs/ca-certificates.crt`.
         #[arg(long, required = true)]
         tidb_ssl_ca: PathBuf,
-        /// Database name to search in TiDB
-        #[arg(long, required = true)]
-        tidb_database: String,
         /// Table name to search in TiDB
         #[arg(long, required = true)]
         tidb_table_name: String,
@@ -97,9 +95,6 @@ enum SearchMode {
         /// `/etc/ssl/certs/ca-certificates.crt`.
         #[arg(long, required = true)]
         tidb_ssl_ca: PathBuf,
-        /// Database name to search in TiDB
-        #[arg(long, required = true)]
-        tidb_database: String,
         /// Table name to search in TiDB
         #[arg(long, required = true)]
         tidb_table_name: String,
@@ -172,7 +167,6 @@ async fn main() -> anyhow::Result<()> {
         }
         SearchMode::Tidb {
             tidb_ssl_ca,
-            tidb_database,
             tidb_table_name,
             limit,
             score_threshold,
@@ -180,52 +174,26 @@ async fn main() -> anyhow::Result<()> {
         } => {
             info!("Enabling keyword search mode");
 
-            // parse host
-            let host = match env::var("TIDB_HOST") {
-                Ok(host) => host,
+            // parse connection string
+            let (username, password, host, port, database) = match env::var("TIDB_CONNECTION") {
+                Ok(ref conn) => {
+                    parse_tidb_conn_str(conn.as_str()).ok_or_else(|| anyhow!(
+                        "Invalid connection string! The pattern should be `mysql://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>`"
+                    ))?
+                }
                 Err(e) => {
-                    let error_message = format!("Failed to get TIDB_HOST: {e}");
+                    let error_message = format!("Failed to get TIDB_CONNECTION: {e}");
                     error!(error_message);
                     bail!(error_message);
                 }
             };
 
-            // parse port
-            let port: u16 = match env::var("TIDB_PORT") {
-                Ok(port) => match port.parse() {
-                    Ok(port) => port,
-                    Err(e) => {
-                        let error_message = format!("Failed to parse TIDB_PORT: {e}");
-                        error!(error_message);
-                        bail!(error_message);
-                    }
-                },
-                Err(e) => {
-                    let error_message = format!("Failed to get TIDB_PORT: {e}");
-                    error!(error_message);
-                    bail!(error_message);
-                }
-            };
-
-            // parse username
-            let username = match env::var("TIDB_USERNAME") {
-                Ok(username) => username,
-                Err(e) => {
-                    let error_message = format!("Failed to get TIDB_USERNAME: {e}");
-                    error!(error_message);
-                    bail!(error_message);
-                }
-            };
-
-            // parse password
-            let password = match env::var("TIDB_PASSWORD") {
-                Ok(password) => password,
-                Err(e) => {
-                    let error_message = format!("Failed to get TIDB_PASSWORD: {e}");
-                    error!(error_message);
-                    bail!(error_message);
-                }
-            };
+            // convert port to u16
+            let port = port.parse::<u16>().map_err(|e| {
+                let error_message = format!("Failed to parse TIDB_PORT: {e}");
+                error!(error_message);
+                anyhow!(error_message)
+            })?;
 
             // parse chat service api key
             let chat_service_api_key = env::var("CHAT_SERVICE_API_KEY").ok();
@@ -243,7 +211,7 @@ async fn main() -> anyhow::Result<()> {
                 .tcp_port(port)
                 .user(Some(username))
                 .pass(Some(password))
-                .db_name(Some(tidb_database.clone()))
+                .db_name(Some(database.clone()))
                 .ssl_opts(Some(
                     SslOpts::default().with_root_cert_path(Some(tidb_ssl_ca)),
                 ));
@@ -259,7 +227,7 @@ async fn main() -> anyhow::Result<()> {
             AgenticSearchConfig {
                 qdrant_config: None,
                 tidb_config: Some(TiDBConfig {
-                    database: tidb_database,
+                    database,
                     table_name: tidb_table_name,
                     pool,
                 }),
@@ -277,7 +245,6 @@ async fn main() -> anyhow::Result<()> {
             qdrant_collection,
             qdrant_payload_field,
             tidb_ssl_ca,
-            tidb_database,
             tidb_table_name,
             limit,
             score_threshold,
@@ -289,52 +256,26 @@ async fn main() -> anyhow::Result<()> {
             // parse qdrant api key
             let qdrant_api_key = env::var("QDRANT_API_KEY").ok();
 
-            // parse tidb host
-            let tidb_host = match env::var("TIDB_HOST") {
-                Ok(host) => host,
+            // parse connection string
+            let (tidb_username, tidb_password, tidb_host, tidb_port, tidb_database) = match env::var("TIDB_CONNECTION") {
+                Ok(ref conn) => {
+                    parse_tidb_conn_str(conn.as_str()).ok_or_else(|| anyhow!(
+                        "Invalid connection string! The pattern should be `mysql://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>`"
+                    ))?
+                }
                 Err(e) => {
-                    let error_message = format!("Failed to get TIDB_HOST: {e}");
+                    let error_message = format!("Failed to get TIDB_CONNECTION: {e}");
                     error!(error_message);
                     bail!(error_message);
                 }
             };
 
-            // parse tidb port
-            let tidb_port: u16 = match env::var("TIDB_PORT") {
-                Ok(port) => match port.parse() {
-                    Ok(port) => port,
-                    Err(e) => {
-                        let error_message = format!("Failed to parse TIDB_PORT: {e}");
-                        error!(error_message);
-                        bail!(error_message);
-                    }
-                },
-                Err(e) => {
-                    let error_message = format!("Failed to get TIDB_PORT: {e}");
-                    error!(error_message);
-                    bail!(error_message);
-                }
-            };
-
-            // parse tidb username
-            let tidb_username = match env::var("TIDB_USERNAME") {
-                Ok(username) => username,
-                Err(e) => {
-                    let error_message = format!("Failed to get TIDB_USERNAME: {e}");
-                    error!(error_message);
-                    bail!(error_message);
-                }
-            };
-
-            // parse tidb password
-            let tidb_password = match env::var("TIDB_PASSWORD") {
-                Ok(password) => password,
-                Err(e) => {
-                    let error_message = format!("Failed to get TIDB_PASSWORD: {e}");
-                    error!(error_message);
-                    bail!(error_message);
-                }
-            };
+            // convert port to u16
+            let tidb_port = tidb_port.parse::<u16>().map_err(|e| {
+                let error_message = format!("Failed to parse TIDB_PORT: {e}");
+                error!(error_message);
+                anyhow!(error_message)
+            })?;
 
             // parse chat service api key
             let chat_service_api_key = env::var("CHAT_SERVICE_API_KEY").ok();
@@ -461,4 +402,18 @@ pub struct TiDBConfig {
 pub struct ServiceConfig {
     pub url: String,
     pub api_key: Option<String>,
+}
+
+fn parse_tidb_conn_str(conn_str: &str) -> Option<(String, String, String, String, String)> {
+    let re = Regex::new(r"^mysql://([^:]+):([^@]+)@([^:/]+):(\d+)/(.+)$").unwrap();
+    if let Some(caps) = re.captures(conn_str) {
+        let username = caps.get(1)?.as_str().to_string();
+        let password = caps.get(2)?.as_str().to_string();
+        let host = caps.get(3)?.as_str().to_string();
+        let port = caps.get(4)?.as_str().to_string();
+        let database = caps.get(5)?.as_str().to_string();
+        Some((username, password, host, port, database))
+    } else {
+        None
+    }
 }
