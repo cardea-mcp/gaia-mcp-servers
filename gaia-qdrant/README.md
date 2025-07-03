@@ -32,10 +32,6 @@ The CLI options of the mcp server are as follows:
 Usage: gaia-qdrant-mcp-server [OPTIONS] --collection <COLLECTION>
 
 Options:
-      --base-url <BASE_URL>
-          The base URL of the Qdrant database [default: http://127.0.0.1:6333]
-      --api-key <API_KEY>
-          The API key to use for the Qdrant database
   -s, --socket-addr <SOCKET_ADDR>
           Socket address to bind to [default: 127.0.0.1:8003]
   -t, --transport <TRANSPORT>
@@ -56,16 +52,27 @@ Options:
           Print version
 ```
 
+**Environment Variables:**
+
+- `QDRANT_BASE_URL`: The base URL of the Qdrant database (default: http://127.0.0.1:6333)
+- `QDRANT_API_KEY`: The API key to use for the Qdrant database (optional)
+
 Now, let's start the mcp server:
 
 ```bash
+# set the base url
+export QDRANT_BASE_URL=http://127.0.0.1:6333
+
+# set the api key (optional)
+export QDRANT_API_KEY=<your-api-key>
+
 # run mcp server
-./target/release/gaia-qdrant-mcp-server --base-url http://127.0.0.1:6333 \
+./target/release/gaia-qdrant-mcp-server \
     --transport stream-http \
     --collection <your-qdrant-collection-name>
 
 # run mcp server with a custom search tool description and query parameter description
-./target/release/gaia-qdrant-mcp-server --base-url http://127.0.0.1:6333 \
+./target/release/gaia-qdrant-mcp-server \
     --transport stream-http \
     --collection <your-qdrant-collection-name> \
     --search-tool-desc "Perform vector search in the Qdrant database" \

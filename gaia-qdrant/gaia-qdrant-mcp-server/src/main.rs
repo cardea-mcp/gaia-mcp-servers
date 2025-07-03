@@ -15,18 +15,13 @@ use tokio::sync::RwLock;
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
 
 const DEFAULT_SOCKET_ADDR: &str = "127.0.0.1:8003";
+const DEFAULT_QDRANT_BASE_URL: &str = "http://127.0.0.1:6333";
 
 static CONNECTION_CONFIG: OnceCell<RwLock<ConnectionConfig>> = OnceCell::new();
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// The base URL of the Qdrant database
-    #[arg(long, default_value = "http://127.0.0.1:6333")]
-    base_url: String,
-    /// The API key to use for the Qdrant database
-    #[arg(long)]
-    api_key: Option<String>,
     /// Socket address to bind to
     #[arg(short, long, default_value = DEFAULT_SOCKET_ADDR)]
     socket_addr: String,
@@ -72,9 +67,14 @@ async fn main() -> anyhow::Result<()> {
 
     let args = Args::parse();
 
+    let base_url = std::env::var("QDRANT_BASE_URL").unwrap_or(DEFAULT_QDRANT_BASE_URL.to_string());
+
+    // parse api key
+    let api_key = std::env::var("QDRANT_API_KEY").ok();
+
     let connection_config = ConnectionConfig {
-        base_url: args.base_url,
-        api_key: args.api_key,
+        base_url,
+        api_key,
         collection: args.collection,
         limit: args.limit,
         score_threshold: args.score_threshold,
