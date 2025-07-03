@@ -21,7 +21,7 @@ cargo build --package gaia-tidb-mcp-server --release
 The CLI options of the mcp server are as follows:
 
 ```bash
-Usage: gaia-tidb-mcp-server [OPTIONS] --ssl-ca <SSL_CA> --database <DATABASE> --table-name <TABLE_NAME>
+Usage: gaia-tidb-mcp-server [OPTIONS] --ssl-ca <SSL_CA> --table-name <TABLE_NAME>
 
 Options:
       --ssl-ca <SSL_CA>
@@ -30,8 +30,6 @@ Options:
           Socket address to bind to [default: 127.0.0.1:8007]
   -t, --transport <TRANSPORT>
           Transport type to use (sse or stream-http) [default: stream-http] [possible values: sse, stream-http]
-      --database <DATABASE>
-          Database name
       --table-name <TABLE_NAME>
           Table name
       --limit <LIMIT>
@@ -54,22 +52,17 @@ export SSL_CA_PATH=/etc/ssl/cert.pem
 # set the SSL CA path on Debian/Ubuntu/Arch Linux
 export SSL_CA_PATH=/etc/ssl/certs/ca-certificates.crt
 
-# set connection parameters
-export TIDB_HOST=<your-tidb-host>
-export TIDB_PORT=<your-tidb-port>
-export TIDB_USERNAME=<your-tidb-username>
-export TIDB_PASSWORD=<your-tidb-password>
+# set connection string (format: mysql://<USERNAME>:<PASSWORD>@<HOST>:<PORT>/<DATABASE>)
+export TIDB_CONNECTION="mysql://<your-tidb-username>:<your-tidb-password>@<your-tidb-host>:<your-tidb-port>/<your-tidb-database>"
 
 # run the mcp server
 ./target/release/gaia-tidb-mcp-server --transport stream-http \
     --ssl-ca $SSL_CA_PATH \
-    --database <your-tidb-database> \
     --table-name <your-table-name>
 
 # run the mcp server with a custom search tool description and query parameter description
 ./target/release/gaia-tidb-mcp-server --transport stream-http \
     --ssl-ca $SSL_CA_PATH \
-    --database <your-tidb-database> \
     --table-name <your-table-name> \
     --search-tool-desc "Perform keyword search in TiDB" \
     --search-tool-param-desc "Input query to search for"
