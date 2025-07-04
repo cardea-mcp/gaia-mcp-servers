@@ -18,7 +18,10 @@ use rmcp::{
     tool,
 };
 use serde_json::{Value, json};
-use std::sync::{Arc, OnceLock};
+use std::{
+    collections::HashSet,
+    sync::{Arc, OnceLock},
+};
 use tracing::{debug, error, info, warn};
 
 static SEARCH_TOOL_DESC: OnceLock<String> = OnceLock::new();
@@ -90,14 +93,23 @@ impl AgenticSearchServer {
             self.config.qdrant_config.is_some(),
             self.config.tidb_config.is_some(),
         ) {
-            (true, true) => self.combined_search(query).await,
+            (true, true) => {
+                let sources = self.combined_search(query).await?;
+                Ok(CallToolResult::success(vec![Content::text(
+                    sources.join("\n"),
+                )]))
+            }
             (true, false) => {
-                let content = self.vector_search(query).await?;
-                Ok(CallToolResult::success(vec![Content::text(content)]))
+                let sources = self.vector_search(query).await?;
+                Ok(CallToolResult::success(vec![Content::text(
+                    sources.join("\n"),
+                )]))
             }
             (false, true) => {
-                let content = self.keyword_search(query).await?;
-                Ok(CallToolResult::success(vec![Content::text(content)]))
+                let sources = self.keyword_search(query).await?;
+                Ok(CallToolResult::success(vec![Content::text(
+                    sources.join("\n"),
+                )]))
             }
             (false, false) => {
                 let error_message = "No search mode configured";
@@ -153,7 +165,7 @@ impl AgenticSearchServer {
     //     }
     // }
 
-    async fn vector_search(&self, query: impl AsRef<str>) -> Result<String, McpError> {
+    async fn vector_search(&self, query: impl AsRef<str>) -> Result<Vec<String>, McpError> {
         info!("Starting vector search ...");
 
         // compute the embedding of the query
@@ -171,13 +183,11 @@ impl AgenticSearchServer {
                 "Extracting the payload ({}) of the vector search results...",
                 payload_source
             );
-
-            let mut output = String::new();
-            for (idx, hit) in hits.iter().enumerate() {
+            let mut output = Vec::new();
+            for hit in hits {
                 debug!("payload:\n{:#?}", &hit.payload);
                 let source = hit.payload.get(payload_source).unwrap().as_str().unwrap();
-                output.push_str(&format!("Source {}: {}\n", idx + 1, source));
-                output.push('\n');
+                output.push(source.to_string());
             }
 
             info!("Vector search done! 🎉");
@@ -186,11 +196,11 @@ impl AgenticSearchServer {
         } else {
             let error_message = "No vector search results found in Qdrant";
             warn!("{}", error_message);
-            Ok(String::new())
+            Ok(vec![])
         }
     }
 
-    async fn keyword_search(&self, query: impl AsRef<str>) -> Result<String, McpError> {
+    async fn keyword_search(&self, query: impl AsRef<str>) -> Result<Vec<String>, McpError> {
         info!("Starting keyword search ...");
 
         // extract keywords from the query
@@ -204,12 +214,9 @@ impl AgenticSearchServer {
         if !hits.is_empty() {
             // format the search results
             info!("Extracting the source of the keyword search results...");
-            let mut output = String::new();
+            let mut output = Vec::new();
             for hit in hits {
-                output.push_str(&format!("ID: {}\n", hit.id));
-                output.push_str(&format!("Title: {}\n", hit.title));
-                output.push_str(&format!("Content: {}\n", hit.content));
-                output.push('\n');
+                output.push(hit.content);
             }
 
             info!("Keyword search done! 🎉");
@@ -218,20 +225,21 @@ impl AgenticSearchServer {
         } else {
             let error_message = "No keyword search results found in TiDB";
             warn!("{}", error_message);
-            Ok(String::new())
+            Ok(vec![])
         }
     }
 
-    async fn combined_search(&self, query: String) -> Result<CallToolResult, McpError> {
+    async fn combined_search(&self, query: String) -> Result<Vec<String>, McpError> {
         let vector_search_result = self.vector_search(query.as_str()).await?;
         let keyword_search_result = self.keyword_search(query.as_str()).await?;
 
         info!("Combining vector and keyword search results ...");
 
         let output = if !vector_search_result.is_empty() && !keyword_search_result.is_empty() {
-            format!(
-                "Vector search result:\n{vector_search_result}\n\nKeyword search result:\n{keyword_search_result}",
-            )
+            let mut output: HashSet<String> = HashSet::from_iter(vector_search_result);
+            output.extend(keyword_search_result);
+
+            Vec::from_iter(output)
         } else if !vector_search_result.is_empty() {
             vector_search_result
         } else {
@@ -240,7 +248,7 @@ impl AgenticSearchServer {
 
         info!("Combined search done! 🎉");
 
-        Ok(CallToolResult::success(vec![Content::text(output)]))
+        Ok(output)
     }
 
     async fn compute_embedding(&self, query: impl AsRef<str>) -> Result<Vec<f64>, McpError> {
