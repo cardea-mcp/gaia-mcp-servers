@@ -185,12 +185,13 @@ impl AgenticSearchServer {
             );
             let mut output = Vec::new();
             for hit in hits {
-                debug!("payload:\n{:#?}", &hit.payload);
                 let source = hit.payload.get(payload_source).unwrap().as_str().unwrap();
                 output.push(source.to_string());
             }
 
             info!("Vector search done! 🎉");
+
+            debug!("vector search results:\n{:#?}", &output);
 
             Ok(output)
         } else {
@@ -221,6 +222,8 @@ impl AgenticSearchServer {
 
             info!("Keyword search done! 🎉");
 
+            debug!("keyword search results:\n{:#?}", &output);
+
             Ok(output)
         } else {
             let error_message = "No keyword search results found in TiDB";
@@ -247,6 +250,8 @@ impl AgenticSearchServer {
         };
 
         info!("Combined search done! 🎉");
+
+        debug!("combined search results:\n{:#?}", &output);
 
         Ok(output)
     }
