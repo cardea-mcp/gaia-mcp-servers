@@ -1023,6 +1023,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "gaia-web-search-mcp-client"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "gaia-web-search-mcp-server"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "clap",
+ "once_cell",
+ "reqwest",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "generic-array"
 version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"

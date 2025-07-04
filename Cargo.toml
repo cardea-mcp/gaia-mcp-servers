@@ -17,6 +17,8 @@ members = [
     "gaia-qdrant/gaia-qdrant-mcp-client",
     "gaia-qdrant/gaia-qdrant-mcp-common",
     "gaia-qdrant/gaia-qdrant-mcp-server",
+    "gaia-web-search/gaia-web-search-mcp-client",
+    "gaia-web-search/gaia-web-search-mcp-server",
     "gaia-tidb/gaia-tidb-mcp-client",
     "gaia-tidb/gaia-tidb-mcp-common",
     "gaia-tidb/gaia-tidb-mcp-server",
