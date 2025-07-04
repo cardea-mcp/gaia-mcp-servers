@@ -22,7 +22,7 @@ enum TransportType {
 #[command(author, version, about = "Gaia Weather MCP client")]
 struct Args {
     /// Transport type to use (tcp or stdio)
-    #[arg(short, long, value_enum, default_value = "tcp")]
+    #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
 }
 
