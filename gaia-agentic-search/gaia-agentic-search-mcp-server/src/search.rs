@@ -377,6 +377,18 @@ impl AgenticSearchServer {
                         })?,
                 };
 
+                let status = response.status();
+                if !status.is_success() {
+                    let error_message =
+                        format!("Failed to send search request to Qdrant server. Status: {status}");
+                    error!("{}", error_message);
+                    return Err(McpError::new(
+                        ErrorCode::INTERNAL_ERROR,
+                        error_message,
+                        None,
+                    ));
+                }
+
                 match response.json::<Value>().await {
                     Ok(json) => match json.get("result") {
                         Some(result) => {
