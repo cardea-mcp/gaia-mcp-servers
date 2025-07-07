@@ -55,15 +55,15 @@ jobs:
 
       - name: Strip binary
         run: |
-          strip "target/${{ matrix.target }}/release/gaia-calculator-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-weather-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-qdrant-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-elastic-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-tidb-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-github-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-agentic-search-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-web-search-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-calculator-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-weather-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-qdrant-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-kwsearch-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-elastic-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-tidb-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-github-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-agentic-search-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-web-search-mcp-server"
 
           ls -al "target/${{ matrix.target }}/release"
 
@@ -73,15 +73,15 @@ jobs:
           mkdir archive
           cd archive
 
-          cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-elastic-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-tidb-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-github-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-agentic-search-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-web-search-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-calculator-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-weather-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-qdrant-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-kwsearch-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-elastic-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-tidb-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-github-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-agentic-search-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-web-search-mcp-server" ./
 
           tar -czf "${{ matrix.archive-name }}" *
           ls -al
@@ -136,15 +136,15 @@ jobs:
 
       - name: Strip binary
         run: |
-          strip "target/${{ matrix.target }}/release/gaia-calculator-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-weather-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-qdrant-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-elastic-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-tidb-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-github-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-agentic-search-mcp-server"
-          strip "target/${{ matrix.target }}/release/gaia-web-search-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-calculator-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-weather-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-qdrant-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-kwsearch-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-elastic-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-tidb-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-github-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-agentic-search-mcp-server"
+          strip "target/${{ matrix.target }}/release/cardea-web-search-mcp-server"
 
           ls -al "target/${{ matrix.target }}/release"
 
@@ -154,15 +154,15 @@ jobs:
           mkdir archive
           cd archive
 
-          cp "../target/${{ matrix.target }}/release/gaia-calculator-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-weather-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-qdrant-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-kwsearch-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-elastic-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-tidb-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-github-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-agentic-search-mcp-server" ./
-          cp "../target/${{ matrix.target }}/release/gaia-web-search-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-calculator-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-weather-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-qdrant-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-kwsearch-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-elastic-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-tidb-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-github-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-agentic-search-mcp-server" ./
+          cp "../target/${{ matrix.target }}/release/cardea-web-search-mcp-server" ./
 
           tar -czf "${{ matrix.archive-name }}" *
           ls -al
@@ -216,7 +216,7 @@ jobs:
         id: tag_and_release_names
         run: |
           echo "tag_name=${{ github.event.inputs.release_version }}" >> $GITHUB_OUTPUT
-          echo "release_name=Gaia-MCP-Servers ${{ github.event.inputs.release_version }}" >> $GITHUB_OUTPUT
+          echo "release_name=Cardea-MCP-Servers ${{ github.event.inputs.release_version }}" >> $GITHUB_OUTPUT
 
       - name: Create Release and Upload Release Asset
         if: ${{ github.event.inputs.create_release == 'true' && github.ref == 'refs/heads/main'}}

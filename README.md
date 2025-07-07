@@ -1,33 +1,37 @@
 # MCP Servers
 
-## Gaia Calculator MCP Server
+## Cardea Calculator MCP Server
 
-Visit [gaia-calculator/README.md](gaia-calculator/README.md) for more information.
+Visit [cardea-calculator/README.md](cardea-calculator/README.md) for more information.
 
-## Gaia Weather MCP Server
+## Cardea Weather MCP Server
 
-Visit [gaia-weather/README.md](gaia-weather/README.md) for more information.
+Visit [cardea-weather/README.md](cardea-weather/README.md) for more information.
 
-## Gaia Qdrant MCP Server
+## Cardea Qdrant MCP Server
 
-Visit [gaia-qdrant/README.md](gaia-qdrant/README.md) for more information.
+Visit [cardea-qdrant/README.md](cardea-qdrant/README.md) for more information.
 
-## Gaia Keyword Search MCP Server
+## Cardea Keyword Search MCP Server
 
-Visit [gaia-kwsearch/README.md](gaia-kwsearch/README.md) for more information.
+Visit [cardea-kwsearch/README.md](cardea-kwsearch/README.md) for more information.
 
-## Gaia Elastic MCP Server
+## Cardea Elastic MCP Server
 
-Visit [gaia-elastic/README.md](gaia-elastic/README.md) for more information.
+Visit [cardea-elastic/README.md](cardea-elastic/README.md) for more information.
 
-## Gaia TiDB MCP Server
+## Cardea TiDB MCP Server
 
-Visit [gaia-tidb/README.md](gaia-tidb/README.md) for more information.
+Visit [cardea-tidb/README.md](cardea-tidb/README.md) for more information.
 
-## Gaia Github MCP Server
+## Cardea Github MCP Server
 
-Visit [gaia-github/README.md](gaia-github/README.md) for more information.
+Visit [cardea-github/README.md](cardea-github/README.md) for more information.
 
-## Gaia Agentic Search MCP Server
+## Cardea Agentic Search MCP Server
 
-Visit [gaia-agentic-search/README.md](gaia-agentic-search/README.md) for more information.
+Visit [cardea-agentic-search/README.md](cardea-agentic-search/README.md) for more information.
+
+## Cardea Web Search MCP Server
+
+Visit [cardea-web-search/README.md](cardea-web-search/README.md) for more information.

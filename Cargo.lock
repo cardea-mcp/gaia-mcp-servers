@@ -256,6 +256,424 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d71b6127be86fdcfddb610f7182ac57211d4b18a3e9c82eb2d17662f2227ad6a"
 
 [[package]]
+name = "cardea-agentic-search-mcp-client"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "cardea-agentic-search-mcp-common",
+ "clap",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-agentic-search-mcp-common"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "mysql_common",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "reqwest",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-agentic-search-mcp-server"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "cardea-agentic-search-mcp-common",
+ "clap",
+ "endpoints",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "mysql",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "regex",
+ "reqwest",
+ "rmcp",
+ "rustls",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-calculator-mcp-client"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-calculator-mcp-server"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "clap",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "reqwest",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-elastic-mcp-client"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "cardea-elastic-mcp-common",
+ "clap",
+ "reqwest",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-elastic-mcp-common"
+version = "0.6.0"
+dependencies = [
+ "rmcp",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "cardea-elastic-mcp-server"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "cardea-elastic-mcp-common",
+ "clap",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "once_cell",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "reqwest",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-github-mcp-client"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "cardea-github-mcp-common",
+ "clap",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-github-mcp-common"
+version = "0.6.0"
+dependencies = [
+ "rmcp",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "cardea-github-mcp-server"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "cardea-github-mcp-common",
+ "clap",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "octocrab",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "reqwest",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-kwsearch-mcp-client"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "cardea-kwsearch-mcp-common",
+ "clap",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-kwsearch-mcp-common"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "endpoints",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "reqwest",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-kwsearch-mcp-server"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "cardea-kwsearch-mcp-common",
+ "clap",
+ "endpoints",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "once_cell",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "reqwest",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-qdrant-mcp-client"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "cardea-qdrant-mcp-common",
+ "clap",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-qdrant-mcp-common"
+version = "0.6.0"
+dependencies = [
+ "rmcp",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "cardea-qdrant-mcp-server"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "cardea-qdrant-mcp-common",
+ "clap",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "once_cell",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "reqwest",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-tidb-mcp-client"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "cardea-tidb-mcp-common",
+ "clap",
+ "reqwest",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-tidb-mcp-common"
+version = "0.6.0"
+dependencies = [
+ "endpoints",
+ "mysql_common",
+ "rmcp",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "cardea-tidb-mcp-server"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "cardea-tidb-mcp-common",
+ "clap",
+ "endpoints",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "mysql",
+ "once_cell",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "regex",
+ "reqwest",
+ "rmcp",
+ "rustls",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-weather-mcp-client"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-weather-mcp-server"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "clap",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "pin-project-lite",
+ "rand 0.9.1",
+ "reqwest",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tokio-tungstenite",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-web-search-mcp-client"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "rmcp",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "cardea-web-search-mcp-server"
+version = "0.6.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "clap",
+ "once_cell",
+ "reqwest",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "cc"
 version = "1.2.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -632,424 +1050,6 @@ dependencies = [
  "pin-project-lite",
  "pin-utils",
  "slab",
-]
-
-[[package]]
-name = "gaia-agentic-search-mcp-client"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "clap",
- "gaia-agentic-search-mcp-common",
- "rmcp",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-agentic-search-mcp-common"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "futures",
- "hyper",
- "hyper-util",
- "mysql_common",
- "pin-project-lite",
- "rand 0.9.1",
- "reqwest",
- "rmcp",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-agentic-search-mcp-server"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "endpoints",
- "futures",
- "gaia-agentic-search-mcp-common",
- "hyper",
- "hyper-util",
- "mysql",
- "pin-project-lite",
- "rand 0.9.1",
- "regex",
- "reqwest",
- "rmcp",
- "rustls",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-calculator-mcp-client"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "clap",
- "rmcp",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-calculator-mcp-server"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "futures",
- "hyper",
- "hyper-util",
- "pin-project-lite",
- "rand 0.9.1",
- "reqwest",
- "rmcp",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-elastic-mcp-client"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "clap",
- "gaia-elastic-mcp-common",
- "reqwest",
- "rmcp",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-elastic-mcp-common"
-version = "0.6.0"
-dependencies = [
- "rmcp",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "gaia-elastic-mcp-server"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "futures",
- "gaia-elastic-mcp-common",
- "hyper",
- "hyper-util",
- "once_cell",
- "pin-project-lite",
- "rand 0.9.1",
- "reqwest",
- "rmcp",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-github-mcp-client"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "clap",
- "gaia-github-mcp-common",
- "rmcp",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-github-mcp-common"
-version = "0.6.0"
-dependencies = [
- "rmcp",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "gaia-github-mcp-server"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "futures",
- "gaia-github-mcp-common",
- "hyper",
- "hyper-util",
- "octocrab",
- "pin-project-lite",
- "rand 0.9.1",
- "reqwest",
- "rmcp",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-kwsearch-mcp-client"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "clap",
- "gaia-kwsearch-mcp-common",
- "rmcp",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-kwsearch-mcp-common"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "endpoints",
- "futures",
- "hyper",
- "hyper-util",
- "pin-project-lite",
- "rand 0.9.1",
- "reqwest",
- "rmcp",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-kwsearch-mcp-server"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "endpoints",
- "futures",
- "gaia-kwsearch-mcp-common",
- "hyper",
- "hyper-util",
- "once_cell",
- "pin-project-lite",
- "rand 0.9.1",
- "reqwest",
- "rmcp",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-qdrant-mcp-client"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "clap",
- "gaia-qdrant-mcp-common",
- "rmcp",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-qdrant-mcp-common"
-version = "0.6.0"
-dependencies = [
- "rmcp",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "gaia-qdrant-mcp-server"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "futures",
- "gaia-qdrant-mcp-common",
- "hyper",
- "hyper-util",
- "once_cell",
- "pin-project-lite",
- "rand 0.9.1",
- "reqwest",
- "rmcp",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-tidb-mcp-client"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "clap",
- "gaia-tidb-mcp-common",
- "reqwest",
- "rmcp",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-tidb-mcp-common"
-version = "0.6.0"
-dependencies = [
- "endpoints",
- "mysql_common",
- "rmcp",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "gaia-tidb-mcp-server"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "endpoints",
- "futures",
- "gaia-tidb-mcp-common",
- "hyper",
- "hyper-util",
- "mysql",
- "once_cell",
- "pin-project-lite",
- "rand 0.9.1",
- "regex",
- "reqwest",
- "rmcp",
- "rustls",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-weather-mcp-client"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "clap",
- "rmcp",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-weather-mcp-server"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "futures",
- "hyper",
- "hyper-util",
- "pin-project-lite",
- "rand 0.9.1",
- "reqwest",
- "rmcp",
- "serde",
- "serde_json",
- "tokio",
- "tokio-tungstenite",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-web-search-mcp-client"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "clap",
- "rmcp",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "gaia-web-search-mcp-server"
-version = "0.6.0"
-dependencies = [
- "anyhow",
- "axum",
- "clap",
- "once_cell",
- "reqwest",
- "rmcp",
- "serde",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
 ]
 
 [[package]]

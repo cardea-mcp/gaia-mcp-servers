@@ -1,0 +1,13 @@
+[package]
+name        = "cardea-qdrant-mcp-common"
+edition     = { workspace = true }
+version     = { workspace = true }
+repository  = { workspace = true }
+license     = { workspace = true }
+categories  = ["data-structures"]
+description = "Data types and utilities for the Cardea Qdrant MCP"
+
+[dependencies]
+rmcp       = { workspace = true }
+serde      = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }

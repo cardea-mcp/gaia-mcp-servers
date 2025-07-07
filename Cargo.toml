@@ -1,63 +1,62 @@
 [workspace]
 members = [
-    "gaia-agentic-search/gaia-agentic-search-mcp-client",
-    "gaia-agentic-search/gaia-agentic-search-mcp-common",
-    "gaia-agentic-search/gaia-agentic-search-mcp-server",
-    "gaia-calculator/gaia-calculator-mcp-client",
-    "gaia-calculator/gaia-calculator-mcp-server",
-    "gaia-elastic/gaia-elastic-mcp-client",
-    "gaia-elastic/gaia-elastic-mcp-common",
-    "gaia-elastic/gaia-elastic-mcp-server",
-    "gaia-github/gaia-github-mcp-client",
-    "gaia-github/gaia-github-mcp-common",
-    "gaia-github/gaia-github-mcp-server",
-    "gaia-kwsearch/gaia-kwsearch-mcp-client",
-    "gaia-kwsearch/gaia-kwsearch-mcp-common",
-    "gaia-kwsearch/gaia-kwsearch-mcp-server",
-    "gaia-qdrant/gaia-qdrant-mcp-client",
-    "gaia-qdrant/gaia-qdrant-mcp-common",
-    "gaia-qdrant/gaia-qdrant-mcp-server",
-    "gaia-web-search/gaia-web-search-mcp-client",
-    "gaia-web-search/gaia-web-search-mcp-server",
-    "gaia-tidb/gaia-tidb-mcp-client",
-    "gaia-tidb/gaia-tidb-mcp-common",
-    "gaia-tidb/gaia-tidb-mcp-server",
-    "gaia-weather/gaia-weather-mcp-client",
-    "gaia-weather/gaia-weather-mcp-server",
-
+    "cardea-agentic-search/cardea-agentic-search-mcp-client",
+    "cardea-agentic-search/cardea-agentic-search-mcp-common",
+    "cardea-agentic-search/cardea-agentic-search-mcp-server",
+    "cardea-calculator/cardea-calculator-mcp-client",
+    "cardea-calculator/cardea-calculator-mcp-server",
+    "cardea-elastic/cardea-elastic-mcp-client",
+    "cardea-elastic/cardea-elastic-mcp-common",
+    "cardea-elastic/cardea-elastic-mcp-server",
+    "cardea-github/cardea-github-mcp-client",
+    "cardea-github/cardea-github-mcp-common",
+    "cardea-github/cardea-github-mcp-server",
+    "cardea-kwsearch/cardea-kwsearch-mcp-client",
+    "cardea-kwsearch/cardea-kwsearch-mcp-common",
+    "cardea-kwsearch/cardea-kwsearch-mcp-server",
+    "cardea-qdrant/cardea-qdrant-mcp-client",
+    "cardea-qdrant/cardea-qdrant-mcp-common",
+    "cardea-qdrant/cardea-qdrant-mcp-server",
+    "cardea-web-search/cardea-web-search-mcp-client",
+    "cardea-web-search/cardea-web-search-mcp-server",
+    "cardea-tidb/cardea-tidb-mcp-client",
+    "cardea-tidb/cardea-tidb-mcp-common",
+    "cardea-tidb/cardea-tidb-mcp-server",
+    "cardea-weather/cardea-weather-mcp-client",
+    "cardea-weather/cardea-weather-mcp-server",
 ]
 resolver = "3"
 
 [workspace.dependencies]
-rmcp                           = { git = "https://github.com/modelcontextprotocol/rust-sdk.git", rev = "a62c6d1d" }
-tokio                          = "1"
-serde                          = "1.0"
-serde_json                     = "1.0"
-anyhow                         = "1.0"
-tracing                        = "0.1"
-tracing-subscriber             = "0.3"
-futures                        = "0.3"
-rand                           = "0.9"
-hyper                          = "1"
-hyper-util                     = "0.1"
-tokio-tungstenite              = "0.27.0"
-reqwest                        = { version = "0.12", default-features = false }
-pin-project-lite               = "0.2"
-gaia-qdrant-mcp-common         = { path = "gaia-qdrant/gaia-qdrant-mcp-common" }
-gaia-kwsearch-mcp-common       = { path = "gaia-kwsearch/gaia-kwsearch-mcp-common" }
-gaia-elastic-mcp-common        = { path = "gaia-elastic/gaia-elastic-mcp-common" }
-gaia-tidb-mcp-common           = { path = "gaia-tidb/gaia-tidb-mcp-common" }
-gaia-github-mcp-common         = { path = "gaia-github/gaia-github-mcp-common" }
-gaia-agentic-search-mcp-common = { path = "gaia-agentic-search/gaia-agentic-search-mcp-common" }
-clap                           = "4.5"
-endpoints                      = "0.33.0"
-once_cell                      = "1.18"
-axum                           = "0.8"
-rustls                         = { version = "0.23.27", default-features = false }
-regex                          = "1"
+rmcp                             = { git = "https://github.com/modelcontextprotocol/rust-sdk.git", rev = "a62c6d1d" }
+tokio                            = "1"
+serde                            = "1.0"
+serde_json                       = "1.0"
+anyhow                           = "1.0"
+tracing                          = "0.1"
+tracing-subscriber               = "0.3"
+futures                          = "0.3"
+rand                             = "0.9"
+hyper                            = "1"
+hyper-util                       = "0.1"
+tokio-tungstenite                = "0.27.0"
+reqwest                          = { version = "0.12", default-features = false }
+pin-project-lite                 = "0.2"
+cardea-qdrant-mcp-common         = { path = "cardea-qdrant/cardea-qdrant-mcp-common" }
+cardea-kwsearch-mcp-common       = { path = "cardea-kwsearch/cardea-kwsearch-mcp-common" }
+cardea-elastic-mcp-common        = { path = "cardea-elastic/cardea-elastic-mcp-common" }
+cardea-tidb-mcp-common           = { path = "cardea-tidb/cardea-tidb-mcp-common" }
+cardea-github-mcp-common         = { path = "cardea-github/cardea-github-mcp-common" }
+cardea-agentic-search-mcp-common = { path = "cardea-agentic-search/cardea-agentic-search-mcp-common" }
+clap                             = "4.5"
+endpoints                        = "0.33.0"
+once_cell                        = "1.18"
+axum                             = "0.8"
+rustls                           = { version = "0.23.27", default-features = false }
+regex                            = "1"
 
 [workspace.package]
 edition    = "2024"
 version    = "0.6.0"
-repository = "https://github.com/decentralized-mcp/gaia-mcp-servers"
+repository = "https://github.com/decentralized-mcp/cardea-mcp-servers"
 license    = "Apache-2.0"
