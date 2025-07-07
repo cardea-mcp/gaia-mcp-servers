@@ -57,6 +57,6 @@ regex                            = "1"
 
 [workspace.package]
 edition    = "2024"
-version    = "0.6.0"
-repository = "https://github.com/decentralized-mcp/cardea-mcp-servers"
+version    = "0.7.0"
+repository = "https://github.com/cardea-mcp/cardea-mcp-servers"
 license    = "Apache-2.0"
