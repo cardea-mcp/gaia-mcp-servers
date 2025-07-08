@@ -94,7 +94,7 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Sse => {
             let ct = SseServer::serve(args.socket_addr.parse()?)
                 .await?
-                .with_service(|| KeywordSearchServer::new());
+                .with_service(KeywordSearchServer::new);
 
             tokio::signal::ctrl_c().await?;
             ct.cancel();
