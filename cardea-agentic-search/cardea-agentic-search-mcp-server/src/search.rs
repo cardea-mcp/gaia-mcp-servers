@@ -10,18 +10,14 @@ use endpoints::{
 use mysql::prelude::*;
 use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use rmcp::{
-    Error as McpError, ServerHandler,
-    handler::server::tool::*,
-    model::{
-        CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo, Tool,
-    },
-    tool,
+    Error as McpError, RoleServer, ServerHandler,
+    handler::server::{router::tool::ToolRouter, tool::*},
+    model::*,
+    service::RequestContext,
+    tool, tool_handler, tool_router,
 };
 use serde_json::{Value, json};
-use std::{
-    collections::HashSet,
-    sync::{Arc, OnceLock},
-};
+use std::{collections::HashSet, sync::OnceLock};
 use tracing::{debug, error, info, warn};
 
 const PROMPT_KEYWORD_EXTRACTOR: &str = r#"
@@ -45,71 +41,31 @@ Examples:
   Output: 人工智能 教育 影响
 "#;
 
-static SEARCH_TOOL_DESC: OnceLock<String> = OnceLock::new();
-static SEARCH_TOOL_PARAM_DESC: OnceLock<String> = OnceLock::new();
+static SEARCH_TOOL_PROMPT: OnceLock<String> = OnceLock::new();
 
-pub fn set_search_tool_description(description: String) {
-    SEARCH_TOOL_DESC.set(description).unwrap_or_default();
-}
-
-pub fn set_search_tool_param_description(description: String) {
-    SEARCH_TOOL_PARAM_DESC.set(description).unwrap_or_default();
+pub fn set_search_tool_prompt(prompt: String) {
+    SEARCH_TOOL_PROMPT.set(prompt).unwrap_or_default();
 }
 
 #[derive(Debug, Clone)]
 pub struct AgenticSearchServer {
     config: AgenticSearchConfig,
+    tool_router: ToolRouter<Self>,
 }
-
+#[tool_router]
 impl AgenticSearchServer {
     pub fn new(config: AgenticSearchConfig) -> Self {
-        Self { config }
-    }
-
-    fn search_tool_attr() -> Tool {
-        let tool_description = SEARCH_TOOL_DESC
-            .get()
-            .cloned()
-            .unwrap_or_else(|| "Perform a search for the given query".to_string());
-
-        let query_description = SEARCH_TOOL_PARAM_DESC
-            .get()
-            .cloned()
-            .unwrap_or_else(|| "The query to search for".to_string());
-
-        // build input schema
-        let input_schema = json!({
-            "type": "object",
-            "properties": {
-                "query": {
-                    "type": "string",
-                    "description": query_description
-                }
-            },
-            "required": ["query"],
-            "title": "SearchRequest"
-        });
-
-        Tool {
-            name: "search".into(),
-            description: Some(tool_description.into()),
-            input_schema: Arc::new(input_schema.as_object().unwrap().clone()),
-            annotations: None,
+        Self {
+            config,
+            tool_router: Self::tool_router(),
         }
     }
 
-    async fn search_tool_call(
-        context: ToolCallContext<'_, Self>,
+    #[tool(description = "Perform a search for the given query")]
+    async fn search(
+        &self,
+        Parameters(SearchRequest { query }): Parameters<SearchRequest>,
     ) -> Result<CallToolResult, McpError> {
-        let (__rmcp_tool_receiver, context) = <&Self>::from_tool_call_context_part(context)?;
-        let (Parameters(SearchRequest { query }), _context) =
-            <Parameters<SearchRequest>>::from_tool_call_context_part(context)?;
-        Self::search(__rmcp_tool_receiver, query)
-            .await
-            .into_call_tool_result()
-    }
-
-    async fn search(&self, query: String) -> Result<CallToolResult, McpError> {
         match (
             self.config.qdrant_config.is_some(),
             self.config.tidb_config.is_some(),
@@ -143,48 +99,6 @@ impl AgenticSearchServer {
             }
         }
     }
-
-    fn tool_box() -> &'static ToolBox<AgenticSearchServer> {
-        static TOOL_BOX: OnceLock<ToolBox<AgenticSearchServer>> = OnceLock::new();
-        TOOL_BOX.get_or_init(|| {
-            let mut tool_box = ToolBox::new();
-            tool_box.add(ToolBoxItem::new(
-                AgenticSearchServer::search_tool_attr(),
-                |context| Box::pin(AgenticSearchServer::search_tool_call(context)),
-            ));
-            tool_box
-        })
-    }
-
-    // #[tool(description = "Perform a search for the given query")]
-    // async fn search(
-    //     &self,
-    //     #[tool(aggr)] SearchRequest { query }: SearchRequest,
-    // ) -> Result<CallToolResult, McpError> {
-    //     match (
-    //         self.config.qdrant_config.is_some(),
-    //         self.config.tidb_config.is_some(),
-    //     ) {
-    //         (true, true) => self.combined_search(query).await,
-    //         (true, false) => {
-    //             let content = self.vector_search(query).await?;
-    //             Ok(CallToolResult::success(vec![Content::text(content)]))
-    //         }
-    //         (false, true) => {
-    //             let content = self.keyword_search(query).await?;
-    //             Ok(CallToolResult::success(vec![Content::text(content)]))
-    //         }
-    //         (false, false) => {
-    //             let error_message = "No search mode configured";
-    //             error!("{}", error_message);
-    //             Err(McpError::new(
-    //                 ErrorCode::INTERNAL_ERROR,
-    //                 error_message,
-    //                 None,
-    //             ))
-    //         }
-    //     }
-    // }
 
     async fn vector_search(&self, query: impl AsRef<str>) -> Result<Vec<String>, McpError> {
         info!("Starting vector search ...");
@@ -681,17 +595,62 @@ impl AgenticSearchServer {
     }
 }
 
-#[tool(tool_box)]
+#[tool_handler]
 impl ServerHandler for AgenticSearchServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
+            protocol_version: ProtocolVersion::LATEST,
             instructions: Some("Cardea Agentic Search MCP server".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation {
-                name: std::env!("CARGO_PKG_NAME").to_string(),
-                version: std::env!("CARGO_PKG_VERSION").to_string(),
-            },
-            ..Default::default()
+            server_info: Implementation::from_build_env(),
+        }
+    }
+
+    async fn list_prompts(
+        &self,
+        _request: Option<PaginatedRequestParam>,
+        _: RequestContext<RoleServer>,
+    ) -> Result<ListPromptsResult, McpError> {
+        let prompt = Prompt::new(
+            "search",
+            Some(
+                "This prompt is for the `search` tool, which takes a query and returns a string containing the search results",
+            ),
+            Some(vec![PromptArgument {
+                name: "query".to_string(),
+                description: Some("A user query to search for".to_string()),
+                required: Some(true),
+            }]),
+        );
+
+        Ok(ListPromptsResult {
+            next_cursor: None,
+            prompts: vec![prompt],
+        })
+    }
+
+    async fn get_prompt(
+        &self,
+        GetPromptRequestParam { name, .. }: GetPromptRequestParam,
+        _: RequestContext<RoleServer>,
+    ) -> Result<GetPromptResult, McpError> {
+        match name.as_str() {
+            "search" => {
+                let prompt = SEARCH_TOOL_PROMPT.get().unwrap();
+
+                Ok(GetPromptResult {
+                    description: None,
+                    messages: vec![PromptMessage {
+                        role: PromptMessageRole::User,
+                        content: PromptMessageContent::text(prompt.to_string()),
+                    }],
+                })
+            }
+            _ => {
+                let error_message = format!("prompt not found: {}", name);
+                error!("{}", error_message);
+                Err(McpError::invalid_params(error_message, None))
+            }
         }
     }
 }

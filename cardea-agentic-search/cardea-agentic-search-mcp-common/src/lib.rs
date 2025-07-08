@@ -18,20 +18,20 @@ pub struct SearchResponse {
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema, FromRow)]
 pub struct TidbSearchHit {
-    #[schemars(description = "the id of the tidb server")]
+    #[schemars(description = "The id of the tidb server")]
     pub id: i32,
-    #[schemars(description = "the title of the tidb server")]
+    #[schemars(description = "The title of the tidb server")]
     pub title: String,
-    #[schemars(description = "the content of the tidb server")]
+    #[schemars(description = "The content of the tidb server")]
     pub content: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
 pub struct QdrantSearchHit {
-    #[schemars(description = "the score of the point")]
+    #[schemars(description = "The score of the point")]
     pub score: f64,
-    #[schemars(description = "the payload of the point")]
+    #[schemars(description = "The payload of the point")]
     pub payload: HashMap<String, Value>,
-    #[schemars(description = "the vector of the point")]
+    #[schemars(description = "The vector of the point")]
     pub vector: Vec<f64>,
 }

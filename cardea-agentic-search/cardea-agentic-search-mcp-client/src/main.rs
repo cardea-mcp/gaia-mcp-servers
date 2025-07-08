@@ -1,6 +1,8 @@
 use clap::{Parser, ValueEnum};
 use rmcp::{
-    model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
+    model::{
+        CallToolRequestParam, ClientCapabilities, ClientInfo, GetPromptRequestParam, Implementation,
+    },
     service::ServiceExt,
     transport::{SseClientTransport, StreamableHttpClientTransport},
 };
@@ -71,6 +73,22 @@ async fn main() -> anyhow::Result<()> {
                 serde_json::to_string_pretty(&tools)?
             );
 
+            // List prompts
+            let prompts = service.list_all_prompts().await?;
+            tracing::info!(
+                "Available prompts:\n{}",
+                serde_json::to_string_pretty(&prompts)?
+            );
+
+            // Get prompt
+            let prompt = service
+                .get_prompt(GetPromptRequestParam {
+                    name: "search".into(),
+                    arguments: None,
+                })
+                .await?;
+            tracing::info!("Prompt:\n{}", serde_json::to_string_pretty(&prompt)?);
+
             // * search points
             let search_points = CallToolRequestParam {
                 name: "search".into(),
@@ -117,6 +135,22 @@ async fn main() -> anyhow::Result<()> {
                 "Available tools:\n{}",
                 serde_json::to_string_pretty(&tools)?
             );
+
+            // List prompts
+            let prompts = service.list_all_prompts().await?;
+            tracing::info!(
+                "Available prompts:\n{}",
+                serde_json::to_string_pretty(&prompts)?
+            );
+
+            // Get prompt
+            let prompt = service
+                .get_prompt(GetPromptRequestParam {
+                    name: "search".into(),
+                    arguments: None,
+                })
+                .await?;
+            tracing::info!("Prompt:\n{}", serde_json::to_string_pretty(&prompt)?);
 
             // * search points
             let search_points = CallToolRequestParam {

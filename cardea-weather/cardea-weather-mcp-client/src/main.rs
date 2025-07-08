@@ -2,18 +2,14 @@ use clap::{Parser, ValueEnum};
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
-    transport::{
-        ConfigureCommandExt, SseClientTransport, StreamableHttpClientTransport, TokioChildProcess,
-    },
+    transport::{SseClientTransport, StreamableHttpClientTransport},
 };
-use tokio::process::Command;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 const SOCKET_ADDR: &str = "127.0.0.1:8002";
 
 #[derive(Debug, Clone, ValueEnum)]
 enum TransportType {
-    Stdio,
     Sse,
     StreamHttp,
 }
@@ -21,7 +17,7 @@ enum TransportType {
 #[derive(Parser, Debug)]
 #[command(author, version, about = "Cardea Weather MCP client")]
 struct Args {
-    /// Transport type to use (tcp or stdio)
+    /// Transport type to use
     #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
 }
@@ -86,58 +82,6 @@ async fn main() -> anyhow::Result<()> {
 
             // Call the sum tool
             let weather_result = mcp_client.peer().call_tool(request_param).await?;
-
-            tracing::info!(
-                "Weather result: {}",
-                serde_json::to_string_pretty(&weather_result)?
-            );
-
-            mcp_client.cancel().await?;
-        }
-        TransportType::Stdio => {
-            tracing::info!("Connecting to MCP server via stdio");
-
-            // build command
-            let cmd = Command::new("./target/release/cardea-weather-mcp-server").configure(|cmd| {
-                cmd.arg("--transport").arg("stdio");
-            });
-
-            let transport = TokioChildProcess::new(cmd)?;
-
-            let mcp_client = ().serve(transport).await?;
-
-            // Initialize
-            let server_info = mcp_client.peer_info();
-            tracing::info!("Connected to server: {server_info:#?}");
-
-            // List available tools
-            let tools = mcp_client.list_tools(Default::default()).await?;
-            tracing::info!("{}", serde_json::to_string_pretty(&tools)?);
-
-            // request param
-            let request_param = CallToolRequestParam {
-                name: "get_current_weather".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    (
-                        "location".to_string(),
-                        serde_json::Value::String("Beijing".to_string()),
-                    ),
-                    (
-                        "unit".to_string(),
-                        serde_json::Value::String("celsius".to_string()),
-                    ),
-                    (
-                        "api_key".to_string(),
-                        serde_json::Value::String(
-                            std::env::var("OPENWEATHERMAP_API_KEY")
-                                .unwrap_or_else(|_| "".to_string()),
-                        ),
-                    ),
-                ])),
-            };
-
-            // Call the sum tool
-            let weather_result = mcp_client.call_tool(request_param).await?;
 
             tracing::info!(
                 "Weather result: {}",

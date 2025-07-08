@@ -23,7 +23,7 @@ struct Args {
     /// Socket address to bind to
     #[arg(short, long, default_value = DEFAULT_SOCKET_ADDR)]
     socket_addr: String,
-    /// Transport type to use (sse or stream-http)
+    /// Transport type to use
     #[arg(short, long, value_enum, default_value = "stream-http")]
     transport: TransportType,
     /// Index to search
@@ -83,7 +83,7 @@ async fn main() -> anyhow::Result<()> {
     match args.transport {
         TransportType::StreamHttp => {
             let service = StreamableHttpService::new(
-                || Ok(ElasticSearchServer),
+                || Ok(ElasticSearchServer::new()),
                 LocalSessionManager::default().into(),
                 Default::default(),
             );
@@ -97,7 +97,7 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Sse => {
             let ct = SseServer::serve(args.socket_addr.parse()?)
                 .await?
-                .with_service(|| ElasticSearchServer);
+                .with_service(|| ElasticSearchServer::new());
 
             tokio::signal::ctrl_c().await?;
             ct.cancel();

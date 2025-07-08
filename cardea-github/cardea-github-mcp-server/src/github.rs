@@ -1,25 +1,30 @@
-use cardea_github_mcp_common::GetStarCountResponse;
+use cardea_github_mcp_common::{GetStarCountRequest, GetStarCountResponse};
 use octocrab::OctocrabBuilder;
 use rmcp::{
     Error as McpError, ServerHandler,
-    model::{CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo},
-    tool,
+    handler::server::{router::tool::ToolRouter, tool::*},
+    model::*,
+    tool, tool_handler, tool_router,
 };
 use tracing::error;
 
 #[derive(Debug, Clone)]
-pub struct GithubServer;
-#[tool(tool_box)]
+pub struct GithubServer {
+    tool_router: ToolRouter<Self>,
+}
+
+#[tool_router]
 impl GithubServer {
+    pub fn new() -> Self {
+        Self {
+            tool_router: Self::tool_router(),
+        }
+    }
+
     #[tool(description = "Get the star count of a Github repository")]
     async fn get_star_count(
         &self,
-        #[tool(param)]
-        #[schemars(description = "The owner of the Github repository")]
-        owner: String,
-        #[tool(param)]
-        #[schemars(description = "The name of the Github repository")]
-        repo: String,
+        Parameters(GetStarCountRequest { owner, repo }): Parameters<GetStarCountRequest>,
     ) -> Result<CallToolResult, McpError> {
         let octocrab = if let Ok(token) = std::env::var("GITHUB_TOKEN") {
             OctocrabBuilder::new()
@@ -53,17 +58,14 @@ impl GithubServer {
         Ok(CallToolResult::success(vec![content]))
     }
 }
-#[tool(tool_box)]
+#[tool_handler]
 impl ServerHandler for GithubServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
-            instructions: Some("Cardea Github MCP server".into()),
+            protocol_version: ProtocolVersion::default(),
+            instructions: Some("Gaia Github MCP server".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation {
-                name: std::env!("CARGO_PKG_NAME").to_string(),
-                version: std::env!("CARGO_PKG_VERSION").to_string(),
-            },
-            ..Default::default()
+            server_info: Implementation::from_build_env(),
         }
     }
 }

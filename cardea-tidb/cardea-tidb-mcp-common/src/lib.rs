@@ -5,13 +5,13 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct TidbSearchRequest {
-    #[schemars(description = "the query to search for")]
+    #[schemars(description = "The query to search for")]
     pub query: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema)]
 pub struct TidbSearchResponse {
-    #[schemars(description = "the hits of the tidb server")]
+    #[schemars(description = "The hits of the tidb server")]
     pub hits: Vec<TidbSearchHit>,
 }
 impl From<rmcp::model::CallToolResult> for TidbSearchResponse {
@@ -23,11 +23,11 @@ impl From<rmcp::model::CallToolResult> for TidbSearchResponse {
 
 #[derive(Debug, Serialize, Deserialize, schemars::JsonSchema, FromRow)]
 pub struct TidbSearchHit {
-    #[schemars(description = "the id of the tidb server")]
+    #[schemars(description = "The id of the tidb server")]
     pub id: i32,
-    #[schemars(description = "the title of the tidb server")]
+    #[schemars(description = "The title of the tidb server")]
     pub title: String,
-    #[schemars(description = "the content of the tidb server")]
+    #[schemars(description = "The content of the tidb server")]
     pub content: String,
 }
 impl From<TidbSearchHit> for SearchHit {

@@ -1,7 +1,9 @@
 use cardea_qdrant_mcp_common::SearchPointsResponse;
 use clap::{Parser, ValueEnum};
 use rmcp::{
-    model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
+    model::{
+        CallToolRequestParam, ClientCapabilities, ClientInfo, GetPromptRequestParam, Implementation,
+    },
     service::ServiceExt,
     transport::{
         ConfigureCommandExt, SseClientTransport, StreamableHttpClientTransport, TokioChildProcess,
@@ -62,20 +64,36 @@ async fn main() -> anyhow::Result<()> {
                     version: "0.0.1".to_string(),
                 },
             };
-            let mcp_client = client_info.serve(transport).await.inspect_err(|e| {
+            let service = client_info.serve(transport).await.inspect_err(|e| {
                 tracing::error!("client error: {:?}", e);
             })?;
 
             // Initialize
-            let server_info = mcp_client.peer_info();
+            let server_info = service.peer_info();
             tracing::info!("Connected to server: {server_info:#?}");
 
             // List tools
-            let tools = mcp_client.list_tools(Default::default()).await?;
+            let tools = service.list_tools(Default::default()).await?;
             tracing::info!(
                 "Available tools:\n{}",
                 serde_json::to_string_pretty(&tools)?
             );
+
+            // List prompts
+            let prompts = service.list_all_prompts().await?;
+            tracing::info!(
+                "Available prompts:\n{}",
+                serde_json::to_string_pretty(&prompts)?
+            );
+
+            // Get prompt
+            let prompt = service
+                .get_prompt(GetPromptRequestParam {
+                    name: "search".into(),
+                    arguments: None,
+                })
+                .await?;
+            tracing::info!("Prompt:\n{}", serde_json::to_string_pretty(&prompt)?);
 
             // * search points
             let search_points = CallToolRequestParam {
@@ -90,11 +108,11 @@ async fn main() -> anyhow::Result<()> {
                     ),
                 )])),
             };
-            let tool_result = mcp_client.peer().call_tool(search_points).await?;
+            let tool_result = service.peer().call_tool(search_points).await?;
             let response = SearchPointsResponse::from(tool_result);
             tracing::info!("search points response:\n{:?}", &response);
 
-            mcp_client.cancel().await?;
+            service.cancel().await?;
         }
         TransportType::Sse => {
             let url = format!("http://{SOCKET_ADDR}/sse");
@@ -109,20 +127,36 @@ async fn main() -> anyhow::Result<()> {
                     version: "0.1.0".to_string(),
                 },
             };
-            let mcp_client = client_info.serve(transport).await.inspect_err(|e| {
+            let service = client_info.serve(transport).await.inspect_err(|e| {
                 tracing::error!("client error: {:?}", e);
             })?;
 
             // Initialize
-            let server_info = mcp_client.peer_info();
+            let server_info = service.peer_info();
             tracing::info!("Connected to server: {server_info:#?}");
 
             // List available tools
-            let tools = mcp_client.peer().list_tools(Default::default()).await?;
+            let tools = service.peer().list_tools(Default::default()).await?;
             tracing::info!(
                 "Available tools:\n{}",
                 serde_json::to_string_pretty(&tools)?
             );
+
+            // List prompts
+            let prompts = service.list_all_prompts().await?;
+            tracing::info!(
+                "Available prompts:\n{}",
+                serde_json::to_string_pretty(&prompts)?
+            );
+
+            // Get prompt
+            let prompt = service
+                .get_prompt(GetPromptRequestParam {
+                    name: "search".into(),
+                    arguments: None,
+                })
+                .await?;
+            tracing::info!("Prompt:\n{}", serde_json::to_string_pretty(&prompt)?);
 
             // * search points
             let search_points = CallToolRequestParam {
@@ -137,11 +171,11 @@ async fn main() -> anyhow::Result<()> {
                     ),
                 )])),
             };
-            let tool_result = mcp_client.peer().call_tool(search_points).await?;
+            let tool_result = service.peer().call_tool(search_points).await?;
             let response = SearchPointsResponse::from(tool_result);
             tracing::info!("search points response:\n{:?}", &response);
 
-            mcp_client.cancel().await?;
+            service.cancel().await?;
         }
         TransportType::Stdio => {
             tracing::info!("Connecting to MCP server via stdio");
@@ -160,12 +194,28 @@ async fn main() -> anyhow::Result<()> {
             let transport = TokioChildProcess::new(cmd)?;
 
             // create mcp client
-            let mcp_client = ().serve(transport).await?;
+            let service = ().serve(transport).await?;
             tracing::info!("Connected to server");
 
             // Initialize
-            let server_info = mcp_client.peer_info();
+            let server_info = service.peer_info();
             tracing::info!("Connected to server: {server_info:#?}");
+
+            // List prompts
+            let prompts = service.list_all_prompts().await?;
+            tracing::info!(
+                "Available prompts:\n{}",
+                serde_json::to_string_pretty(&prompts)?
+            );
+
+            // Get prompt
+            let prompt = service
+                .get_prompt(GetPromptRequestParam {
+                    name: "search".into(),
+                    arguments: None,
+                })
+                .await?;
+            tracing::info!("Prompt:\n{}", serde_json::to_string_pretty(&prompt)?);
 
             // * search points
             let search_points = CallToolRequestParam {
@@ -180,11 +230,11 @@ async fn main() -> anyhow::Result<()> {
                     ),
                 )])),
             };
-            let tool_result = mcp_client.call_tool(search_points).await?;
+            let tool_result = service.call_tool(search_points).await?;
             let response = SearchPointsResponse::from(tool_result);
             tracing::info!("search points response:\n{:?}", &response);
 
-            mcp_client.cancel().await?;
+            service.cancel().await?;
         }
     };
 

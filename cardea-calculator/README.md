@@ -21,9 +21,6 @@ Now, let's start the mcp server. You can choose to start the server with differe
 
 # run mcp server (sse)
 ./target/release/cardea-calculator-mcp-server --transport sse
-
-# run mcp server (stdio)
-./target/release/cardea-calculator-mcp-server --transport stdio
 ```
 
 If start successfully, you will see the following output:

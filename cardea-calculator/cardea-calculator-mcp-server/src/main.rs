@@ -2,13 +2,9 @@ mod calculator;
 
 use calculator::Calculator;
 use clap::{Parser, ValueEnum};
-use rmcp::{
-    ServiceExt,
-    transport::{
-        sse_server::SseServer,
-        stdio,
-        streamable_http_server::{StreamableHttpService, session::local::LocalSessionManager},
-    },
+use rmcp::transport::{
+    sse_server::SseServer,
+    streamable_http_server::{StreamableHttpService, session::local::LocalSessionManager},
 };
 use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -27,7 +23,6 @@ struct Args {
 
 #[derive(Debug, Clone, ValueEnum)]
 enum TransportType {
-    Stdio,
     Sse,
     StreamHttp,
 }
@@ -52,7 +47,7 @@ async fn main() -> anyhow::Result<()> {
     match args.transport {
         TransportType::StreamHttp => {
             let service = StreamableHttpService::new(
-                || Ok(Calculator),
+                || Ok(Calculator::new()),
                 LocalSessionManager::default().into(),
                 Default::default(),
             );
@@ -66,18 +61,10 @@ async fn main() -> anyhow::Result<()> {
         TransportType::Sse => {
             let ct = SseServer::serve(args.socket_addr.parse()?)
                 .await?
-                .with_service(|| Calculator);
+                .with_service(|| Calculator::new());
 
             tokio::signal::ctrl_c().await?;
             ct.cancel();
-        }
-        TransportType::Stdio => {
-            // Create an instance of our counter router
-            let service = Calculator.serve(stdio()).await.inspect_err(|e| {
-                tracing::error!("serving error: {:?}", e);
-            })?;
-
-            service.waiting().await?;
         }
     }
 

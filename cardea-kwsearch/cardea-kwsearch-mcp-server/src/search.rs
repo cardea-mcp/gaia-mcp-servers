@@ -4,20 +4,37 @@ use cardea_kwsearch_mcp_common::{
 };
 use endpoints::rag::keyword_search::{IndexRequest, IndexResponse, QueryRequest, QueryResponse};
 use rmcp::{
-    Error as McpError, ServerHandler,
-    model::{CallToolResult, Content, ErrorCode, Implementation, ServerCapabilities, ServerInfo},
-    tool,
+    Error as McpError, RoleServer, ServerHandler,
+    handler::server::{router::tool::ToolRouter, tool::*},
+    model::*,
+    service::RequestContext,
+    tool, tool_handler, tool_router,
 };
+use std::sync::OnceLock;
 use tracing::{error, info};
 
+static SEARCH_TOOL_PROMPT: OnceLock<String> = OnceLock::new();
+
+pub fn set_search_tool_prompt(prompt: String) {
+    SEARCH_TOOL_PROMPT.set(prompt).unwrap_or_default();
+}
+
 #[derive(Debug, Clone)]
-pub struct KeywordSearchServer;
-#[tool(tool_box)]
+pub struct KeywordSearchServer {
+    tool_router: ToolRouter<Self>,
+}
+#[tool_router]
 impl KeywordSearchServer {
+    pub fn new() -> Self {
+        Self {
+            tool_router: Self::tool_router(),
+        }
+    }
+
     #[tool(description = "Create an index in the KeywordSearch database")]
     async fn create_index(
         &self,
-        #[tool(aggr)] CreateIndexRequest { index, documents }: CreateIndexRequest,
+        Parameters(CreateIndexRequest { index, documents }): Parameters<CreateIndexRequest>,
     ) -> Result<CallToolResult, McpError> {
         info!("Creating index in KeywordSearch database");
 
@@ -78,7 +95,7 @@ impl KeywordSearchServer {
     #[tool(description = "Perform a keyword search")]
     async fn search(
         &self,
-        #[tool(aggr)] SearchDocumentsRequest { query }: SearchDocumentsRequest,
+        Parameters(SearchDocumentsRequest { query }): Parameters<SearchDocumentsRequest>,
     ) -> Result<CallToolResult, McpError> {
         info!("Searching for documents in KeywordSearch database");
 
@@ -137,17 +154,67 @@ impl KeywordSearchServer {
         Ok(CallToolResult::success(vec![content]))
     }
 }
-#[tool(tool_box)]
+#[tool_handler]
 impl ServerHandler for KeywordSearchServer {
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
+            protocol_version: ProtocolVersion::LATEST,
             instructions: Some("A MCP server that can access the KeywordSearch database".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation {
-                name: std::env!("CARGO_PKG_NAME").to_string(),
-                version: std::env!("CARGO_PKG_VERSION").to_string(),
-            },
-            ..Default::default()
+            server_info: Implementation::from_build_env(),
+        }
+    }
+
+    async fn list_prompts(
+        &self,
+        _request: Option<PaginatedRequestParam>,
+        _: RequestContext<RoleServer>,
+    ) -> Result<ListPromptsResult, McpError> {
+        Ok(ListPromptsResult {
+            next_cursor: None,
+            prompts: vec![Prompt::new(
+                "search",
+                Some(
+                    "This prompt is for the `search` tool, which takes a query and returns a list of hits",
+                ),
+                Some(vec![PromptArgument {
+                    name: "query".to_string(),
+                    description: Some("A user query to search for".to_string()),
+                    required: Some(true),
+                }]),
+            )],
+        })
+    }
+
+    async fn get_prompt(
+        &self,
+        GetPromptRequestParam { name, arguments }: GetPromptRequestParam,
+        _: RequestContext<RoleServer>,
+    ) -> Result<GetPromptResult, McpError> {
+        match name.as_str() {
+            "search" => {
+                let query = arguments
+                    .and_then(|json| json.get("query")?.as_str().map(|s| s.to_string()))
+                    .ok_or_else(|| {
+                        McpError::invalid_params("No query provided to `search` tool", None)
+                    })?;
+
+                let prompt = SEARCH_TOOL_PROMPT.get().unwrap();
+                let prompt = prompt.replace("{query}", &query);
+
+                Ok(GetPromptResult {
+                    description: None,
+                    messages: vec![PromptMessage {
+                        role: PromptMessageRole::User,
+                        content: PromptMessageContent::text(prompt),
+                    }],
+                })
+            }
+            _ => {
+                let error_message = format!("prompt not found: {name}");
+                error!("{error_message}");
+                Err(McpError::invalid_params(error_message, None))
+            }
         }
     }
 }

@@ -1,7 +1,9 @@
 use cardea_kwsearch_mcp_common::{CreateIndexResponse, KwDocumentInput, SearchDocumentsResponse};
 use clap::{Parser, ValueEnum};
 use rmcp::{
-    model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
+    model::{
+        CallToolRequestParam, ClientCapabilities, ClientInfo, GetPromptRequestParam, Implementation,
+    },
     service::ServiceExt,
     transport::{SseClientTransport, StreamableHttpClientTransport},
 };
@@ -24,6 +26,9 @@ struct Args {
     /// The name of the index to use
     #[arg(short, long, required = true)]
     index: String,
+    /// query
+    #[arg(long)]
+    query: String,
 }
 
 #[tokio::main]
@@ -66,7 +71,29 @@ async fn main() -> anyhow::Result<()> {
 
             // List available tools
             let tools = service.list_all_tools().await?;
-            tracing::info!("Available tools: {}", serde_json::to_string_pretty(&tools)?);
+            tracing::info!(
+                "Available tools:\n{}",
+                serde_json::to_string_pretty(&tools)?
+            );
+
+            // List prompts
+            let prompts = service.list_all_prompts().await?;
+            tracing::info!(
+                "Available prompts:\n{}",
+                serde_json::to_string_pretty(&prompts)?
+            );
+
+            // Get prompt
+            let prompt = service
+                .get_prompt(GetPromptRequestParam {
+                    name: "search".into(),
+                    arguments: Some(serde_json::Map::from_iter([(
+                        "query".to_string(),
+                        serde_json::Value::from(cli.query.clone()),
+                    )])),
+                })
+                .await?;
+            tracing::info!("Prompt:\n{}", serde_json::to_string_pretty(&prompt)?);
 
             // * create index
             let documents = vec![
@@ -156,7 +183,29 @@ async fn main() -> anyhow::Result<()> {
 
             // list tools
             let tools = service.list_all_tools().await?;
-            tracing::info!("{}", serde_json::to_string_pretty(&tools)?);
+            tracing::info!(
+                "Available tools:\n{}",
+                serde_json::to_string_pretty(&tools)?
+            );
+
+            // List prompts
+            let prompts = service.list_all_prompts().await?;
+            tracing::info!(
+                "Available prompts:\n{}",
+                serde_json::to_string_pretty(&prompts)?
+            );
+
+            // Get prompt
+            let prompt = service
+                .get_prompt(GetPromptRequestParam {
+                    name: "search".into(),
+                    arguments: Some(serde_json::Map::from_iter([(
+                        "query".to_string(),
+                        serde_json::Value::from(cli.query.clone()),
+                    )])),
+                })
+                .await?;
+            tracing::info!("Prompt:\n{}", serde_json::to_string_pretty(&prompt)?);
 
             // * create index
 

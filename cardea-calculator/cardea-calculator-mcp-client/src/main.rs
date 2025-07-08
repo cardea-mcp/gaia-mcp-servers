@@ -2,18 +2,14 @@ use clap::{Parser, ValueEnum};
 use rmcp::{
     model::{CallToolRequestParam, ClientCapabilities, ClientInfo, Implementation},
     service::ServiceExt,
-    transport::{
-        ConfigureCommandExt, SseClientTransport, StreamableHttpClientTransport, TokioChildProcess,
-    },
+    transport::{SseClientTransport, StreamableHttpClientTransport},
 };
-use tokio::process::Command;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 const SOCKET_ADDR: &str = "127.0.0.1:8001";
 
 #[derive(Debug, Clone, ValueEnum)]
 enum TransportType {
-    Stdio,
     Sse,
     StreamHttp,
 }
@@ -81,42 +77,6 @@ async fn main() -> anyhow::Result<()> {
             let sum_result = mcp_client.peer().call_tool(request_param).await?;
 
             tracing::info!("Sum result: {}", serde_json::to_string_pretty(&sum_result)?);
-        }
-        TransportType::Stdio => {
-            tracing::info!("Connecting to MCP server via stdio");
-
-            // build command
-            let cmd =
-                Command::new("./target/release/cardea-calculator-mcp-server").configure(|cmd| {
-                    cmd.arg("--transport").arg("stdio");
-                });
-
-            let transport = TokioChildProcess::new(cmd)?;
-
-            let service = ().serve(transport).await?;
-
-            // Initialize
-            let server_info = service.peer_info();
-            tracing::info!("Connected to server: {server_info:#?}");
-
-            // List available tools
-            let tools = service.list_all_tools().await?;
-            tracing::info!("Available tools: {tools:#?}");
-
-            let request_param = CallToolRequestParam {
-                name: "sum".into(),
-                arguments: Some(serde_json::Map::from_iter([
-                    ("a".to_string(), serde_json::Value::Number(1.into())),
-                    ("b".to_string(), serde_json::Value::Number(2.into())),
-                ])),
-            };
-
-            // Call the sum tool
-            let sum_result = service.call_tool(request_param).await?;
-
-            tracing::info!("Sum result: {}", serde_json::to_string_pretty(&sum_result)?);
-
-            service.cancel().await?;
         }
         TransportType::StreamHttp => {
             let url = format!("http://{SOCKET_ADDR}/mcp");

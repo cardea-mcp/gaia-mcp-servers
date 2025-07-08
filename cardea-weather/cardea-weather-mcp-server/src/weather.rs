@@ -1,24 +1,30 @@
 use rmcp::{
     Error as McpError, ServerHandler,
-    model::{
-        CallToolResult, Content, ErrorCode, Implementation, ProtocolVersion, ServerCapabilities,
-        ServerInfo,
-    },
-    schemars, tool,
+    handler::server::{router::tool::ToolRouter, tool::*},
+    model::*,
+    schemars, tool, tool_handler, tool_router,
 };
 
 #[derive(Debug, Clone)]
-pub struct WeatherServer;
-#[tool(tool_box)]
+pub struct WeatherServer {
+    tool_router: ToolRouter<Self>,
+}
+#[tool_router]
 impl WeatherServer {
+    pub fn new() -> Self {
+        Self {
+            tool_router: Self::tool_router(),
+        }
+    }
+
     #[tool(description = "Get the weather for a given city")]
     async fn get_current_weather(
         &self,
-        #[tool(aggr)] GetWeatherRequest {
+        Parameters(GetWeatherRequest {
             location,
             unit,
             api_key,
-        }: GetWeatherRequest,
+        }): Parameters<GetWeatherRequest>,
     ) -> Result<CallToolResult, McpError> {
         let api_key = match api_key {
             Some(api_key) => api_key,
@@ -99,6 +105,18 @@ impl WeatherServer {
     }
 }
 
+#[tool_handler]
+impl ServerHandler for WeatherServer {
+    fn get_info(&self) -> ServerInfo {
+        ServerInfo {
+            protocol_version: ProtocolVersion::LATEST,
+            instructions: Some("A MCP server that can get the weather for a given city".into()),
+            capabilities: ServerCapabilities::builder().enable_tools().build(),
+            server_info: Implementation::from_build_env(),
+        }
+    }
+}
+
 #[derive(Debug, serde::Deserialize, schemars::JsonSchema)]
 pub struct GetWeatherRequest {
     #[schemars(
@@ -138,16 +156,4 @@ pub struct GetWeatherResponse {
     pub unit: TemperatureUnit,
     // #[schemars(description = "the description of the weather")]
     // pub description: String,
-}
-
-#[tool(tool_box)]
-impl ServerHandler for WeatherServer {
-    fn get_info(&self) -> ServerInfo {
-        ServerInfo {
-            protocol_version: ProtocolVersion::LATEST,
-            instructions: Some("A MCP server that can get the weather for a given city".into()),
-            capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation::from_build_env(),
-        }
-    }
 }
