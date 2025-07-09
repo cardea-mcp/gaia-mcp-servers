@@ -24,6 +24,27 @@ use std::{
 };
 use tracing::{debug, error, info, warn};
 
+const PROMPT_KEYWORD_EXTRACTOR: &str = r#"
+You are a multilingual keyword extractor. Your task is to extract the most relevant and concise keywords or key phrases from the given user query.
+
+Follow these requirements strictly:
+- Detect the language of the query automatically.
+- Return 3 to 7 keywords or keyphrases that best represent the query's core intent.
+- Keep the extracted keywords in the **original language** (do not translate).
+- Include **multi-word expressions** if they convey meaningful concepts.
+- **Avoid all types of stop words, question words, filler words, or overly generic terms**, such as:
+  - English: what, how, why, is, the, of, and, etc.
+  - Chinese: 什么、怎么、如何、是、的、了、吗、啊 等。
+- Do **not** include punctuation or meaningless words.
+- Only return the final keywords, separated by a **single space**.
+
+Examples:
+- Input: "What is the impact of artificial intelligence on education?"
+  Output: artificial intelligence education impact
+- Input: "什么是人工智能对教育的影响？"
+  Output: 人工智能 教育 影响
+"#;
+
 static SEARCH_TOOL_DESC: OnceLock<String> = OnceLock::new();
 static SEARCH_TOOL_PARAM_DESC: OnceLock<String> = OnceLock::new();
 
@@ -207,6 +228,7 @@ impl AgenticSearchServer {
         // extract keywords from the query
         info!("Extracting keywords from the query...");
         let keywords = self.extract_keywords(query.as_ref()).await?;
+        debug!("Extracted keywords: {:#?}", keywords);
 
         // search in tidb
         info!("Searching in TiDB...");
@@ -488,9 +510,7 @@ impl AgenticSearchServer {
         let config = self.config.chat_service.as_ref().unwrap();
 
         let text = query.as_ref();
-        let user_prompt = format!(
-            "You are a multilingual keyword extractor. Your task is to extract the most relevant and concise keywords or key phrases from the given user query. The keywords should satisfying the following requirements:\n- Detect the language of the query automatically.\n- Return 3 to 7 keywords or keyphrases that best represent the query's core intent.\n- Keep the extracted keywords in the **original language** (do not translate).\n- Include **multi-word expressions** if they convey meaningful concepts.\n- The keywords should be separated by spaces.\n- Avoid stop words, filler words, or overly generic terms.\n\n### Input Query\n{text:#?}",
-        );
+        let user_prompt = format!("{PROMPT_KEYWORD_EXTRACTOR}\n\n### Input Query\n{text:#?}");
 
         let user_message = ChatCompletionRequestMessage::new_user_message(
             ChatCompletionUserMessageContent::Text(user_prompt),
