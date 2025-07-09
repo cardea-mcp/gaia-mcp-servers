@@ -161,7 +161,10 @@ impl ServerHandler for KeywordSearchServer {
             protocol_version: ProtocolVersion::LATEST,
             instructions: Some("A MCP server that can access the KeywordSearch database".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation::from_build_env(),
+            server_info: Implementation {
+                name: std::env!("CARGO_PKG_NAME").to_string(),
+                version: std::env!("CARGO_PKG_VERSION").to_string(),
+            },
         }
     }
 

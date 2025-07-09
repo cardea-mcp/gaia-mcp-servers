@@ -16,6 +16,7 @@ const WEB_SEARCH_URL: &str = "https://api.tavily.com/search";
 pub struct WebSearchServer {
     tool_router: ToolRouter<Self>,
 }
+
 #[tool_router]
 impl WebSearchServer {
     pub fn new() -> Self {
@@ -112,7 +113,10 @@ impl ServerHandler for WebSearchServer {
                 "A MCP server that can perform web searches for the given query".into(),
             ),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation::from_build_env(),
+            server_info: Implementation {
+                name: std::env!("CARGO_PKG_NAME").to_string(),
+                version: std::env!("CARGO_PKG_VERSION").to_string(),
+            },
         }
     }
 }

@@ -58,6 +58,7 @@ impl GithubServer {
         Ok(CallToolResult::success(vec![content]))
     }
 }
+
 #[tool_handler]
 impl ServerHandler for GithubServer {
     fn get_info(&self) -> ServerInfo {
@@ -65,7 +66,10 @@ impl ServerHandler for GithubServer {
             protocol_version: ProtocolVersion::default(),
             instructions: Some("Gaia Github MCP server".into()),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation::from_build_env(),
+            server_info: Implementation {
+                name: std::env!("CARGO_PKG_NAME").to_string(),
+                version: std::env!("CARGO_PKG_VERSION").to_string(),
+            },
         }
     }
 }

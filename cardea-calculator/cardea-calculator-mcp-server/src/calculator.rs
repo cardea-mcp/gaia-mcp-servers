@@ -38,7 +38,10 @@ impl ServerHandler for Calculator {
                 "A simple calculator MCP server that supports sum and sub operations".into(),
             ),
             capabilities: ServerCapabilities::builder().enable_tools().build(),
-            server_info: Implementation::from_build_env(),
+            server_info: Implementation {
+                name: std::env!("CARGO_PKG_NAME").to_string(),
+                version: std::env!("CARGO_PKG_VERSION").to_string(),
+            },
         }
     }
 }
