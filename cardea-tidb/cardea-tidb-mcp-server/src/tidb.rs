@@ -11,6 +11,42 @@ use rmcp::{
 use std::{result::Result, sync::OnceLock};
 use tracing::{error, info};
 
+const PROMPT_SEARCH_TOOL: &str = r#"
+You are a multilingual AI assistant. Your task is to (1) extract the most relevant and concise keywords or key phrases from the given user query, and (2) return a tool call that invokes the `search` tool with the extracted keywords.
+
+### Requirements for keyword extraction
+Follow these requirements strictly:
+- Detect the language of the query automatically.
+- Return 3 to 7 keywords or keyphrases that best represent the query's core intent.
+- Keep the extracted keywords in the **original language** (do not translate).
+- Include **multi-word expressions** if they convey meaningful concepts.
+- **Avoid all types of stop words, question words, filler words, or overly generic terms**, such as:
+  - English: what, how, why, is, the, of, and, etc.
+  - Chinese: 什么、怎么、如何、是、的、了、吗、啊 等。
+- Do **not** include punctuation or meaningless words.
+- Only return the final keywords, separated by a **single space**.
+
+Examples:
+- Input: "What is the impact of artificial intelligence on education?"
+  Output: artificial intelligence education impact
+- Input: "什么是人工智能对教育的影响？"
+  Output: 人工智能 教育 影响
+
+### Requirements for tool call
+- Return a tool call that invokes the `search` tool with the extracted keywords.
+- For each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:
+  <tool_call>
+  {"name": <function-name>, "arguments": <args-json-object>}
+  </tool_call>
+
+Examples:
+- Input: "What is the impact of artificial intelligence on education?"
+  Output:
+    <tool_call>
+    {"name": "search", "arguments": {"query": "artificial intelligence education impact"}}
+    </tool_call>
+"#;
+
 static SEARCH_TOOL_PROMPT: OnceLock<String> = OnceLock::new();
 
 pub fn set_search_tool_prompt(prompt: String) {
@@ -197,8 +233,9 @@ impl ServerHandler for TidbServer {
                         McpError::invalid_params("No query provided to `search` tool", None)
                     })?;
 
-                let prompt = SEARCH_TOOL_PROMPT.get().unwrap();
-                let prompt = prompt.replace("{query}", &query);
+                // let prompt = SEARCH_TOOL_PROMPT.get().unwrap();
+                // let prompt = prompt.replace("{query}", &query);
+                let prompt = format!("{PROMPT_SEARCH_TOOL}\n\n### Input Query\n{query:#?}");
 
                 Ok(GetPromptResult {
                     description: None,
