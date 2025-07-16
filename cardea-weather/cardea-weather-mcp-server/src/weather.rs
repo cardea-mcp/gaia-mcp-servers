@@ -20,24 +20,19 @@ impl WeatherServer {
     #[tool(description = "Get the weather for a given city")]
     async fn get_current_weather(
         &self,
-        Parameters(GetWeatherRequest {
-            location,
-            unit,
-            api_key,
-        }): Parameters<GetWeatherRequest>,
+        Parameters(GetWeatherRequest { location, unit }): Parameters<GetWeatherRequest>,
     ) -> Result<CallToolResult, McpError> {
-        let api_key = match api_key {
-            Some(api_key) => api_key,
-            None => match std::env::var("OPENWEATHERMAP_API_KEY") {
-                Ok(api_key) => api_key,
-                Err(_) => {
-                    return Err(McpError::new(
-                        ErrorCode::INVALID_PARAMS,
-                        "No API key provided".to_string(),
-                        None,
-                    ));
-                }
-            },
+        let api_key = match std::env::var("OPENWEATHERMAP_API_KEY") {
+            Ok(api_key) => api_key,
+            Err(_) => {
+                let err_message = "No API key provided. Please set the `OPENWEATHERMAP_API_KEY` environment variable.";
+                tracing::error!("{}", err_message);
+                return Err(McpError::new(
+                    ErrorCode::INVALID_PARAMS,
+                    err_message.to_string(),
+                    None,
+                ));
+            }
         };
 
         let openweathermap_unit = unit.to_openweathermap_unit();
@@ -128,11 +123,6 @@ pub struct GetWeatherRequest {
     pub location: String,
     #[schemars(description = "the unit to use for the temperature, e.g., 'celsius', 'fahrenheit'")]
     pub unit: TemperatureUnit,
-    #[schemars(
-        description = "the OpenWeatherMap API key to use. If not provided, the server will use the OPENWEATHERMAP_API_KEY environment variable."
-    )]
-    #[serde(default)]
-    pub api_key: Option<String>,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize, schemars::JsonSchema, Clone)]
