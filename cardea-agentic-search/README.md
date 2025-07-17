@@ -30,8 +30,7 @@ These options apply to all search modes:
 
 - `-s, --socket-addr`: Socket address to bind to (default: 127.0.0.1:8009)
 - `-t, --transport`: Transport type (sse, stream-http) (default: stream-http)
-- `--search-tool-desc`: The description for the search tool (default: "Perform a search for the given query")
-- `--search-tool-param-desc`: The description for the search tool parameter (default: "The query to search for")
+- `--search-tool-prompt`: The prompt for the `search` mcp tool (default: "Perform a search for the given query")
 
 #### 1. Qdrant Vector Search Only
 
@@ -39,7 +38,7 @@ These options apply to all search modes:
 ./cardea-agentic-search-mcp-server qdrant \
     --qdrant-collection my_collection \
     --qdrant-payload-field "full_text" \
-    --embedding-service http://localhost:8081 \
+    --embedding-service http://localhost:8081/v1 \
     --limit 20 \
     --score-threshold 0.7
 ```
@@ -60,7 +59,7 @@ These options apply to all search modes:
 ./cardea-agentic-search-mcp-server tidb \
     --tidb-ssl-ca /path/to/ca.pem \
     --tidb-table-name my_table \
-    --chat-service http://localhost:8080 \
+    --chat-service http://localhost:8080/v1 \
     --limit 15
 ```
 
@@ -82,8 +81,8 @@ These options apply to all search modes:
     --qdrant-payload-field "full_text" \
     --tidb-ssl-ca /path/to/ca.pem \
     --tidb-table-name my_table \
-    --chat-service http://localhost:8080 \
-    --embedding-service http://localhost:8081 \
+    --chat-service http://localhost:8080/v1 \
+    --embedding-service http://localhost:8081/v1 \
     --limit 25
 ```
 
@@ -130,7 +129,7 @@ export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
 ./cardea-agentic-search-mcp-server qdrant \
     --qdrant-collection documents \
     --qdrant-payload-field "full_text" \
-    --embedding-service http://localhost:8081 \
+    --embedding-service http://localhost:8081/v1 \
     --limit 10 \
     --score-threshold 0.6
 ```
@@ -144,7 +143,7 @@ export CHAT_SERVICE_API_KEY=your_chat_api_key
 ./cardea-agentic-search-mcp-server tidb \
     --tidb-ssl-ca /etc/ssl/certs/ca.pem \
     --tidb-table-name documents \
-    --chat-service http://localhost:8080 \
+    --chat-service http://localhost:8080/v1 \
     --limit 20 \
     --score-threshold 0.4
 ```
@@ -163,8 +162,8 @@ export EMBEDDING_SERVICE_API_KEY=your_embedding_api_key
     --qdrant-payload-field "full_text" \
     --tidb-ssl-ca /etc/ssl/certs/ca.pem \
     --tidb-table-name documents \
-    --chat-service http://localhost:8080 \
-    --embedding-service http://localhost:8081 \
+    --chat-service http://localhost:8080/v1 \
+    --embedding-service http://localhost:8081/v1 \
     --limit 30 \
     --score-threshold 0.5
 ```

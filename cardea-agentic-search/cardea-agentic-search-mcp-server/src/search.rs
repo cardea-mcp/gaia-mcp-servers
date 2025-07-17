@@ -196,7 +196,7 @@ impl AgenticSearchServer {
         match &self.config.embedding_service {
             Some(config) => {
                 let embedding_service_url =
-                    format!("{}/v1/embeddings", config.url.trim_end_matches('/'));
+                    format!("{}/embeddings", config.url.trim_end_matches('/'));
 
                 // create a embedding request
                 let embedding_request = EmbeddingRequest {
@@ -434,7 +434,7 @@ impl AgenticSearchServer {
         // create a request
         let request = ChatCompletionRequestBuilder::new(&[user_message]).build();
 
-        let chat_service_url = format!("{}/v1/chat/completions", config.url.trim_end_matches('/'));
+        let chat_service_url = format!("{}/chat/completions", config.url.trim_end_matches('/'));
         debug!(
             "Forward the chat request to {} for extracting keywords",
             chat_service_url,

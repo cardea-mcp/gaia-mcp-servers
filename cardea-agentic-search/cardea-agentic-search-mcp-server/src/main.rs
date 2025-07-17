@@ -50,7 +50,7 @@ enum SearchMode {
         /// Score threshold for the results
         #[arg(long, default_value = "0.5")]
         score_threshold: f32,
-        /// The base URL of the embedding server
+        /// The base URL of the embedding server, e.g., "https://api.openai.com/v1"
         #[arg(long, required = true)]
         embedding_service: String,
     },
@@ -70,7 +70,7 @@ enum SearchMode {
         /// Score threshold for the results
         #[arg(long, default_value = "0.5")]
         score_threshold: f32,
-        /// The base URL of the chat server
+        /// The base URL of the chat server, e.g., "https://api.openai.com/v1"
         #[arg(long, required = true)]
         chat_service: String,
     },
@@ -96,10 +96,10 @@ enum SearchMode {
         /// Score threshold for the results
         #[arg(long, default_value = "0.5")]
         score_threshold: f32,
-        /// The base URL of the chat server
+        /// The base URL of the chat server, e.g., "https://api.openai.com/v1"
         #[arg(long, required = true)]
         chat_service: String,
-        /// The base URL of the embedding server
+        /// The base URL of the embedding server, e.g., "https://api.openai.com/v1"
         #[arg(long, required = true)]
         embedding_service: String,
     },
