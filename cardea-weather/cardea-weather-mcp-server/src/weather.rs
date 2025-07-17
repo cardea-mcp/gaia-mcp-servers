@@ -1,5 +1,5 @@
 use rmcp::{
-    Error as McpError, ServerHandler,
+    ErrorData as McpError, ServerHandler,
     handler::server::{router::tool::ToolRouter, tool::*},
     model::*,
     schemars, tool, tool_handler, tool_router,

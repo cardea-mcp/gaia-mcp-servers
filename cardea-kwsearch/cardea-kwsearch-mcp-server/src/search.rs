@@ -4,7 +4,7 @@ use cardea_kwsearch_mcp_common::{
 };
 use endpoints::rag::keyword_search::{IndexRequest, IndexResponse, QueryRequest, QueryResponse};
 use rmcp::{
-    Error as McpError, RoleServer, ServerHandler,
+    ErrorData as McpError, RoleServer, ServerHandler,
     handler::server::{router::tool::ToolRouter, tool::*},
     model::*,
     service::RequestContext,

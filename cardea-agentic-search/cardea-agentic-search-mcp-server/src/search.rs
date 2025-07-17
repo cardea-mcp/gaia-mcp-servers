@@ -10,7 +10,7 @@ use endpoints::{
 use mysql::prelude::*;
 use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use rmcp::{
-    Error as McpError, RoleServer, ServerHandler,
+    ErrorData as McpError, RoleServer, ServerHandler,
     handler::server::{router::tool::ToolRouter, tool::*},
     model::*,
     service::RequestContext,

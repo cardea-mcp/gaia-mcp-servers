@@ -1,7 +1,7 @@
 use crate::WEB_SEARCH_CONFIG;
 use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use rmcp::{
-    Error as McpError, ServerHandler,
+    ErrorData as McpError, ServerHandler,
     handler::server::{router::tool::ToolRouter, tool::*},
     model::*,
     schemars, tool, tool_handler, tool_router,

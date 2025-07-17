@@ -2,7 +2,7 @@ use crate::TIDB_ACCESS_CONFIG;
 use cardea_tidb_mcp_common::*;
 use mysql::prelude::*;
 use rmcp::{
-    Error as McpError, RoleServer, ServerHandler,
+    ErrorData as McpError, RoleServer, ServerHandler,
     handler::server::{router::tool::ToolRouter, tool::*},
     model::*,
     service::RequestContext,
